@@ -30,7 +30,8 @@
                 <h4>Login</h4>
               </div>
               <div class="card-body">
-                <form method="POST" action="#" class="needs-validation" novalidate="">
+                <form method="POST" class="needs-validation" novalidate="">
+                  <input type="hidden" name="csrf_token" value="<?=$_SESSION['csrf_token']; ?>">
                   <div class="form-group">
                     <label for="email">Email</label>
                     <input id="email" type="email" class="form-control" name="email" tabindex="1" required autofocus>

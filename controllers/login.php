@@ -27,8 +27,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && $_POST['csrf_token'] === $_SESSION['
             // Set new user session id
             $_SESSION['user'] = $user;
             // Redirect user
-            $dashboard_url = ROOT."/account/dashboard";
-            redirect($dashboard_url);
+            redirect(ROOT."/account/dashboard");
         }
     }
         

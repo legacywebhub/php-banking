@@ -44,15 +44,15 @@
     <img src="<?=STATIC_ROOT; ?>/dashboard/img/banner/dashboard-banner.png" alt="">
     <div class="greetings">
       <h5>Welcome Back !</h5>
-      <p><?=$context['firstname']; ?></p>
+      <p><?=$context['user']['fullname']; ?></p>
     </div>
     <div class="balance">
       <h6>Account Balance</h6>
-      <h5>{{request.user.currency}}{{request.user.balance}}</h5>
+      <h5><?=$context['user']['currency'].$context['user']['balance']; ?></h5>
     </div>
     <div class="action-buttons">
-      <a href="{% url 'banking:transactions" class="btn btn-sm btn-icon icon-left btn-primary"><i class="fas fa-bars"></i> Transactions</a>
-      <a href="{% url 'banking:fund_account" class="btn btn-sm btn-icon icon-left btn-success"><i class="fas fa-donate"></i> Fund Account</a>
+      <a href="transactions" class="btn btn-sm btn-icon icon-left btn-primary"><i class="fas fa-bars"></i> Transactions</a>
+      <a href="fund-account" class="btn btn-sm btn-icon icon-left btn-success"><i class="fas fa-donate"></i> Fund Account</a>
     </div>
   </div>
 </div>
@@ -68,7 +68,7 @@
               <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 pr-0 pt-3">
                 <div class="card-content">
                   <h5 class="mt-4 font-15">Account Balance</h5>
-                  <h4 class="mt-2">{{request.user.currency}}{{request.user.balance}}</h4>
+                  <h4 class="mt-2"><?=$context['user']['currency'].$context['user']['balance']; ?></h4>
                 </div>
               </div>
               <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 pl-0">
@@ -89,7 +89,7 @@
               <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 pr-0 pt-3">
                 <div class="card-content">
                   <h5 class="mt-4 font-15">Overdraft</h5>
-                  <h4 class="mt-2">{{request.user.currency}}{{request.user.overdraft}}</h4>
+                  <h4 class="mt-2"><?=$context['user']['currency'].$context['user']['overdraft']; ?></h4>
                 </div>
               </div>
               <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 pl-0">
@@ -110,7 +110,7 @@
               <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 pr-0 pt-3">
                 <div class="card-content">
                   <h5 class="mt-4 font-15">Account Number</h5>
-                  <h4 class="mt-2">{{request.user.account_number}}</h4>
+                  <h4 class="mt-2"><?=$context['user']['account_number']; ?></h4>
                 </div>
               </div>
               <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 pl-0">
@@ -131,7 +131,7 @@
               <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 pr-0 pt-3">
                 <div class="card-content">
                   <h5 class="mt-4 font-15">Account Type</h5>
-                  <h4 class="mt-2">{{request.user.account_type}}</h4>
+                  <h4 class="mt-2"><?=$context['user']['account_type']; ?></h4>
                 </div>
               </div>
               <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 pl-0">
@@ -153,7 +153,7 @@
           <h4>Recent Bank Transactions</h4>
         </div>
         <div class="card-body p-0">
-          {% if recent_transactions %}
+          <?php if($context['recent_transactions']): ?>
           <div class="table-responsive">
             <table class="table table-striped">
               <tr>
@@ -171,7 +171,7 @@
                 <th>Status</th>
                 <th>Action</th>
               </tr>
-              {% for transaction in recent_transactions %}
+              <?php foreach($recent_transactions as $transaction): ?>
               <tr>
                 <td class="p-0 text-center">
                   <div class="custom-checkbox custom-control">
@@ -180,41 +180,41 @@
                     <label for="checkbox-1" class="custom-control-label">&nbsp;</label>
                   </div>
                 </td>
-                <td>{{transaction.timestamp|timezone:request.user.timezone}}</td>
-                <td>{{transaction.amount}}</td>
+                <td><?=$transaction['date']; ?></td>
+                <td><?=$context['user']['currency'].$transaction['amount']; ?></td>
                 <td>
-                  {% if transaction.from_user == request.user %}
+                  <?php if($transaction['from_user']==$session['user']['id']): ?>
                   Debit
-                  {% elif transaction.to_user == request.user %}
+                  <?php else: ?>
                   Credit
-                  {% endif %}
+                  <?php endif ?>
                 </td>
                 <td>
-                  {% if transaction.from_user != request.user %}
-                  {{transaction.from_user|upper}}
-                  {% elif transaction.to_user != request.user %}
-                  {{transaction.to_user|upper}}
-                  {% endif %}
+                  <?php if($transaction['from_user']==$session['user']['id']): ?>
+                    <?=ucwords($transaction['to_user']); ?>
+                  <?php elseif($transaction['to_user']==$session['user']['id']): ?>
+                    <?=ucwords($transaction['from_user']); ?>
+                  <?php endif ?>
                 </td>
                 <td class="status">
-                  {% if transaction.status == 'successful
-                  <div class="badge badge-success">{{transaction.get_status_display|upper}}</div>
-                  {% elif transaction.status == 'pending
-                  <div class="badge badge-warning">{{transaction.get_status_display|upper}}</div>
-                  {% else %}
-                  <div class="badge badge-danger">{{transaction.get_status_display|upper}}</div>
-                  {% endif %}
+                  <?php if($transaction['status']=='successful'): ?>
+                  <div class="badge badge-success">SUCCESSFUL</div>
+                  <?php elseif($transaction['status']=='pending'): ?>
+                  <div class="badge badge-warning">PENDING</div>
+                  <?php else: ?>
+                  <div class="badge badge-danger"><?=ucwords($transaction['status']); ?></div>
+                  <?php endif ?>
                 </td>
-                <td><a href="{% url 'banking:transaction' transaction.id %}" class="btn btn-outline-primary">View</a></td>
+                <td><a href="transaction?transaction_id=<?=$transaction['transaction_number'];?>" class="btn btn-outline-primary">View</a></td>
               </tr>
-              {% endfor %}
+              <?php endforeach ?>
             </table>
           </div>
-          {% else %}
+          <?php else: ?>
           <div class="card-body mt-3 mb-3">
-            No Transaction Found!
+            No Transaction Yet!
           </div>
-          {% endif %}
+          <?php endif ?>
         </div>
       </div>
     </div>
@@ -225,10 +225,10 @@
     <div class="col-md-12 col-lg-12 col-xl-12">
       <div class="card">
         <div class="card-header">
-          <h4>Recent Crypto Transactions</h4>
+          <h4>Recent Payments</h4>
         </div>
         <div class="card-body">
-          {% if crypto_transactions %}
+          <?php if($context['recent_payments']): ?>
           <div class="table-responsive">
             <table class="table table-hover mb-0">
               <thead>
@@ -241,25 +241,24 @@
                 </tr>
               </thead>
               <tbody>
-                {% for transaction in crypto_transactions %}
+                <?php foreach($context['recent_payments'] as $payment): ?>
                 <tr>
-                  <td>{{transaction.timestamp}}</td>
-                  <td>{{transaction.amount}}</td>
-                  <td>{{transaction.get_method_display|upper}}</td>
-                  <td>{{transaction.status|upper}}</td>
-                  <td><a href="{% url 'banking:transaction' transaction.id %}" class="btn btn-outline-primary">View</a></td>
+                  <td><?=$payment['date']; ?></td>
+                  <td><?=$context['user']['currency'].$payment['amount']; ?></td>
+                  <td><?=ucwords($payment['method']); ?></td>
+                  <td><?=ucwords($payment['status']); ?></td>
+                  <td><a href="payment?payment_id=<?=$payment['id']; ?>" class="btn btn-outline-primary">View</a></td>
                 </tr>
-                {% endfor %}
+                <?php endforeach ?>
               </tbody>
             </table>
           </div>
-          {% else %}
+          <?php else: ?>
           <div class="mt-3 mb-3">
-            No Transaction Found!
+            No Payments Yet!
           </div>
-          {% endif %}
+          <?php endif ?>
         </div>
       </div>
     </div>
   </div>
-{% endblock %}

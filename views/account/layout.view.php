@@ -48,19 +48,19 @@
                 </div>
               </div>
               <div class="dropdown-list-content dropdown-list-icons">
-                {% for notification in notifications %}
+                <?php foreach($context['notifications'] as $notification): ?>
                 <a href="#" class="dropdown-item dropdown-item-unread">
                   <span class="dropdown-item-icon bg-primary text-white">
                     <i class="fas fa-envelope-square"></i>
                   </span>
-                  <span class="dropdown-item-desc"> {{notification.message}}
-                    <span class="time">{{notification.date|timezone:request.user.timezone|timesince}} AGO</span>
+                  <span class="dropdown-item-desc"> <?=$notification['message']; ?>
+                    <span class="time"><?=$notification['date']; ?> AGO</span>
                   </span>
                 </a>
-                {% endfor %}
+                <?php endforeach ?>
               </div>
               <div class="dropdown-footer text-center">
-                <a href="{% url 'banking:notifications">View All <i class="fas fa-chevron-right"></i></a>
+                <a href="notifications">View All <i class="fas fa-chevron-right"></i></a>
               </div>
             </div>
           </li>
@@ -68,18 +68,18 @@
               class="nav-link dropdown-toggle nav-link-lg nav-link-user"> <img alt="image" src="<?=STATIC_ROOT; ?>/dashboard/img/default.png"
                 class="user-img-radious-style"> <span class="d-sm-none d-lg-inline-block"></span></a>
             <div class="dropdown-menu dropdown-menu-right pullDown">
-              <div class="dropdown-title">{{request.user.full_name}}</div>
-              <a href="{% url 'banking:profile" class="dropdown-item has-icon"> <i class="far fa-user"></i> 
+              <div class="dropdown-title"><?=$context['user']['fullname']; ?></div>
+              <a href="profile" class="dropdown-item has-icon"> <i class="far fa-user"></i> 
                 Profile
               </a>
-              <a href="{% url 'banking:virtual_card" class="dropdown-item has-icon"> <i class="fas fa-credit-card"></i>
+              <a href="virtual-card" class="dropdown-item has-icon"> <i class="fas fa-credit-card"></i>
                 My Card
               </a> 
-              <a href="{% url 'banking:change_pin" class="dropdown-item has-icon"> <i class="fas fa-cog"></i>
+              <a href="change-pin" class="dropdown-item has-icon"> <i class="fas fa-cog"></i>
                 Settings
               </a>
               <div class="dropdown-divider"></div>
-              <a href="auth-login.html" class="dropdown-item has-icon text-danger"> <i class="fas fa-sign-out-alt"></i>
+              <a href="logout" class="dropdown-item has-icon text-danger"> <i class="fas fa-sign-out-alt"></i>
                 Logout
               </a>
             </div>
@@ -89,59 +89,59 @@
       <div class="main-sidebar sidebar-style-2">
         <aside id="sidebar-wrapper">
           <div class="sidebar-brand">
-            <a href="{% url 'banking:account"> <img alt="image" src="<?=STATIC_ROOT; ?>/dashboard/img/logo2.png" class="header-logo" /> <span
+            <a href="dashboard"> <img alt="image" src="<?=STATIC_ROOT; ?>/dashboard/img/logo2.png" class="header-logo" /> <span
                 class="logo-name">Bank</span>
             </a>
           </div>
           <ul class="sidebar-menu">
             <li class="menu-header">Menu</li>
             <li class="dropdown active">
-              <a href="{% url 'banking:account" class="nav-link"><i data-feather="home"></i><span>Home</span></a>
+              <a href="dashboard" class="nav-link"><i data-feather="home"></i><span>Home</span></a>
             </li>
             <li class="dropdown">
               <a href="#" class="menu-toggle nav-link has-dropdown"><i data-feather="command"></i><span>Actions</span></a>
               <ul class="dropdown-menu">
-                <li><a class="nav-link" href="{% url 'banking:fund_account">Fund Account</a></li>
-                <li><a class="nav-link" href="{% url 'banking:internal_transfer">Internal Transfer</a></li>
-                <li><a class="nav-link" href="{% url 'banking:domestic_transfer">Domestic Transfer</a></li>
-                <li><a class="nav-link" href="{% url 'banking:international_transfer">International Transfer</a></li>
+                <li><a class="nav-link" href="fund-account">Fund Account</a></li>
+                <li><a class="nav-link" href="internal-transfer">Internal Transfer</a></li>
+                <li><a class="nav-link" href="domestic-transfer">Domestic Transfer</a></li>
+                <li><a class="nav-link" href="international-transfer">International Transfer</a></li>
               </ul>
             </li>
             <li class="dropdown">
               <a href="#" class="menu-toggle nav-link has-dropdown"><i data-feather="list"></i><span>Transactions</span></a>
               <ul class="dropdown-menu">
-                <li><a class="nav-link" href="{% url 'banking:credit_history">Credit History</a></li>
-                <li><a class="nav-link" href="{% url 'banking:debit_history">Debit History</a></li>
-                <li><a class="nav-link" href="{% url 'banking:transfer_history">Transfer History</a></li>
+                <li><a class="nav-link" href="credit-history">Credit History</a></li>
+                <li><a class="nav-link" href="debit-history">Debit History</a></li>
+                <li><a class="nav-link" href="transfer-history">Transfer History</a></li>
               </ul>
             </li>
             <li class="dropdown">
               <a href="#" class="menu-toggle nav-link has-dropdown"><i data-feather="dollar-sign"></i><span>Loan</span></a>
               <ul class="dropdown-menu">
-                <li><a class="nav-link" href="{% url 'banking:loan_request">Loan Request</a></li>
-                <li><a class="nav-link" href="{% url 'banking:loan_history">Loan History</a></li>
+                <li><a class="nav-link" href="loan-request">Loan Request</a></li>
+                <li><a class="nav-link" href="loan-history">Loan History</a></li>
               </ul>
             </li>
             <li class="dropdown">
-              <a href="{% url 'banking:virtual_card" class="nav-link"><i data-feather="credit-card"></i><span>My Card</span></a>
+              <a href="virtual-card" class="nav-link"><i data-feather="credit-card"></i><span>My Card</span></a>
             </li>
             <li class="menu-header">Utilities</li>
             <li class="dropdown">
-              <a href="{% url 'banking:profile" class="nav-link"><i data-feather="user"></i><span>Profile</span></a>
+              <a href="profile" class="nav-link"><i data-feather="user"></i><span>Profile</span></a>
             </li>
             <li class="dropdown">
               <a href="#" class="menu-toggle nav-link has-dropdown"><i
                   data-feather="settings"></i><span>Account Settings</span></a>
               <ul class="dropdown-menu">
-                <li><a class="nav-link" href="{% url 'banking:change_pin">Change Pin</a></li>
+                <li><a class="nav-link" href="change-pin">Change Pin</a></li>
                 <li><a class="nav-link" href="#">Update Password</a></li>
               </ul>
             </li>
             <li class="dropdown">
-              <a href="{% url 'banking:notifications" class="nav-link"><i data-feather="bell"></i><span>Notifications</span></a>
+              <a href="notifications" class="nav-link"><i data-feather="bell"></i><span>Notifications</span></a>
             </li>
             <li class="dropdown">
-              <a href="{% url 'banking:logout" class="nav-link"><i data-feather="log-out"></i><span>Logout</span></a>
+              <a href="logout" class="nav-link"><i data-feather="log-out"></i><span>Logout</span></a>
             </li>
           </ul>
         </aside>
@@ -265,21 +265,36 @@
   <!-- Sweet Alert -->
   <script src="<?=STATIC_ROOT; ?>/dashboard/bundles/sweetalert/sweetalert.min.js"></script>
   <!-- InPage Js -->
-    <!-- Return only number keystrokes -->
     <script>
-      // This functions only allows input fields to accept numbers
-      function onlyNumberKey(evt) {
-        // Only ASCII character in that range allowed
-        var ASCIICode = (evt.which) ? evt.which : evt.keyCode
-        if (ASCIICode > 31 && (ASCIICode < 48 || ASCIICode > 57))
-        return false; 
-        return true;
-        // use  onkeypress="return onlyNumberKey(event)" on the input field
-      }
+        // This functions enforce input fields to only accept number keystrokes
+        function onlyNumberKey(evt) {
+            // Only ASCII character in that range allowed
+            var ASCIICode = (evt.which) ? evt.which : evt.keyCode
+            if (ASCIICode > 31 && (ASCIICode < 48 || ASCIICode > 57)) {
+                return false; 
+            } else {
+                return true;
+            }
+            // use  onkeypress="return onlyNumberKey(event)" on the input field
+        }
     </script>
 
-    <!-- Copy texts js -->
     <script>
+        // This functions enforce input fields to only accept alphabet keystrokes
+        function onlyAlphabeticalKey(evt) {
+            // Only ASCII character in that range allowed
+            var ASCIICode = (evt.which) ? evt.which : evt.keyCode;
+            if ((ASCIICode >= 65 && ASCIICode <= 90) || (ASCIICode >= 97 && ASCIICode <= 122)) {
+                return true; // Allow alphabetical characters
+            } else {
+                return false; // Block other characters
+            }
+            // Use onkeypress="return onlyAlphabeticalKey(event)" on the input field
+        }
+    </script>
+
+    <script>
+    // Copy texts js
     function copyText(arg) {
         console.log('clicked a button');
         // Get the input or text field
@@ -299,8 +314,13 @@
         });
     }
     </script>
+
+      <!-- Security js-->
+    <script>
+        if (window.history.replaceState){
+        window.history.replaceState(null, null, window.location.href);
+        }
+    </script>
 </body>
 
-
-<!-- index.html  21 Nov 2019 03:47:04 GMT -->
 </html>

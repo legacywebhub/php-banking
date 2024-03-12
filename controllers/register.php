@@ -17,100 +17,108 @@ if ($_SERVER["REQUEST_METHOD"]=="POST") {
         die();
     }
 
-    $firstname = sanitize_input($_POST['firstname']);
-    $lastname = sanitize_input($_POST['lastname']);
-    $email = filter_input(INPUT_POST, 'email', FILTER_VALIDATE_EMAIL);
-    $phone = sanitize_input($_POST['phone']);
-    $timezone = sanitize_input($_POST['timezone']);
-    $password1 = sanitize_input($_POST['password1']);
-    $password2 = sanitize_input($_POST['password2']);
-    $timezone = sanitize_input($_POST['timezone']);
-    $account_type = sanitize_input($_POST['account_type']);
-    $account_number = generate_account_number();
-    $ref = sanitize_input($_POST['ref']);
-
-
     // Validation
-    if (empty($firstname)) {
-        redirect('register', "First name cannot be blank or have spaces", 'danger');
-    } else if (is_numeric($firstname)) {
-        redirect('register', "First name cannot be numeric", 'danger');
-    } else if (strlen($firstname) < 3 || strlen($firstname) > 60) {
-        redirect('register', "First name cannot be less than 3 or more than 60 characters", 'danger');
+    if (empty($data['firstname'])) {
+        echo json_encode(['status'=>"failed", 'message'=>"First name cannot be blank or have spaces"]);
+        die();
+    } else if (is_numeric($data['firstname'])) {
+        echo json_encode(['status'=>"failed", 'message'=>"First name cannot be numeric"]);
+        die();
+    } else if (strlen($data['firstname']) < 3 || strlen($data['firstname']) > 30) {
+        echo json_encode(['status'=>"failed", 'message'=>"First name cannot be less than 3 or more than 30 characters"]);
+        die();
     }
 
-    if (empty($lastname)) {
-        redirect('register', "Last name cannot be blank or have spaces", 'danger');
-    } else if (is_numeric($lastname)) {
-        redirect('register', "Last name cannot be numeric", 'danger');
-    } else if (strlen($lastname) < 3 || strlen($lastname) > 60) {
-        redirect('register', "Last name cannot be less than 3 or more than 60 characters", 'danger');
+    if (empty($data['lastname'])) {
+        echo json_encode(['status'=>"failed", 'message'=>"Last name cannot be blank or have spaces"]);
+        die();
+    } else if (is_numeric($data['lastname'])) {
+        echo json_encode(['status'=>"failed", 'message'=>"Last name cannot be numeric"]);
+        die();
+    } else if (strlen($data['lastname']) < 3 || strlen($data['lastname']) > 60) {
+        echo json_encode(['status'=>"failed", 'message'=>"Last name cannot be less than 3 or more than 60 characters"]);
+        die();
     }
 
-    if (empty($username) || ctype_space($username)) {
-        redirect('register', "Username cannot be blank or have spaces", 'danger');
-    } else if (is_numeric($username)) {
-        redirect('register', "Username cannot be numeric", 'danger');
-    } else if (!preg_match("/^[a-zA-Z]+$/", $username)) {
-        redirect('register', "Username can only have letters and no spaces", 'danger');
-    } else if (strlen($username) < 4 || strlen($username) > 15) {
-        redirect('register', "Username cannot be less than 4 or more than 15 characters", 'danger');
+    if (!filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
+        echo json_encode(['status'=>"failed", 'message'=>"Email is not valid"]);
+        die();
+    } else if (strlen($data['email']) > 60) {
+        echo json_encode(['status'=>"failed", 'message'=>"Email cannot be more than 60 characters"]);
+        die();
+    } else if (email_exists($data['email'])) {
+        echo json_encode(['status'=>"failed", 'message'=>"Email has already been used"]);
+        die();
     }
 
-    if (!$email) {
-        redirect('register', "Email is not valid", 'danger');
-    } else if (strlen($email) > 60) {
-        redirect('register', "Email cannot be more than 60 characters", 'danger');
-    } else if (email_exists($email)) {
-        redirect('register', "Email has already been used", 'danger');
+    if (empty($data['password1']) || empty($data['password2'])) {
+        echo json_encode(['status'=>"failed", 'message'=>"Passwords cannot be empty"]);
+        die();
+    } else if ($data['password1'] != $data['password2']) {
+        echo json_encode(['status'=>"failed", 'message'=>"Passwords do not match"]);
+        die();
     }
 
-    if (empty($password1) || empty($password2)) {
-        redirect('register', "Passwords cannot be empty", 'danger');
-    } else if ($password1 != $password2) {
-        redirect('register', "Passwords do not match", 'danger');
-    }
+    // Checking for referrer
+    $referrer_id = sanitize_input($data['referrer_id']);
 
     // Declaring database variables for user as PHP array
-    $data = [];
-    $data['firstname'] = $firstname;
-    $data['username'] = $username;
-    $data['email'] = $email;
-    $data['password'] = password_hash($password2, PASSWORD_DEFAULT);
-    $data['timezone'] = $timezone;
+    $data = [
+        'firstname' => ucfirst(sanitize_input($data['firstname'])),
+        'lastname' => ucfirst(sanitize_input($data['lastname'])),
+        'email' => sanitize_input($data['email']),
+        'phone' => sanitize_input($data['phone']),
+        'address' => sanitize_input($data['address']),
+        'country' => sanitize_input($data['country']),
+        'timezone' => sanitize_input($data['timezone']),
+        'password' => password_hash($data['password1'], PASSWORD_DEFAULT),
+        'account_type' => sanitize_input($data['account_type']),
+        'account_number' => generate_account_number(),
+        'currency' => sanitize_input($data['currency']),
+        'ref_id' => generate_unique_id(7)
+    ];
 
     try {
         // Making a query to insert user details into the database
-        $sql = "INSERT INTO users (firstname, username, email, timezone, password) VALUES (:firstname, :username, :email, :timezone, :password)";
-        $query = query_db($sql, $data);
+        $sql = "INSERT INTO users (firstname, lastname, email, phone, address, country, timezone, account_type, account_number, currency, password, ref_id) VALUES (:firstname, :lastname, :email, :phone, :address, :country, :timezone, :account_type, :account_number, :currency, :password, :ref_id)";
+        $new_user_id = intval(query_return_id($sql, $data));
+        // Making a kyc for user
+        $sql = "INSERT INTO kycs (user_id) VALUES (:user_id)";
+        $query = query_db($sql, ['user_id'=>$new_user_id]);
+        // Making an inactive/domant virtual card for user 
+        $sql = "INSERT INTO virtual_cards (user_id) VALUES (:user_id)";
+        $query = query_db($sql, ['user_id'=>$new_user_id]);
         // Sending registeration success email
         $email_values = [
-            'name'=> $username, 
-            'message'=> "Welcome $username, your account was successfully created and you are now eligible to explore our ecosystem. Kindly login to get started!"
+            'name'=> $data['firstname']." ".$data['lastname'], 
+            'message'=> "Welcome ".$data['firstname'].", your account was successfully created and you are now eligible to explore our ecosystem. Kindly login to get started!"
         ];
         sendMail($email, "Registeration successful", $email_values);
-
         // Referral system
-        if (!empty($ref) && username_exists($ref)) {
-            $referrer = query_fetch("SELECT * FROM users WHERE username = '$ref' LIMIT 1")[0];
-            $new_user = query_fetch("SELECT * FROM users WHERE username = '$username' LIMIT 1")[0];
-            // Saving affiliation
-            $sql = "INSERT INTO affiliates (user_id, referrer_id) VALUES (:user_id, :referrer_id)";
-            $query = query_db($sql, ['user_id'=>$new_user['id'], 'referrer_id'=>$referrer['id']]);
-            // Notifying referrer of referral activity via notification
-            $sql = "INSERT INTO notifications (user_id, message) VALUES (:user_id, :message)";
-            $query = query_db($sql, ['user_id'=>$referrer['id'], 'message'=> "User ($username) signed up using your referral ID recently"]);
-            // Notifying referrer of referral activity via email
-            $email_values = [
-                'name'=> $referrer['username'], 
-                'message'=> "Hello ".$referrer['username'].", this is to notify you of a sign up (user - $username) using your referral ID. Login into your account for more info."
-            ];
-            sendMail($referrer['email'], "Referral Activity", $email_values);
+        if (!is_null($referrer_id)) {
+            // Checking and retreiving user whose ref_id matches referrer_id
+            $referrer = query_fetch("SELECT * FROM users WHERE ref_id = '$referrer_id' LIMIT 1")[0];
+
+            if (!empty($referrer)) {
+                // If exists, save affiliation
+                $sql = "INSERT INTO affiliates (user_id, referrer_id) VALUES (:user_id, :referrer_id)";
+                $query = query_db($sql, ['user_id'=>$new_user_id, 'referrer_id'=>$referrer['id']]);
+                // Notifying referrer of referral activity via notification
+                notify_user($referrer['id'], "User (".$data['firstname']." ".$data['lastname'].") signed up using your referral ID recently");
+                // Notifying referrer of referral activity via email
+                $email_values = [
+                    'name'=> $referrer['firstname']." ".$referrer['lastname'], 
+                    'message'=> "Hello ".$referrer['firstname'].", this is to notify you of a sign up (user: ".$data['firstname']." ".$data['lastname'].") using your referral ID. Login into your account for more info."
+                ];
+                sendMail($referrer['email'], "Referral Activity", $email_values);
+            }
+
         }
-        // Redirecting user to login page
-        redirect('login', "You were successfully registered", 'success');
+        echo json_encode(['status'=>"success", 'message'=>"You were successfully registered"]);
+        die();
     } catch(Exception $e) {
-        redirect('register', "Registeration failed: $e", 'danger');
+        echo json_encode(['status'=>"failed", 'message'=>"Registeration failed: $e"]);
+        die();
     }
 
 }

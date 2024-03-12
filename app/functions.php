@@ -77,7 +77,8 @@ function user_logged_in() {
         // Redirect if no user found or user is blocked
         redirect(ROOT."/login", "Please sign in", "danger");
     }
-    return $user;
+    // returning user connected to other required models
+    return fetch_user($user['id']);
 }
 
 
@@ -200,6 +201,37 @@ function format_date($date) {
 // FUNCTION TO FORMAT DATETIME
 function format_datetime($date) {
     return date("d M, Y  H:i A", strtotime($date));
+}
+
+// FUNCTION TO CONVERT DATETIME TO USER TIMEZONE
+function format_datetime_timezone($datetime, $timezone) {
+    // Create a DateTime object with the transaction timestamp
+    $datetime = new DateTime($datetime);
+
+    // Set the timezone to the user's timezone
+    $datetime->setTimezone(new DateTimeZone($timezone));
+
+    // Format the datetime as per your requirements
+    $datetime = $datetime->format('d M, Y  H:i A'); // 'Y-m-d H:i:s'
+
+    echo $datetime;
+}
+
+// FUNCTION TO CONVERT DATE TO TIMESINCE FORMAT
+function format_datetime_timesince($datetime) {
+    // Create a DateTime object for the given datetime
+    $datetime = new DateTime($datetime);
+
+    // Get the current datetime
+    $current_datetime = new DateTime();
+
+    // Calculate the difference between the current datetime and the given datetime
+    $interval = $current_datetime->diff($datetime);
+
+    // Format the difference as per your requirements
+    $time_since_now = $interval->format('%d days, %h hours, %i minutes');
+
+    echo $time_since_now;
 }
 
 // FUNCTION TO GENERATE UNIQUE ID
@@ -601,9 +633,16 @@ function fetch_user(int $id) {
 
     if (!empty($matched_users)) {
         $user = $matched_users[0];
+        $user_kyc = query_fetch("SELECT * FROM kycs WHERE user_id = $id LIMIT 1")[0];
+        $user_virtual_card = query_fetch("SELECT * FROM virtual_cards WHERE user_id = $id LIMIT 1")[0];
+
         // Appending extra user details
         $user += [
-            'fullname'=>$matched_users[0]['firstname']." ".$matched_users[0]['lastname']
+            'fullname'=> $matched_users[0]['firstname']." ".$matched_users[0]['lastname'],
+            'is_verified'=> ($user_kyc['status']=="approved") ? true : false,
+            'has_active_card'=> ($user_virtual_card['status']=="active") ? true : false,
+            'kyc'=> $user_kyc,
+            'virtual_card'=> $user_virtual_card
         ];
         return $user;
     }
@@ -617,7 +656,7 @@ function fetch_image($image, $folder) {
 
     if ($image == null || !file_exists(APP_PATH . "media/$image_path")) {
         // If file does not exist or null
-        return STATIC_ROOT . "/no_image.png";
+        return STATIC_ROOT . "/dashboard/img/image_placeholder.png";
     } else {
         return MEDIA_ROOT . "/$image_path";
     }
@@ -651,6 +690,17 @@ function check_new(string $date) {
     return false;
 }
 
+// FUNCTION TO NOTIFY USERS
+function notify_user(int $user_id, String $message) {
+    try {
+        $query = "INSERT INTO notifications (user_id, message) VALUES (:user_id, :message)";
+        query_db($query, ['user_id'=> $user_id, 'message'=> $message]);
+        return true;
+    } catch(Exception) {
+        return false;
+    }
+}
+
 // FUNCTION TO DELETE OLD USER NOTIFICATIONS
 function delete_old_notifications(int $user_id) {
     $notifications = query_fetch("SELECT * FROM notifications WHERE user_id = $user_id");
@@ -669,7 +719,7 @@ function delete_old_notifications(int $user_id) {
     }
 }
 
-// Function to check card expiry
+// FUNCTION TO CHECK AND RESET VIRTUAL CARDS
 function check_card_expiry($user_id) {
     $today = new DateTime('now', new DateTimeZone('UTC'));
     $today = $today->format('Y-m-d');
@@ -694,60 +744,82 @@ function check_card_expiry($user_id) {
     }
 }
 
-function generate_account_number() {
-    $number = '';
-    for ($x = 0; $x < 10; $x++) {
-        $i = strval(rand(0, 9));
-        $number .= $i;
-    }
-    return $number;
-}
-
-function generate_OTP() {
-    $otp = '';
-    for ($x = 0; $x < 4; $x++) {
-        $i = strval(rand(0, 9));
-        $otp .= $i;
-    }
-    return $otp;
-}
-
-function generate_session_ID() {
-    $session_id = '';
-    for ($x = 0; $x < 24; $x++) {
-        $i = strval(rand(0, 9));
-        $session_id .= $i;
-    }
-    return $session_id;
-}
-
-function generate_transaction_number() {
-    $transaction_number = '';
-    for ($x = 0; $x < 12; $x++) {
-        $i = strval(rand(0, 9));
-        $transaction_number .= $i;
-    }
-    return $transaction_number;
-}
-
-function generate_virtual_card_number() {
+// FUNCTION TO GENERATE NUMBER STRINGS
+function generate_number_string(int $length) {
     $num = '';
-    for ($x = 0; $x < 20; $x++) {
-        if ($x % 5 == 0) {
-            $i = " ";
-        } else {
-            $i = strval(rand(0, 9));
-        }
+    for ($x = 0; $x < $length; $x++) {
+        $i = strval(rand(0, 9));
         $num .= $i;
     }
     return $num;
 }
 
-function generate_CVV() {
-    $otp = '';
-    for ($x = 0; $x < 3; $x++) {
-        $i = strval(rand(0, 9));
-        $otp .= $i;
+// FUNCTION TO GENERATE ACCOUNT NUMBER
+function generate_account_number() {
+    // Making DB connection
+    try {
+        $conn = mysqli_connect(DBHOST, DBUSER, DBPASS, DBNAME);
+    } catch (mysqli_sql_exception) {
+        echo "Database Connection Error: " . mysqli_connect_error() . "<br><br>";
     }
-    return $otp;
+    // Regenerating account number until we get one not connected to a user
+    do {
+        $account_number = '644'.generate_number_string(7);
+        // Check if this account number already exist
+        $query = "select * from users where account_number = '$account_number' limit 1";
+        $result = mysqli_query($conn, $query);
+        // number of results gotten from query
+        $results = mysqli_num_rows($result);
+    } while ($results > 0);
+
+    return $account_number;
+}
+
+// FUNCTION TO GENERATE VIRTUAL CARD NUMBERS
+function generate_virtual_card_number() {
+    // Making DB connection
+    try {
+        $conn = mysqli_connect(DBHOST, DBUSER, DBPASS, DBNAME);
+    } catch (mysqli_sql_exception) {
+        echo "Database Connection Error: " . mysqli_connect_error() . "<br><br>";
+    }
+    // Regenerating card number until we get one not connected to a user
+    do {
+        $card_num = '';
+        for ($x = 0; $x < 20; $x++) {
+            if ($x % 5 == 0) {
+                $i = " ";
+            } else {
+                $i = strval(rand(0, 9));
+            }
+            $card_num .= $i;
+        }
+        // Check if this account number already exist
+        $query = "select * from virtual_cards where card_number = '$card_num' limit 1";
+        $result = mysqli_query($conn, $query);
+        // number of results gotten from query
+        $results = mysqli_num_rows($result);
+    } while ($results > 0);
+
+    return $card_num;
+}
+
+// FUNCTION TO GENERATE OTP FOR TRANSACTIONS
+function generate_OTP() {
+    return generate_number_string(4);
+}
+
+// FUNCTION TO GENERATE SESSION IDS FOR TRANSACTIONS
+function generate_session_ID() {
+    return generate_number_string(24);
+}
+
+// FUNCTION TO GENERATE TRANSACTION NUMBERS
+function generate_transaction_number() {
+    return generate_number_string(12);
+}
+
+// FUNCTION TO GENERATE VIRTUAL CARD CVV
+function generate_CVV() {
+    return generate_number_string(3);
 }

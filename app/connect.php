@@ -84,7 +84,6 @@ function create_tables() {
         email varchar(60) null,
         phone varchar(60) null,
         address varchar(100) null,
-        currency varchar(1) not null default '$',
         interest_rate decimal(3,1) unsigned not null default 0.1,
         bitcoin_address varchar(200) null,
         usdt_address varchar(200) null,
@@ -114,10 +113,12 @@ function create_tables() {
         lastname varchar(30) not null,
         email varchar(60) not null,
         phone varchar(30) null,
+        address varchar(160) null,
         country varchar(60) null,
         timezone varchar(60) null,
         account_type varchar(60) not null default 'savings',
         account_number varchar(10) not null,
+        currency varchar(1) not null default '$',
         balance decimal(20,2) unsigned not null default 0,
         overdraft decimal(20,2) unsigned not null default 0,
         pin varchar(4) null,
@@ -190,15 +191,15 @@ function create_tables() {
 
         id int primary key auto_increment,
         user_id int not null,
-        card_type varchar(10) null default 'mastercard',
+        card_type varchar(10) null,
         card_name varchar(100) null,
-        card_number varchar(16) null,
+        card_number varchar(19) null,
         cvv varchar(3) null,
         card_pin varchar(4) null,
         approved_date date null,
         expiry_date date null,
         valid_till varchar(5) null,
-        
+        status varchar(8) null,
 
         key card_name (card_name),
         key card_number (card_number),
@@ -217,6 +218,7 @@ function create_tables() {
     $query = "create table if not exists payments(
 
         id int primary key auto_increment,
+        payment_id varchar(12) not null,
         user_id int not null,
         amount decimal(12, 2) not null,
         purpose varchar(10) not null default 'funding',
@@ -246,8 +248,8 @@ function create_tables() {
         description varchar(12) null default 'transfer',
         amount decimal(12, 2) not null,
         remark text(2050) null,
-        session_id varchar(24) null,
-        transaction_number varchar(24) null,
+        session_id varchar(12) null,
+        transaction_id varchar(12) null,
         status varchar(10) not null default 'pending',
         date datetime default current_timestamp
 

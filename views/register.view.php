@@ -33,7 +33,6 @@
               <div class="card-body">
                 <form method="POST" name="register-form">
                   <input type="hidden" name="csrf_token" value="<?=$_SESSION['csrf_token']; ?>">
-                  <input type="hidden" name="timezone" value="">
                   <div class="row">
                     <div class="form-group col-6">
                       <label>First Name</label>
@@ -369,9 +368,10 @@
                       <label class="custom-control-label" for="agree">I agree with the terms and conditions</label>
                     </div>
                   </div>
+                  <div class="text-center my-3 message"></div>
                   <div class="form-group">
                     <button type="submit" class="btn btn-primary btn-lg btn-block">
-                      Register
+                        <span class="btn-text">Register</span>
                     </button>
                   </div>
                 </form>
@@ -393,8 +393,7 @@
                 <small>Now..</small>
                 <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
             </div>
-            <div class="toast-body" style="background-color:red;">
-                
+            <div class="toast-body" style="background-color:red;"> 
             </div>
         </div>
     </div>
@@ -415,41 +414,48 @@
   <!-- InPage script -->
   <script>
     let registerForm = document.forms['register-form'],
-    firstName = registerForm['firstname'].value,
-    lastName = registerForm['lastname'].value,
-    email = registerForm['email'].value,
-    phone = registerForm['phone'].value,
-    address = registerForm['address'].value,
-    country = registerForm['country'].value,
-    accType = registerForm['acc-type'].value,
-    currency = registerForm['currency'].value,
-    password1 = registerForm['password'].value,
-    password2 = registerForm['password-confirm'].value,
-    regBtn = registerForm.querySelector('.btn'),
+    msgBox = document.querySelector('.message'),
     errorToast = document.querySelector('#ErrorToast'),
     toastBody = errorToast.querySelector('.toast-body');
 
     registerForm.addEventListener('submit', (e)=>{
         e.preventDefault()
 
-        if(firstName=="" || lastName=="" ||  email=="" ||  address=="" || country=="" || phone=="" || accType=="" || currency=="" || password1=="" || password2==""){
+        let data = {
+            'firstname': registerForm['firstname'].value,
+            'lastname': registerForm['lastname'].value,
+            'email': registerForm['email'].value,
+            'phone': registerForm['phone'].value,
+            'address': registerForm['address'].value,
+            'country': registerForm['country'].value,
+            'timezone': Intl.DateTimeFormat().resolvedOptions().timeZone,
+            'account_type': registerForm['acc-type'].value,
+            'currency': registerForm['currency'].value,
+            'password1': registerForm['password'].value,
+            'password2': registerForm['password-confirm'].value,
+            'csrf_token': registerForm['csrf_token'].value,
+            'referrer_id': localStorage.getItem('referrer_id')
+        }, regBtn = registerForm.querySelector('.btn');
+
+        if(data['firstname']=="" || data['lastname']=="" ||  data['email']=="" ||  data['address']=="" || data['country']=="" || data['phone']=="" || data['account_type']=="" || data['currency']=="" || data['password1']=="" || data['password2']==""){
             displayErrorMessage('Enter all field');
         }
 
-        if(password1 != password2) {
+        if(data['password1'] != data['password2']) {
             displayErrorMessage('Password does not match !');
         }
 
-        if(password.length<5 || password2.length<5) {
+        if(data['password1'].length<5 || data['password2'].length<5) {
             displayErrorMessage('Enter A Stronger Password !');
         }
 
         // Loading animation
         let btnText = regBtn.querySelector('.btn-text');
-        btnText.innerHTML = `Sending...<img width='30px' src="<?=STATIC_ROOT; ?>/dashboard/img/spinner-white.svg">`;
+        btnText.innerHTML = `Submitting data...<img width='30px' src="<?=STATIC_ROOT; ?>/dashboard/img/spinner-white.svg">`;
         regBtn.disabled = true;
+        console.log(data);
 
-        fetch(url, {
+        fetch(window.location.href, {
             method: "POST",
             headers: {
                 'Content-Type': 'application/json',
@@ -461,23 +467,29 @@
         })
         .then((data)=>{
             console.log(data);
-            if (data == 'success') {
+            if (data['status'] == 'success') {
                 btnText.innerHTML = `Success`;
+                msgBox.classList.add('text-success');
+                msgBox.innerText = `Registeration successful`;
                 registerForm.reset();
                 setTimeout(()=>{
-                    window.location.href = "account/dashboard"
+                    window.location.href = "login"
                 }, 2000)
             } else {
                 btnText.innerHTML = `Register`;
                 regBtn.disabled = false;
-                alert("Service not available at the moment");
+                msgBox.classList.add('text-danger');
+                msgBox.innerText = data['message'];
+                swal(`An error occured`, data['message'], 'error');
             }
         })
         .catch((err)=>{
             console.log(err);
             btnText.innerHTML = `Register`;
             regBtn.disabled = false;
-            alert("Service not available at the moment");
+            msgBox.classList.add('text-danger');
+            msgBox.innerText = `An error occured`;
+            swal('The Internet?','Check network connection!','error');
         })
     })
   </script>
