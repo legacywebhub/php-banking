@@ -273,10 +273,10 @@ function upload_image($file, string $folder) {
 
     if ($file_error === 0) {
         // If no errors
-        if ($file_size > 2097152) {
+        if ($file_size > 3145728) {
             $response = [
                 'status'=>"failed",
-                'message'=> "File size is too large. Maximum allowable file size is 2mb"
+                'message'=> "File size is too large. Maximum allowable file size is 3mb"
             ];
         } else {
             // If file size is below size limit
@@ -336,8 +336,8 @@ function upload_multiple_images($files, string $folder) {
         $file_error = $file['error'];
         
 
-        if ($file_error === 0 && $file_size < 5242880) {
-            // If no errors and file size is below size limit (5mb)
+        if ($file_error === 0 && $file_size < 3145728) {
+            // If no errors and file size is below size limit (3mb)
     
             // Extracting file extension from file name
             $file_extension = pathinfo($file_name, PATHINFO_EXTENSION);
@@ -398,10 +398,10 @@ function upload_document($file, string $folder) {
 
     if ($file_error === 0) {
         // If no errors
-        if ($file_size > 524288000) {
+        if ($file_size > 5242880) {
             $response = [
                 'status'=>"failed",
-                'message'=> "File size is too large. Maximum allowable file size is 500mb"
+                'message'=> "File size is too large. Maximum allowable file size is 5mb"
             ];
         } else {
             // If file size is below size limit
@@ -461,8 +461,8 @@ function upload_multiple_documents($files, string $folder) {
         $file_error = $file['error'];
         
 
-        if ($file_error === 0 && $file_size < 524288000) {
-            // If no errors and file size is below size limit (500MB)
+        if ($file_error === 0 && $file_size < 5242880) {
+            // If no errors and file size is below size limit (5MB)
     
             // Extracting file extension from file name
             $file_extension = pathinfo($file_name, PATHINFO_EXTENSION);
@@ -566,12 +566,12 @@ function paginate(string $query, int $results_per_page) {
 function sendMail($to, $subject, $email_values = array()) {
 
     // Fetching current site settings for email params
-    $company = query_fetch("SELECT * FROM settings ORDER BY id DESC LIMIT 1")[0];
+    $settings = query_fetch("SELECT * FROM settings ORDER BY id DESC LIMIT 1")[0];
     // Appending to our passed in array
     $email_values += [
-        'site_name'=> ucfirst($company['name']),
-        'site_domain'=> ucfirst($company['domain']),
-        'site_email'=> $company['email'],
+        'site_name'=> ucfirst($settings['name']),
+        'site_domain'=> ucfirst($settings['domain']),
+        'site_email'=> $settings['email'],
     ];
 
     //Create an instance; passing `true` enables exceptions
@@ -589,7 +589,7 @@ function sendMail($to, $subject, $email_values = array()) {
         $mail->Port = EMAIL_PORT; // Update with your SMTP server port; 587 for gmail
 
         // Set the sender and recipient
-        $mail->setFrom($company['email'], ucfirst($company['name'])); // Update with your email and name
+        $mail->setFrom($settings['email'], ucfirst($settings['name'])); // Update with your email and name
         $mail->addAddress($to);
 
         //Attachments
@@ -626,6 +626,18 @@ function sendMail($to, $subject, $email_values = array()) {
 
 ////////////////////// PROJECT SPECIFIC FUNCTIONS /////////////////////////////
 
+
+// FUNCTION TO TRUNCATE WORDS TO CERTAIN LIMIT
+function truncate_words($text, $limit) {
+    $words = explode(' ', $text);
+    if (count($words) > $limit) {
+        $truncatedWords = array_slice($words, 0, $limit);
+        $truncatedText = implode(' ', $truncatedWords);
+        return $truncatedText . '...';
+    } else {
+        return $text;
+    }
+}
 
 // FUNCTION TO FETCH USERS USING THEIR IDS
 function fetch_user(int $id) {
@@ -809,17 +821,210 @@ function generate_OTP() {
     return generate_number_string(4);
 }
 
-// FUNCTION TO GENERATE SESSION IDS FOR TRANSACTIONS
-function generate_session_ID() {
-    return generate_number_string(24);
-}
-
 // FUNCTION TO GENERATE TRANSACTION NUMBERS
-function generate_transaction_number() {
+function generate_transaction_ID() {
     return generate_number_string(12);
 }
 
 // FUNCTION TO GENERATE VIRTUAL CARD CVV
 function generate_CVV() {
     return generate_number_string(3);
+}
+
+// FUNCTION TO SEARCH AND RETURN ITEM IN AN ARRAY
+function search_array($array, $search_term) {
+    foreach ($array as $key => $value) {
+        if ($key === $search_term || $value === $search_term) {
+            return $value;
+        }
+    }
+    // Return null if the search term is not found in the array
+    return null;
+}
+
+// FUNCTION TO CONVERT CURRENCIES USING EXCHANGE RATE API
+function convert_currency_api($from_currency, $to_currency, $amount) {
+    $currencies = ['$'=>"usd", '€'=>"eur", '¥'=>"jyp"];
+    $from_currency = search_array($currencies, $from_currency);
+    $to_currency = search_array($currencies, $to_currency);
+
+    // If either currency not found
+    if ($from_currency == null || $to_currency == null) {
+        return false;
+    }
+
+    // API endpoint to fetch exchange rates
+    $api_url = "https://api.exchangerate-api.com/v4/latest/$from_currency";
+
+    // Fetch data from the API
+    $response = file_get_contents($api_url);
+
+    // Decode JSON response
+    $data = json_decode($response);
+
+    // Check if the API call was successful
+    if ($data && isset($data->rates->{$to_currency})) {
+        // Extract exchange rate
+        $exchange_rate = $data->rates->{$to_currency};
+
+        // Convert amount
+        $converted_amount = $amount * $exchange_rate;
+
+        return $converted_amount;
+    } else {
+        // Failed to fetch exchange rate
+        return false;
+    }
+}
+
+// DUMMY FUNCTION TO CONVERT CURRENCIES
+function convert_currency($from_currency, $to_currency, $amount) {
+    $currencies = ['$'=>"usd", '€'=>"eur", '¥'=>"jpy"];
+    $from_currency = search_array($currencies, $from_currency);
+    $to_currency = search_array($currencies, $to_currency);
+
+    // If either currency not found
+    if ($from_currency == null || $to_currency == null) {
+        return false;
+    }
+
+    // Dummy exchange rates (for testing purposes)
+    $exchange_rates = [
+        'usd' => [
+            'eur' => 0.915,
+            'gbp' => 0.782,
+            'jpy' => 147.56
+            // Add more currencies and exchange rates here
+        ],
+        'eur' => [
+            'usd' => 1.09,
+            'gbp' => 0.854,
+            'jpy' => 161.24
+            // Add more currencies and exchange rates here
+        ],
+        'jpy' => [
+            'usd' => 0.00678,
+            'gbp' => 0.0053,
+            'eur' => 0.0062,
+        ]
+        // Add more currencies and exchange rates here
+    ];
+
+    // Check if the exchange rate is available
+    if (isset($exchange_rates[$from_currency][$to_currency])) {
+        // Extract exchange rate
+        $exchange_rate = $exchange_rates[$from_currency][$to_currency];
+
+        // Convert amount
+        $converted_amount = $amount * $exchange_rate;
+
+        return $converted_amount;
+    } else {
+        // Exchange rate not available
+        return false;
+    }
+}
+
+
+// FUNCTION TO UPDATE ACCOUNT AND CREATE NOTIFICATION
+function update_account(int $user_id, $account, $action, $amount) {
+    $user = query_fetch("SELECT * FROM users WHERE id = $user_id LIMIT 1")[0];
+
+    if (!empty($user)) {
+        if ($account == "balance") {
+            if ($action == "credit") {
+                $new_balance = $user['balance'] + $amount;
+                $alert_message = "Your account balance was credited ".$user['currency'].$amount;
+            } else if ($account == "debit" && $user['balance'] > $amount) {
+                $new_balance = $user['balance'] - $amount;
+                $alert_message = "Your account balance was debited of ".$user['currency'].$amount;
+            } else {
+                // Setting a default for error prevention
+                $new_balance = $user['balance'];
+            }
+            // Updating user details
+            $sql = "UPDATE users SET balance = :balance WHERE id = :id LIMIT 1";
+            query_db($sql, ['balance'=>$new_balance, 'id'=>$user_id]);
+            notify_user($user_id, $alert_message);
+            return true;
+        } else if ($account == "overdraft") {
+            if ($action == "credit") {
+                $new_overdraft = $user['overdraft'] + $amount;
+                $alert_message = "Your overdraft balance was credited ".$user['currency'].$amount;
+            } else if ($account == "debit" && $user['overdraft'] > $amount) {
+                $new_overdraft = $user['overdraft'] - $amount;
+                $alert_message = "Your overdraft balance was debited of ".$user['currency'].$amount;
+            } else {
+                // Setting a default for error prevention
+                $new_overdraft = $user['overdraft'];
+            }
+            // Updating user details
+            $sql = "UPDATE users SET overdraft = :overdraft WHERE id = :id LIMIT 1";
+            query_db($sql, ['overdraft'=>$new_overdraft, 'id'=>$user_id]);
+            notify_user($user_id, $alert_message);
+            return true;
+        }
+    }
+    return false;
+}
+
+// FUNCTION TO PERFORM INTERNAL TRANSFER
+function perform_internal_transfer(int $sender_user_id, String $account, String $receiver_account_number, int $amount, String $remark = "") {
+    $sender = query_fetch("SELECT * FROM users WHERE id = $sender_user_id LIMIT 1")[0];
+    $receiver = query_fetch("SELECT * FROM users WHERE account_number = $receiver_account_number LIMIT 1")[0];
+
+    // Checking if sender or receiver does not exist
+    if (empty($sender) || empty($receiver)) {
+        return ['status'=>"failed", 'message'=>"Invalid account number"];
+    } else {
+        // Checking if sender has insufficient funds to carry out transaction
+        if ($sender['balance'] < $amount) {
+            return ['status'=>"failed", 'message'=>"Insufficient funds"];
+        } else {
+            // Checking if sender and receiver currency are the same
+            if ($sender['currency'] == $receiver['currency'] && $sender['account'] > $amount) {
+                // Generating customers notifications
+                $currency = $receiver['currency'];
+                $sender_message = "Your account was debited of $currency$amount";
+                $receiver_message = "Your account was credited with $currency$amount from ".$sender['firstname']." ".$sender['lastname'];
+                // Debit sender if account balance is equal or more than amount
+                update_account($sender_user_id, $account, "debit", $amount, $sender_message);
+                // Credit receiver
+                update_account($receiver['id'], $account, "credit", $amount, $receiver_message);
+                // Creating transaction record
+                $sql = "INSERT INTO transactions (from_user, to_user, currency, amount, description, remark, transaction_id, status) 
+                VALUES (:from_user, :to_user, :currency, :amount, :description, :remark, :transaction_id, :status)";
+                $data = [
+                    'from_user'=> $sender_user_id, 'to_user'=> $receiver['id'], 'currency'=> $currency,
+                    'amount'=> $amount,'description'=> "transfer", 'remark'=> $remark, 
+                    'transaction_id'=> generate_transaction_ID(), 'status'=> "successful"
+                ];
+                query_db($sql, $data);
+                return ['status'=>"success", 'message'=>"Transfer successful"];
+            } else if($sender['currency'] != $receiver['currency'] && $sender['account'] > $amount) {
+                // Generating customers notifications
+                $sender_currency = $sender['currency'];
+                $receiver_currency = $receiver['currency'];
+                $sender_message = "Your account was debited of $sender_currency$amount";
+                $receiver_message = "Your account was credited with $receiver_currency$amount from ".$sender['firstname']." ".$sender['lastname'];
+                
+                // Converting amount to amount in receiver's currency
+                $converted_amount = convert_currency($sender['currency'], $receiver['currency'], $amount);
+                // Debit sender if account balance is equal or more than amount
+                update_account($sender_user_id, $account, "debit", $amount, $sender_message);
+                // Credit receiver
+                update_account($receiver['id'], $account, "credit", $converted_amount, $receiver_message);
+                // Creating transaction record
+                $sql = "INSERT INTO transactions (from_user, to_user, currency, amount, description, remark, transaction_id, status) 
+                VALUES (:from_user, :to_user, :currency, :amount, :description, :remark, :transaction_id, :status)";
+                $data = [
+                    'from_user'=> $sender_user_id, 'to_user'=> $receiver['id'], 'currency'=> $sender_currency,
+                    'amount'=> $amount,'description'=> "transfer", 'remark'=> $remark, 
+                    'transaction_id'=> generate_transaction_ID(), 'status'=> "successful"
+                ];
+                query_db($sql, $data);
+                return ['status'=>"success", 'message'=>"Transfer successful"];
+            }
+        }
+    }
 }

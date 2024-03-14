@@ -93,7 +93,7 @@ if ($_SERVER["REQUEST_METHOD"]=="POST") {
             'name'=> $data['firstname']." ".$data['lastname'], 
             'message'=> "Welcome ".$data['firstname'].", your account was successfully created and you are now eligible to explore our ecosystem. Kindly login to get started!"
         ];
-        sendMail($email, "Registeration successful", $email_values);
+        sendMail($data['email'], "Registeration successful", $email_values);
         // Referral system
         if (!is_null($referrer_id)) {
             // Checking and retreiving user whose ref_id matches referrer_id

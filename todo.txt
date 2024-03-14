@@ -1,4 +1,0 @@
-# Fix bug of saving dates (DOB)
-# staff authorization
-
-I have a Transaction model which has a from_user field and a to_user field. A user can be any of both. Now I want a SQL query to fetch the last 5 transaction where a user id is contained in any of the fields

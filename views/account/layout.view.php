@@ -12,9 +12,36 @@
   <!-- Template CSS -->
   <link rel="stylesheet" href="<?=STATIC_ROOT; ?>/dashboard/css/style.css">
   <link rel="stylesheet" href="<?=STATIC_ROOT; ?>/dashboard/css/components.css">
+  <!-- Libraries CSS -->
+  <link rel="stylesheet" href="<?=STATIC_ROOT; ?>/dashboard/bundles/summernote/summernote-bs4.css">
+  <link rel="stylesheet" href="<?=STATIC_ROOT; ?>/dashboard/bundles/jquery-selectric/selectric.css">
+  <link rel="stylesheet" href="<?=STATIC_ROOT; ?>/dashboard/bundles/bootstrap-tagsinput/dist/bootstrap-tagsinput.css">
   <!-- Custom style CSS -->
   <link rel="stylesheet" href="<?=STATIC_ROOT; ?>/dashboard/css/custom.css">
   <link rel='shortcut icon' type='image/x-icon' href="<?=STATIC_ROOT; ?>/dashboard/img/favicon.ico" />
+  <!-- InPage style CSS -->
+  <style>
+    .text-capitalize {
+      text-transform: capitalize;
+    }
+    .balance-container {
+        margin: 40px 0px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    .balance-box {
+        margin: 0px 50px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    .pagination-container {
+      display: flex;
+      justify-content:center;
+      align-items: center;
+    }
+  </style>
 </head>
 
 <body>
@@ -47,8 +74,9 @@
                   <a href="#">Mark All As Read</a>
                 </div>
               </div>
+              <?php if($context['recent_notifications']): ?>
               <div class="dropdown-list-content dropdown-list-icons">
-                <?php foreach($context['notifications'] as $notification): ?>
+                <?php foreach($context['recent_notifications'] as $notification): ?>
                 <a href="#" class="dropdown-item dropdown-item-unread">
                   <span class="dropdown-item-icon bg-primary text-white">
                     <i class="fas fa-envelope-square"></i>
@@ -59,14 +87,21 @@
                 </a>
                 <?php endforeach ?>
               </div>
+              <?php endif ?>
               <div class="dropdown-footer text-center">
                 <a href="notifications">View All <i class="fas fa-chevron-right"></i></a>
               </div>
             </div>
           </li>
-          <li class="dropdown"><a href="#" data-toggle="dropdown"
-              class="nav-link dropdown-toggle nav-link-lg nav-link-user"> <img alt="image" src="<?=STATIC_ROOT; ?>/dashboard/img/default.png"
-                class="user-img-radious-style"> <span class="d-sm-none d-lg-inline-block"></span></a>
+          <li class="dropdown">
+            <a href="#" data-toggle="dropdown" class="nav-link dropdown-toggle nav-link-lg nav-link-user"> 
+            <?php if($context['user']['is_verified']): ?>
+            <img alt="image" src="<?=MEDIA_ROOT; ?>/images/users/<?=$context['user']['kyc']['passport']; ?>" class="user-img-radious-style">
+            <?php else: ?>
+            <img alt="image" src="<?=STATIC_ROOT; ?>/dashboard/img/default_user.png" class="user-img-radious-style">
+            <?php endif ?>
+            <span class="d-sm-none d-lg-inline-block"></span>
+            </a>
             <div class="dropdown-menu dropdown-menu-right pullDown">
               <div class="dropdown-title"><?=$context['user']['fullname']; ?></div>
               <a href="profile" class="dropdown-item has-icon"> <i class="far fa-user"></i> 
@@ -134,7 +169,7 @@
                   data-feather="settings"></i><span>Account Settings</span></a>
               <ul class="dropdown-menu">
                 <li><a class="nav-link" href="change-pin">Change Pin</a></li>
-                <li><a class="nav-link" href="#">Update Password</a></li>
+                <li><a class="nav-link" href="update-password">Update Password</a></li>
               </ul>
             </li>
             <li class="dropdown">
@@ -254,72 +289,102 @@
       </footer>
     </div>
   </div>
+
   <!-- General JS Scripts -->
   <script src="<?=STATIC_ROOT; ?>/dashboard/js/app.min.js"></script>
+  <!-- JS Libraies -->
+  <script src="<?=STATIC_ROOT; ?>/dashboard/bundles/summernote/summernote-bs4.js"></script>
+  <script src="<?=STATIC_ROOT; ?>/dashboard/bundles/jquery-selectric/jquery.selectric.min.js"></script>
+  <script src="<?=STATIC_ROOT; ?>/dashboard/bundles/upload-preview/jquery.uploadPreview.min.js"></script>
+  <script src="<?=STATIC_ROOT; ?>/dashboard/bundles/bootstrap-tagsinput/dist/bootstrap-tagsinput.min.js"></script>
+  <script src="<?=STATIC_ROOT; ?>/dashboard/bundles/sweetalert/sweetalert.min.js"></script>
   <!-- Page Specific JS File -->
   <script src="<?=STATIC_ROOT; ?>/dashboard/js/page/index.js"></script>
+  <script src="<?=STATIC_ROOT; ?>/dashboard/js/page/create-post.js"></script>
   <!-- Template JS File -->
   <script src="<?=STATIC_ROOT; ?>/dashboard/js/scripts.js"></script>
   <!-- Custom JS File -->
   <script src="<?=STATIC_ROOT; ?>/dashboard/js/custom.js"></script>
-  <!-- Sweet Alert -->
-  <script src="<?=STATIC_ROOT; ?>/dashboard/bundles/sweetalert/sweetalert.min.js"></script>
   <!-- InPage Js -->
     <script>
-        // This functions enforce input fields to only accept number keystrokes
-        function onlyNumberKey(evt) {
-            // Only ASCII character in that range allowed
-            var ASCIICode = (evt.which) ? evt.which : evt.keyCode
-            if (ASCIICode > 31 && (ASCIICode < 48 || ASCIICode > 57)) {
-                return false; 
-            } else {
-                return true;
-            }
-            // use  onkeypress="return onlyNumberKey(event)" on the input field
-        }
+      function displayMessageElement(element, messageType, message = "") {
+        // Get all the classes of the element
+        let classes = element.className.split(" ");
+
+        // Filter out classes that start with 'text-'
+        classes = classes.filter(c => !c.startsWith('text-'));
+
+        // Join the filtered classes back and add the new class
+        element.className = classes.join(" ") + " " + `text-${messageType}`;
+
+        // Adding message to element
+        element.innerText = message;
+
+        setTimeout(()=>{
+          // Hide message element after given time
+          element.innerText = "";
+        }, 5000); 
+
+        // Example usage: Assuming you have an element with the id 'message'
+        // displayMessageElement(document.getElementById('message'), 'success', 'Hello world');
+      }
     </script>
 
     <script>
-        // This functions enforce input fields to only accept alphabet keystrokes
-        function onlyAlphabeticalKey(evt) {
-            // Only ASCII character in that range allowed
-            var ASCIICode = (evt.which) ? evt.which : evt.keyCode;
-            if ((ASCIICode >= 65 && ASCIICode <= 90) || (ASCIICode >= 97 && ASCIICode <= 122)) {
-                return true; // Allow alphabetical characters
-            } else {
-                return false; // Block other characters
-            }
-            // Use onkeypress="return onlyAlphabeticalKey(event)" on the input field
+      // This functions enforce input fields to only accept number keystrokes
+      function onlyNumberKey(evt) {
+        // Only ASCII character in that range allowed
+        var ASCIICode = (evt.which) ? evt.which : evt.keyCode
+        if (ASCIICode > 31 && (ASCIICode < 48 || ASCIICode > 57)) {
+            return false; 
+        } else {
+            return true;
         }
+        // use onkeypress="return onlyNumberKey(event)" on the input field
+      }
+    </script>
+
+    <script>
+      // This functions enforce input fields to only accept alphabet keystrokes
+      function onlyAlphabeticalKey(evt) {
+        // Only ASCII character in that range allowed
+        var ASCIICode = (evt.which) ? evt.which : evt.keyCode;
+        if ((ASCIICode >= 65 && ASCIICode <= 90) || (ASCIICode >= 97 && ASCIICode <= 122)) {
+            return true; // Allow alphabetical characters
+        } else {
+            return false; // Block other characters
+        }
+        // Use onkeypress="return onlyAlphabeticalKey(event)" on the input field
+      }
     </script>
 
     <script>
     // Copy texts js
     function copyText(arg) {
-        console.log('clicked a button');
-        // Get the input or text field
-        //var copyText = document.getElementById("myInput");
+      console.log('clicked a button');
+      // Get the input or text field
+      //var copyText = document.getElementById("myInput");
 
-        // Select the text field
-        arg.select();
-        arg.setSelectionRange(0, 99999); // For mobile devices
+      // Select the text field
+      arg.select();
+      arg.setSelectionRange(0, 99999); // For mobile devices
 
-        // Copy the text inside the text field
-        navigator.clipboard.writeText(arg.value).then(()=>{
-            // Alert the copied text
-            alert("Copied");
-        }).catch(()=>{
-            // Alert the copied text
-            alert("Something went wrong");
-        });
+      // Copy the text inside the text field
+      navigator.clipboard.writeText(arg.value).then(()=>{
+          // Alert the copied text
+          alert("Copied");
+      }).catch(()=>{
+          // Alert the copied text
+          alert("Something went wrong");
+      });
     }
     </script>
 
-      <!-- Security js-->
+    <!-- Security js-->
     <script>
-        if (window.history.replaceState){
+      if (window.history.replaceState){
         window.history.replaceState(null, null, window.location.href);
-        }
+      }
     </script>
 </body>
 

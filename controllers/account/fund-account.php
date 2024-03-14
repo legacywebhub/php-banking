@@ -9,7 +9,7 @@ $setting = query_fetch("SELECT * FROM settings ORDER BY id DESC LIMIT 1")[0];
 $title = ucfirst($setting['name'])." | Fund Account";
 $recent_notifications = query_fetch("SELECT * FROM notifications WHERE user_id = $user_id ORDER BY id DESC LIMIT 0,10");
 
-// Handling register request
+// Handling fund account request
 if ($_SERVER["REQUEST_METHOD"]=="POST") {
     // Get JSON data from the request body
     $json_data = file_get_contents("php://input");

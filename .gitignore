@@ -1,0 +1,14 @@
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Others
+media/images/users
+media/documents/
+todo.txt
+test.php

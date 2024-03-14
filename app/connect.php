@@ -226,14 +226,16 @@ function create_tables() {
         proof varchar(255) null,
         remark text(2050) null,
         status varchar(10) not null default 'pending',
-        date datetime default current_timestamp
+        date datetime default current_timestamp,
+
+        key payment_id (payment_id),
+        unique (payment_id)
     )";
     $statement = $con->prepare($query);
     $statement->execute();
 
 
     // Transactions table
-    // Transaction type - debit, credit
     // Description - transfer, deposit, withdrawal, purchase, loan
     // Status - pending, successful, failed
     /*
@@ -245,14 +247,16 @@ function create_tables() {
         id int primary key auto_increment,
         from_user int not null,
         to_user int not null,
-        description varchar(12) null default 'transfer',
+        currency varchar(1) not null,
         amount decimal(12, 2) not null,
+        description varchar(12) null default 'transfer',
         remark text(2050) null,
-        session_id varchar(12) null,
         transaction_id varchar(12) null,
         status varchar(10) not null default 'pending',
-        date datetime default current_timestamp
+        date datetime default current_timestamp,
 
+        key transaction_id (transaction_id),
+        unique (transaction_id)
     )";
     $statement = $con->prepare($query);
     $statement->execute();
@@ -261,21 +265,28 @@ function create_tables() {
     // Loans table
     // Approved date - This is the approved date of loan
     // End date - This field is calculated and depends on approved date and duration of loan
+    // Status - pending, active, closed, declined
     $query = "create table if not exists loans(
 
         id int primary key auto_increment,
+        loan_id varchar(12) null,
         user_id int not null,
-        user_monthly_income int null,
+        currency varchar(1) not null,
         amount decimal(12, 2) not null default 0,
         duration_in_months int not null,
         remark text(2050) null,
         interest decimal(12, 2) null default 0,
         monthly_returns decimal(12, 2) null default 0,
         total_returns decimal(12, 2) null default 0,
+        user_monthly_income int null,
+        date datetime default current_timestamp,
         approved_date datetime null,
         end_date datetime null,
-        last_payment_date datetime null
+        last_payment_date datetime null,
+        status varchar(8) not null default 'pending',
 
+        key loan_id (loan_id),
+        unique (loan_id)
     )";
     $statement = $con->prepare($query);
     $statement->execute();

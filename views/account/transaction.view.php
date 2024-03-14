@@ -1,17 +1,3 @@
-{% extends 'dashboard/base.html' %}
-{% load static %}
-{% load tz %}
-
-{% block title %}
-<title>Transaction Details</title>
-{% endblock %}
-
-{% block style %}
-<style>
-</style>
-{% endblock %}
-
-{% block content %}
 <div class="card-details mt-5">
     <div class="col-md-9 col-lg-9">
         <div class="card">
@@ -25,11 +11,11 @@
                     Transaction Type
                 </span>
                 <span class="float-right text-muted">
-                    {% if transaction.from_user == request.user %}
+                    <?php if ($context['transaction']['from_user']==$context['user']['id']): ?>
                     Debit
-                    {% elif transaction.to_user == request.user %}
+                    <?php elseif ($context['transaction']['to_user']==$context['user']['id']): ?>
                     Credit
-                    {% endif %}
+                    <?php endif ?>
                 </span>
                 </p>
                 <p class="clearfix">
@@ -37,16 +23,16 @@
                     Description
                 </span>
                 <span class="float-right text-muted">
-                    {{transaction.get_description_display}}
+                    <?=ucfirst($context['transaction']['description']); ?>
                 </span>
                 </p>
-                {% if transaction.description == 'transfer' %}
+                <?php if ($context['transaction']['description']=='transfer'): ?>
                 <p class="clearfix">
                 <span class="float-left">
                     Issuer
                 </span>
                 <span class="float-right text-muted">
-                    {{transaction.from_user}}
+                    <?=fetch_user($context['transaction']['from_user'])['fullname']; ?>
                 </span>
                 </p>
                 <p class="clearfix">
@@ -54,55 +40,47 @@
                     Recipient
                 </span>
                 <span class="float-right text-muted">
-                    {{transaction.to_user}}
+                    <?=fetch_user($context['transaction']['to_user'])['fullname']; ?>
                 </span>
                 </p>
-                {% else %}
+                <?php else: ?>
                 <p class="clearfix">
                 <span class="float-left">
                     Customer
                 </span>
                 <span class="float-right text-muted">
-                    {% if transaction.from_user == request.user %}
-                        transaction.from_user
-                    {% elif transaction.to_user == request.user %}
-                        transaction.to_user
-                    {% endif %}
+                    <?php if ($context['transaction']['from_user']==$context['user']['id']): ?>
+                        <?=fetch_user($context['transaction']['from_user'])['fullname']; ?>
+                    <?php elseif ($context['transaction']['to_user']==$context['user']['id']): ?>
+                        <?=fetch_user($context['transaction']['to_user'])['fullname']; ?>
+                    <?php endif ?>
                 </span>
                 </p>
-                {% endif %}
+                <?php endif ?>
                 <p class="clearfix">
                 <span class="float-left">
                     Amount
                 </span>
                 <span class="float-right text-muted">
-                    {{transaction.transaction_amount}}
+                    <?=$context['transaction']['currency'].$context['transaction']['amount']; ?>
                 </span>
                 </p>
-                {% if transaction.remark %}
+                <?php if ($context['transaction']['remark']): ?>
                 <p class="clearfix">
                 <span class="float-left">
                     Remark
                 </span>
                 <span class="float-right text-muted">
-                    {{transaction.remark|truncatewords:5}}
+                    <?=truncate_words($context['transaction']['remark'], 10); ?>
                 </span>
                 </p>
-                {% endif %}
+                <?php endif ?>
                 <p class="clearfix">
                 <span class="float-left">
-                    Session ID
+                    Transaction ID
                 </span>
                 <span class="float-right text-muted">
-                    {{transaction.session_id}}
-                </span>
-                </p>
-                <p class="clearfix">
-                <span class="float-left">
-                    Transaction Number
-                </span>
-                <span class="float-right text-muted">
-                    {{transaction.transaction_number}}
+                    <?=$context['transaction']['transaction_id']; ?>
                 </span>
                 </p>
                 <p class="clearfix">
@@ -110,7 +88,7 @@
                         Transaction Date
                     </span>
                     <span class="float-right text-muted">
-                        {{transaction.timestamp|timezone:request.user.timezone}}
+                        <?=format_datetime_timezone($context['transaction']['date'], $context['user']['timezone']); ?>
                     </span>
                 </p>
                 <p class="clearfix">
@@ -118,13 +96,13 @@
                         Status
                     </span>
                     <span class="float-right text-muted">
-                        {% if transaction.status == 'successful' %}
-                        <span class="badge badge-success">{{transaction.get_status_display|upper}}</span>
-                        {% elif transaction.status == 'pending' %}
-                        <span class="badge badge-warning">{{transaction.get_status_display|upper}}</span>
-                        {% else %}
-                        <span class="badge badge-danger">{{transaction.get_status_display|upper}}</span>
-                        {% endif %}
+                        <?php if($context['transaction']['status']=='successful'): ?>
+                        <span class="badge badge-success">SUCCESSFUL</span>
+                        <?php elseif($context['transaction']['status']=='pending'): ?>
+                        <span class="badge badge-warning">PENDING</span>
+                        <?php else: ?>
+                        <span class="badge badge-danger"><?=ucwords($context['transaction']['status']); ?></span>
+                        <?php endif ?>
                     </span>
                 </p>
             </div>
@@ -136,4 +114,3 @@
         </div>
     </div>
 </div>
-{% endblock %}

@@ -1,14 +1,5 @@
-{% extends 'dashboard/base.html' %}
-{% load static %}
 
-{% block title %}
-<title>My Profile</title>
-{% endblock %}
 
-{% block style %}
-<link rel="stylesheet" href="{% static 'dashboard/bundles/summernote/summernote-bs4.css' %}">
-<link rel="stylesheet" href="{% static 'dashboard/bundles/jquery-selectric/selectric.css' %}">
-<link rel="stylesheet" href="{% static 'dashboard/bundles/bootstrap-tagsinput/dist/bootstrap-tagsinput.css' %}">
 <style>
 .user-profile {
     display: flex;
@@ -31,9 +22,8 @@
     align-items: center;
 }
 </style>
-{% endblock %}
 
-{% block content %}
+
 <div class="section-body">
     <div class="row mt-sm-4">
       <div class="col-12 col-md-9 col-lg-8">
@@ -52,27 +42,31 @@
             <div class="tab-content tab-bordered" id="myTab3Content">
               <div class="tab-pane fade show active" id="about" role="tabpanel" aria-labelledby="home-tab2">
                 <div class="user-profile text-center">
-                    <img alt="user" src="{% static 'dashboard/img/users/user-12.jpg' %}" class="rounded-circle user-image">
+                    <?php if ($context['user']['is_verified']): ?>
+                        <img alt="user" src="<?=MEDIA_ROOT; ?>/images/users/<?=$context['user']['kyc']['passport']; ?>" class="rounded-circle user-image">
+                    <?php else: ?>
+                        <img alt="user" src="<?=STATIC_ROOT; ?>/dashboard/img/default_user.png" class="rounded-circle user-image">
+                    <?php endif ?>
                     <div class="clearfix"></div>
                     <div class="mb-2 mt-4 author-box-name">
-                    <h3>Paulson Legacy Bosah</h3>
+                        <h3><?=$context['user']['fullname']; ?></h3>
                     </div>
-                    <h6>0061070643</h6>
-                    <p>Savings Account</p>
-                    {% if request.user.is_verified %}
-                    <div><a href="#" class="btn btn-icon icon-left btn-success"><i class="fas fa-check"></i>Verified</a></div>
-                    {% else %}
-                    <div><a href="#" class="btn btn-icon icon-left btn-danger"><i class="fas fa-times"></i> Not verified</a></div>
-                    {% endif %}
+                    <h6><?=$context['user']['account_number']; ?></h6>
+                    <p><?=$context['user']['account_type']; ?> Account</p>
+                    <?php if ($context['user']['is_verified']): ?>
+                        <div><a href="#" class="btn btn-icon icon-left btn-success"><i class="fas fa-check"></i>Verified</a></div>
+                    <?php else: ?>
+                        <div><a href="#" class="btn btn-icon icon-left btn-danger"><i class="fas fa-times"></i> Not verified</a></div>
+                    <?php endif ?>
                 </div>
                 <div class="balance-container">
                     <div class="balance-box">
                         <span><i class="fa fa-circle text-success"></i> Main Balance</span>
-                        <span><b>{{user.currency}}{{user.balance}}</b></span>
+                        <span><b><?=$context['user']['currency'].$context['user']['balance']; ?></b></span>
                     </div>
                     <div class="balance-box">
                         <span><i class="fa fa-circle text-secondary"></i> Overdraft</span>
-                        <span><b>{{user.currency}}{{user.overdraft}}</b></span>
+                        <span><b><?=$context['user']['currency'].$context['user']['overdraft']; ?></b></span>
                     </div>
                 </div>
                 <div class="w-100 d-sm-none"></div>
@@ -86,7 +80,7 @@
                             Full Name
                         </span>
                         <span class="float-right text-muted">
-                            {{request.user.full_name}}
+                            <?=$context['user']['fullname']; ?>
                         </span>
                         </p>
                         <p class="clearfix">
@@ -94,7 +88,7 @@
                             Mobile
                         </span>
                         <span class="float-right text-muted">
-                            +234 916 075 5152
+                            <?=$context['user']['phone']; ?>
                         </span>
                         </p>
                         <p class="clearfix">
@@ -102,7 +96,7 @@
                             Email
                         </span>
                         <span class="float-right text-muted">
-                            legacywebhub@gmail.com
+                            <?=$context['user']['email']; ?>
                         </span>
                         </p>
                         <p class="clearfix">
@@ -110,7 +104,7 @@
                             Location
                         </span>
                         <span class="float-right text-muted">
-                            303 Ifite Road Awka
+                            <?=$context['user']['address']; ?>
                         </span>
                         </p>
                         <p class="clearfix">
@@ -118,7 +112,7 @@
                             Country
                         </span>
                         <span class="float-right text-muted">
-                            Nigeria
+                            <?=$context['user']['country']; ?>
                         </span>
                         </p>
                     </div>
@@ -188,7 +182,7 @@
 
                     </div>
                     <form class="kyc-form" id="kyc-form" method="post" enctype="multipart/form-data">
-                        {% csrf_token %}
+                        <input type="hidden" name="csrf_token" value="<?=$_SESSION['csrf_token']; ?>">
                         <div class="section-title">Upload Passport <span class="text-danger">*</span></div>
                         <div class="form-group mb-4">
                             <div class="col-sm-12 col-md-7">
@@ -214,12 +208,13 @@
                         <div class="section-title">Upload ID <span class="text-danger">*</span></div>
                         <div class="form-group mb-4">
                             <div class="col-sm-12 col-md-7">
-                              <div id="image-preview2" class="image-preview">
+                                <div id="image-preview2" class="image-preview">
                                 <label for="image-upload2" id="image-label2">Choose Image</label>
                                 <input type="file" name="id-image" id="image-upload2" required>
-                              </div>
+                                </div>
                             </div>
-                          </div>
+                        </div>
+                        <p class="my-3 message" style="text-align: center;"></p>
                         <div class="text-center">
                             <button class="btn btn-lg btn-primary"><span class="btn-text">Submit</span></button>
                         </div>
@@ -232,21 +227,13 @@
       </div>
     </div>
   </div>
-{% endblock %}
 
-{% block script %}
-<!-- JS Libraies -->
-<script src="{% static 'dashboard/bundles/summernote/summernote-bs4.js' %}"></script>
-<script src="{% static 'dashboard/bundles/jquery-selectric/jquery.selectric.min.js' %}"></script>
-<script src="{% static 'dashboard/bundles/upload-preview/jquery.uploadPreview.min.js' %}"></script>
-<script src="{% static 'dashboard/bundles/bootstrap-tagsinput/dist/bootstrap-tagsinput.min.js' %}"></script>
-<!-- Page Specific JS File -->
-<script src="{% static 'dashboard/js/page/create-post.js' %}"></script>
 
 <script>
 let kycForm = document.getElementById('kyc-form'),
-kycBtn = kycForm.querySelector('.btn'),
-url = "{% url 'banking:process_kyc' %}";
+    kycBtn = kycForm.querySelector('.btn'),
+    btnText = kycBtn.querySelector('.btn-text'),
+    msg = kycForm.querySelector('.message');
 
 
 kycForm.addEventListener('submit', (e)=>{
@@ -257,39 +244,41 @@ kycForm.addEventListener('submit', (e)=>{
     var formData = new FormData(kycForm);
 
     // Loading animation
-    let btnText = kycBtn.querySelector('.btn-text');
-    btnText.innerHTML = `Please wait...<img width='20' src="{% static 'dashboard/img/spinner-white.svg' %}">`;
+    btnText.innerHTML = `Submitting data...<img width='20' src="<?=STATIC_ROOT; ?>/dashboard/img/spinner-white.svg">`;
     kycBtn.disabled = true;
 
-
-    fetch(url, {
-        method: "POST",
-        headers: {
-            'X-CSRFToken': csrftoken,
-        },
-        body: formData
-    })
-    .then((response)=>{
-        return response.json()
-    })
-    .then((data)=>{
-        console.log(data);
-        if (data == "success") {
-            btnText.innerHTML = `Submit`;
-            kycBtn.disabled = true;
-            swal("KYC proposal was placed successfully", {icon:'success'});
-        } else {
+    setTimeout(()=>{
+        fetch(window.location.href, {
+            method: "POST",
+            headers: {},
+            body: formData
+        })
+        .then((response)=>{
+            return response.json()
+        })
+        .then((data)=>{
+            console.log(data);
+            if (data['status'] == "success") {
+                btnText.innerHTML = `Application successful`;
+                kycBtn.disabled = true;
+                kycForm.reset();
+                displayMessageElement(msg, 'success', data['message']);
+                swal("KYC proposal was placed successfully", {icon:'success'});
+            } else {
+                btnText.innerHTML = `Submit`;
+                kycBtn.disabled = false;
+                displayMessageElement(msg, 'danger', data['message']);
+                swal(data, {icon: 'error'});
+            }
+        })
+        .catch((err)=>{
+            console.log(err);
             btnText.innerHTML = `Submit`;
             kycBtn.disabled = false;
-            swal(data, {icon: 'error'});
-        }
-    })
-    .catch((err)=>{
-        console.log(err);
-        btnText.innerHTML = `Submit`;
-        kycBtn.disabled = false;
-        swal('Unknown error while placing kyc proposal', {icon:'error'});
-    })
+            displayMessageElement(msg, 'danger', data['message']);
+            swal('Unknown error while placing kyc proposal', {icon:'error'});
+        })
+    }, 2000);
+
 })
 </script>
-{% endblock %}
