@@ -9,7 +9,6 @@
   <title><?=$context['title']; ?></title>
   <!-- General CSS Files -->
   <link rel="stylesheet" href="<?=STATIC_ROOT; ?>/dashboard/css/app.min.css">
-  <link rel="stylesheet" href="<?=STATIC_ROOT; ?>/dashboard/css/bootstrap.min.css">
   <link rel="stylesheet" href="<?=STATIC_ROOT; ?>/dashboard/bundles/jquery-selectric/selectric.css">
   <!-- Template CSS -->
   <link rel="stylesheet" href="<?=STATIC_ROOT; ?>/dashboard/css/style.css">

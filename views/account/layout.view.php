@@ -9,13 +9,11 @@
   <title><?=$context['title']; ?></title>
   <!-- General CSS Files -->
   <link rel="stylesheet" href="<?=STATIC_ROOT; ?>/dashboard/css/app.min.css">
+  <link rel="stylesheet" href="<?=STATIC_ROOT; ?>/dashboard/bundles/summernote/summernote-bs4.css">
+  <link rel="stylesheet" href="<?=STATIC_ROOT; ?>/dashboard/bundles/jquery-selectric/selectric.css">
   <!-- Template CSS -->
   <link rel="stylesheet" href="<?=STATIC_ROOT; ?>/dashboard/css/style.css">
   <link rel="stylesheet" href="<?=STATIC_ROOT; ?>/dashboard/css/components.css">
-  <!-- Libraries CSS -->
-  <link rel="stylesheet" href="<?=STATIC_ROOT; ?>/dashboard/bundles/summernote/summernote-bs4.css">
-  <link rel="stylesheet" href="<?=STATIC_ROOT; ?>/dashboard/bundles/jquery-selectric/selectric.css">
-  <link rel="stylesheet" href="<?=STATIC_ROOT; ?>/dashboard/bundles/bootstrap-tagsinput/dist/bootstrap-tagsinput.css">
   <!-- Custom style CSS -->
   <link rel="stylesheet" href="<?=STATIC_ROOT; ?>/dashboard/css/custom.css">
   <link rel='shortcut icon' type='image/x-icon' href="<?=STATIC_ROOT; ?>/dashboard/img/favicon.ico" />
@@ -63,6 +61,7 @@
           </ul>
         </div>
         <ul class="navbar-nav navbar-right">
+        <?php if(!empty($context['recent_notifications'])): ?>  
           <li class="dropdown dropdown-list-toggle">
             <a href="#" data-toggle="dropdown" class="nav-link notification-toggle nav-link-lg">
               <i data-feather="bell" class="bell"></i>
@@ -71,10 +70,10 @@
               <div class="dropdown-header">
                 Notifications
                 <div class="float-right">
-                  <a href="#">Mark All As Read</a>
+                  <a href="javascript:void(0);">Mark All As Read</a>
                 </div>
               </div>
-              <?php if($context['recent_notifications']): ?>
+
               <div class="dropdown-list-content dropdown-list-icons">
                 <?php foreach($context['recent_notifications'] as $notification): ?>
                 <a href="#" class="dropdown-item dropdown-item-unread">
@@ -82,17 +81,18 @@
                     <i class="fas fa-envelope-square"></i>
                   </span>
                   <span class="dropdown-item-desc"> <?=$notification['message']; ?>
-                    <span class="time"><?=$notification['date']; ?> AGO</span>
+                  <span class="time"><?=format_datetime_timesince($notification['date'], $context['user']['timezone']); ?> AGO</span>
                   </span>
                 </a>
                 <?php endforeach ?>
               </div>
-              <?php endif ?>
+              
               <div class="dropdown-footer text-center">
                 <a href="notifications">View All <i class="fas fa-chevron-right"></i></a>
               </div>
             </div>
           </li>
+          <?php endif ?>
           <li class="dropdown">
             <a href="#" data-toggle="dropdown" class="nav-link dropdown-toggle nav-link-lg nav-link-user"> 
             <?php if($context['user']['is_verified']): ?>
@@ -112,6 +112,9 @@
               </a> 
               <a href="change-pin" class="dropdown-item has-icon"> <i class="fas fa-cog"></i>
                 Settings
+              </a>
+              <a href="support" class="dropdown-item has-icon"> <i class="fas fa-comments"></i>
+                Support
               </a>
               <div class="dropdown-divider"></div>
               <a href="logout" class="dropdown-item has-icon text-danger"> <i class="fas fa-sign-out-alt"></i>
@@ -282,7 +285,7 @@
       </div>
       <footer class="main-footer">
         <div class="footer-left">
-          <a href="templateshub.net">Templateshub</a></a>
+          <span>Copyright &copy; <?=$context['setting']['name']." ".date("Y"); ?></span></a>
         </div>
         <div class="footer-right">
         </div>
@@ -293,14 +296,10 @@
   <!-- General JS Scripts -->
   <script src="<?=STATIC_ROOT; ?>/dashboard/js/app.min.js"></script>
   <!-- JS Libraies -->
+  <script src="<?=STATIC_ROOT; ?>/dashboard/bundles/sweetalert/sweetalert.min.js"></script>
   <script src="<?=STATIC_ROOT; ?>/dashboard/bundles/summernote/summernote-bs4.js"></script>
   <script src="<?=STATIC_ROOT; ?>/dashboard/bundles/jquery-selectric/jquery.selectric.min.js"></script>
   <script src="<?=STATIC_ROOT; ?>/dashboard/bundles/upload-preview/jquery.uploadPreview.min.js"></script>
-  <script src="<?=STATIC_ROOT; ?>/dashboard/bundles/bootstrap-tagsinput/dist/bootstrap-tagsinput.min.js"></script>
-  <script src="<?=STATIC_ROOT; ?>/dashboard/bundles/sweetalert/sweetalert.min.js"></script>
-  <!-- Page Specific JS File -->
-  <script src="<?=STATIC_ROOT; ?>/dashboard/js/page/index.js"></script>
-  <script src="<?=STATIC_ROOT; ?>/dashboard/js/page/create-post.js"></script>
   <!-- Template JS File -->
   <script src="<?=STATIC_ROOT; ?>/dashboard/js/scripts.js"></script>
   <!-- Custom JS File -->

@@ -18,35 +18,39 @@ if ($_SERVER["REQUEST_METHOD"]=="POST") {
     // Checking for csrf attack
     if ($data['csrf_token'] != $_SESSION['csrf_token']) {
         // Send response as JSON
-        echo json_encode(['status'=>"failed", 'message'=>"Invalid request"]);
-        die();
+        return_json(['status'=>"failed", 'message'=>"Invalid request"]);
     }
     // Transfer variables
-    $account = sanitize_input($data['account']);
-    $amount = intval(sanitize_input($data['amount']));
-    $receiver_account_number = sanitize_input($data['account_number']);
+    $account = strval(sanitize_input($data['account']));
+    $amount = floatval(sanitize_input($data['amount']));
+    $receiver_account_number = strval(sanitize_input($data['account_number']));
     $remark = sanitize_input($data['remark']);
     $pin = sanitize_input($data['pin']);
 
     if ($pin == $user['pin']) {
-        $feedback = perform_internal_transfer($user_id, $account, $receiver_account_number, $amount, $remark);
+
+        // Cheking if account number is valid or tied to a user
+        if (!empty(query_fetch("SELECT * FROM users WHERE account_number = $receiver_account_number LIMIT 1"))) {
+            $transfer_details = perform_internal_transfer($user_id, $account, $receiver_account_number, $amount, $remark);
         
-        if ($feedback['status']=="success") {
-            // Refetching user to get updated values
-            $refreshed_user = query_fetch("SELECT * FROM users WHERE id = $user_id LIMIT 1")[0];
-            // Append to feedback array
-            $feedback += [
-                'new_balance'=> $refreshed_user['balance'],
-                'new_overdraft'=> $refreshed_user['overdraft'],
-            ];
+            if ($transfer_details['status']=="success") {
+                // Refetching user to get updated account details
+                $refreshed_user = query_fetch("SELECT * FROM users WHERE id = $user_id LIMIT 1")[0];
+                // Append to transfer_details array
+                $transfer_details += [
+                    'new_balance'=> $refreshed_user['balance'],
+                    'new_overdraft'=> $refreshed_user['overdraft'],
+                ];
+            }
+        } else {
+            $transfer_details = ['status'=>"failed", 'message'=>"Invalid account number"];
         }
 
     } else {
-        $feedback = ['status'=>"failed", 'message'=>"Invalid Pin"];
+        $transfer_details = ['status'=>"failed", 'message'=>"Invalid Pin"];
     }
 
-    echo json_encode($feedback);
-    die();
+    return_json($transfer_details);
 
 }
 

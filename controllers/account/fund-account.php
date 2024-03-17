@@ -35,11 +35,9 @@ if ($_SERVER["REQUEST_METHOD"]=="POST") {
         // Making a query to insert payment details into the database
         $sql = "INSERT INTO payments (user_id, payment_id, amount, purpose, method) VALUES (:user_id, :payment_id, :amount, :purpose, :method)";
         $payment_id = intval(query_return_id($sql, $data));
-        echo json_encode(['status'=>"success", 'payment_url'=>"complete-funding?payment_id=".$data['payment_id']]);
-        die();
+        return_json(['status'=>"success", 'payment_url'=>"complete-funding?payment_id=".$data['payment_id']]);
     } catch(Exception $e) {
-        echo json_encode(['status'=>"failed", 'message'=>"An error occured: $e"]);
-        die();
+        return_json(['status'=>"failed", 'message'=>"An error occured: $e"]);
     }
 
 }

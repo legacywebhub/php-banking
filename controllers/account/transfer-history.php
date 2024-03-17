@@ -6,8 +6,9 @@ $user_id = intval($user['id']);
 
 // Other variables
 $setting = query_fetch("SELECT * FROM settings ORDER BY id DESC LIMIT 1")[0];
-$title = ucfirst($setting['name'])." | Domestic Transfer";
+$title = ucfirst($setting['name'])." | Transfer History";
 $recent_notifications = query_fetch("SELECT * FROM notifications WHERE user_id = $user_id ORDER BY id DESC LIMIT 0,10");
+$transactions = paginate("SELECT * FROM transactions WHERE to_user = $user_id AND description = 'transfer' ORDER BY id DESC", 20);
 
 
 $context = [
@@ -15,6 +16,7 @@ $context = [
     'title'=> $title,
     'user'=> $user,
     'recent_notifications'=> $recent_notifications,
+    'transactions'=> $transactions
 ];
 
-account_view('domestic-transfer', $context);
+account_view('transfer-history', $context);

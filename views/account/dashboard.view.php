@@ -171,7 +171,7 @@
                 <th>Status</th>
                 <th>Action</th>
               </tr>
-              <?php foreach($recent_transactions as $transaction): ?>
+              <?php foreach($context['recent_transactions'] as $transaction): ?>
               <tr>
                 <td class="p-0 text-center">
                   <div class="custom-checkbox custom-control">
@@ -180,20 +180,20 @@
                     <label for="checkbox-1" class="custom-control-label">&nbsp;</label>
                   </div>
                 </td>
-                <td><?=$transaction['date']; ?></td>
+                <td><?=format_datetime_timezone($transaction['date'], $context['user']['timezone']); ?></td>
                 <td><?=$context['user']['currency'].$transaction['amount']; ?></td>
                 <td>
-                  <?php if($transaction['from_user']==$session['user']['id']): ?>
+                  <?php if($transaction['from_user']==$context['user']['id']): ?>
                   Debit
                   <?php else: ?>
                   Credit
                   <?php endif ?>
                 </td>
                 <td>
-                  <?php if($transaction['from_user']==$session['user']['id']): ?>
-                    <?=ucwords($transaction['to_user']); ?>
-                  <?php elseif($transaction['to_user']==$session['user']['id']): ?>
-                    <?=ucwords($transaction['from_user']); ?>
+                  <?php if($transaction['from_user']==$context['user']['id']): ?>
+                    <?=fetch_user($transaction['to_user'])['fullname']; ?>
+                  <?php elseif($transaction['to_user']==$context['user']['id']): ?>
+                    <?=fetch_user($transaction['from_user'])['fullname']; ?>
                   <?php endif ?>
                 </td>
                 <td class="status">
@@ -205,7 +205,7 @@
                   <div class="badge badge-danger"><?=ucwords($transaction['status']); ?></div>
                   <?php endif ?>
                 </td>
-                <td><a href="transaction?transaction_id=<?=$transaction['transaction_number'];?>" class="btn btn-outline-primary">View</a></td>
+                <td><a href="transaction?transaction_id=<?=$transaction['transaction_id'];?>" class="btn btn-outline-primary">View</a></td>
               </tr>
               <?php endforeach ?>
             </table>

@@ -13,50 +13,38 @@ if ($_SERVER["REQUEST_METHOD"]=="POST") {
     // Checking for csrf attack
     if ($data['csrf_token'] != $_SESSION['csrf_token']) {
         // Send response as JSON
-        echo json_encode(['status'=>"failed", 'message'=>"Invalid request"]);
-        die();
+        return_json(['status'=>"failed", 'message'=>"Invalid request"]);
     }
 
     // Validation
     if (empty($data['firstname'])) {
-        echo json_encode(['status'=>"failed", 'message'=>"First name cannot be blank or have spaces"]);
-        die();
+        return_json(['status'=>"failed", 'message'=>"First name cannot be blank or have spaces"]);
     } else if (is_numeric($data['firstname'])) {
-        echo json_encode(['status'=>"failed", 'message'=>"First name cannot be numeric"]);
-        die();
+        return_json(['status'=>"failed", 'message'=>"First name cannot be numeric"]);
     } else if (strlen($data['firstname']) < 3 || strlen($data['firstname']) > 30) {
-        echo json_encode(['status'=>"failed", 'message'=>"First name cannot be less than 3 or more than 30 characters"]);
-        die();
+        return_json(['status'=>"failed", 'message'=>"First name cannot be less than 3 or more than 30 characters"]);
     }
 
     if (empty($data['lastname'])) {
-        echo json_encode(['status'=>"failed", 'message'=>"Last name cannot be blank or have spaces"]);
-        die();
+        return_json(['status'=>"failed", 'message'=>"Last name cannot be blank or have spaces"]);
     } else if (is_numeric($data['lastname'])) {
-        echo json_encode(['status'=>"failed", 'message'=>"Last name cannot be numeric"]);
-        die();
+        return_json(['status'=>"failed", 'message'=>"Last name cannot be numeric"]);
     } else if (strlen($data['lastname']) < 3 || strlen($data['lastname']) > 60) {
-        echo json_encode(['status'=>"failed", 'message'=>"Last name cannot be less than 3 or more than 60 characters"]);
-        die();
+        return_json(['status'=>"failed", 'message'=>"Last name cannot be less than 3 or more than 60 characters"]);
     }
 
     if (!filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
-        echo json_encode(['status'=>"failed", 'message'=>"Email is not valid"]);
-        die();
+        return_json(['status'=>"failed", 'message'=>"Email is not valid"]);
     } else if (strlen($data['email']) > 60) {
-        echo json_encode(['status'=>"failed", 'message'=>"Email cannot be more than 60 characters"]);
-        die();
+        return_json(['status'=>"failed", 'message'=>"Email cannot be more than 60 characters"]);
     } else if (email_exists($data['email'])) {
-        echo json_encode(['status'=>"failed", 'message'=>"Email has already been used"]);
-        die();
+        return_json(['status'=>"failed", 'message'=>"Email has already been used"]);
     }
 
     if (empty($data['password1']) || empty($data['password2'])) {
-        echo json_encode(['status'=>"failed", 'message'=>"Passwords cannot be empty"]);
-        die();
+        return_json(['status'=>"failed", 'message'=>"Passwords cannot be empty"]);
     } else if ($data['password1'] != $data['password2']) {
-        echo json_encode(['status'=>"failed", 'message'=>"Passwords do not match"]);
-        die();
+        return_json(['status'=>"failed", 'message'=>"Passwords do not match"]);
     }
 
     // Checking for referrer
@@ -114,11 +102,9 @@ if ($_SERVER["REQUEST_METHOD"]=="POST") {
             }
 
         }
-        echo json_encode(['status'=>"success", 'message'=>"You were successfully registered"]);
-        die();
+        return_json(['status'=>"success", 'message'=>"You were successfully registered"]);
     } catch(Exception $e) {
-        echo json_encode(['status'=>"failed", 'message'=>"Registeration failed: $e"]);
-        die();
+        return_json(['status'=>"failed", 'message'=>"Registeration failed: $e"]);
     }
 
 }

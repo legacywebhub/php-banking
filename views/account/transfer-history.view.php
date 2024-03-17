@@ -1,27 +1,13 @@
-{% extends 'dashboard/base.html' %}
-{% load static %}
-{% load tz %}
-
-{% block style %}
-<style>
-    .pagination-container {
-        display: flex;
-        justify-content:center;
-        align-items: center;
-    }
-</style>
-{% endblock %}
-
-{% block content %}
 <div class="row">
-    <div class="col-12">
-      <div class="card">
+  <div class="col-12">
+    <div class="card">
 
-        <div class="card-header">
-          <h4>Transfer History</h4>
-        </div>
+      <div class="card-header">
+        <h4>Transfer History</h4>
+      </div>
 
-        <div class="card-body p-0">
+      <div class="card-body p-0">
+        <?php if ($context['transactions']['result']): ?>
           <div class="table-responsive">
             <table class="table table-striped">
               <tr>
@@ -40,7 +26,7 @@
                 <th>Status</th>
                 <th>Action</th>
               </tr>
-              {% for transaction in transactions %}
+              <?php foreach($context['transactions']['result'] as $transaction): ?>
               <tr>
                 <td class="p-0 text-center">
                   <div class="custom-checkbox custom-control">
@@ -49,84 +35,87 @@
                     <label for="checkbox-1" class="custom-control-label">&nbsp;</label>
                   </div>
                 </td>
-                <td>{{transaction.timestamp|timezone:request.user.timezone}}</td>
-                <td>{{transaction.amount}}</td>
+                <td><?=format_datetime_timezone($transaction['date'], $context['user']['timezone']);?></td>
+                <td><?=$context['user']['currency'].$transaction['amount']; ?></td>
                 <td>
-                  {% if transaction.from_user == request.user %}
+                  <?php if($transaction['from_user']==$context['user']['id']): ?>
                   Debit
-                  {% elif transaction.to_user == request.user %}
+                  <?php elseif($transaction['to_user']==$context['user']['id']): ?>
                   Credit
-                  {% endif %}
+                  <?php endif ?>
                 </td>
-                <td>{{transaction.get_description_display}}</td>
+                <td><?=$transaction['description']; ?></td>
                 <td>
-                  {% if transaction.to_user %}
-                  {{transaction.to_user|upper}}
-                  {% else %}
+                  <?php if($transaction['to_user']): ?>
+                  <?=fetch_user($transaction['to_user']);?>
+                  <?php else: ?>
                   -
-                  {% endif %}
+                  <?php endif ?>
                 </td>
                 <td class="status">
-                  {% if transaction.status == 'successful' %}
-                  <div class="badge badge-success">{{transaction.get_status_display|upper}}</div>
-                  {% elif transaction.status == 'pending' %}
-                  <div class="badge badge-warning">{{transaction.get_status_display|upper}}</div>
-                  {% else %}
-                  <div class="badge badge-danger">{{transaction.get_status_display|upper}}</div>
-                  {% endif %}
+                  <?php if($transaction['status']=="successful"): ?>
+                  <div class="badge badge-success">SUCCESSFUL</div>
+                  <?php elseif($transaction['status']=="pending"): ?>
+                  <div class="badge badge-warning">PENDING</div>
+                  <?php else: ?>
+                  <div class="badge badge-danger"><?=strtoupper($transaction['status']); ?></div>
+                  <?php endif ?>
                 </td>
-                <td><a href="{% url 'banking:transaction' transaction.id %}" class="btn btn-outline-primary">View</a></td>
+                <td><a href="transaction?transaction_id=<?=$transaction['transaction_id']; ?>" class="btn btn-outline-primary">View</a></td>
               </tr>
-              {% endfor %}
+              <?php endforeach ?>
             </table>
           </div>
-        </div>
 
-        
-        <div class="card-body pagination-container">
+          <div class="pagination-container">
             <div class="buttons" style="text-align: right !important;">
               <nav aria-label="Page navigation example">
-                <span>Showing Page <b>{{ transactions.number }}</b> 0f <b>{{ transactions.paginator.num_pages }}</b></span>
+                <span>Showing Page <b><?=$context['transactions']['page']; ?></b> 0f <b><?=$context['transactions']['num_of_pages']; ?></b></span>
+                
                 <ul class="pagination">
-                  {% if transactions.has_previous %}
-                  <li class="page-item">
-                    <a class="page-link" href="?page={{transactions.previous_page_number}}" aria-label="Previous">
-                      <span aria-hidden="true">&laquo;</span>
-                      <span class="sr-only">Previous</span>
-                    </a>
-                  </li>
-                  {% else %}
-                  <li class="page-item">
-                    <a class="page-link" href="javascript:void(0)" aria-label="Previous">
-                      <span aria-hidden="true">&laquo;</span>
-                      <span class="sr-only">Previous</span>
-                    </a>
-                  </li>
-                  {% endif %}
+                  <?php if ($context['transactions']['has_previous']): ?>
+                    <li class="page-item">
+                      <a class="page-link" href="?page=<?=$context['transactions']['previous_page']; ?>" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                        <span class="sr-only">Previous</span>
+                      </a>
+                    </li>
+                    <?php else: ?>
+                    <li class="page-item">
+                      <a class="page-link" href="javascript:void(0)" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                        <span class="sr-only">Previous</span>
+                      </a>
+                    </li>
+                  <?php endif ?>
 
+                  <li class="page-item active"><a class="page-link" href="javascript:void(0)"><?=$context['transactions']['page'] ?></a></li>
 
-                  <li class="page-item active"><a class="page-link" href="javascript:void(0)">{{ transactions.number }}</a></li>
-
-                  {% if transactions.has_previous %}
-                  <li class="page-item">
-                    <a class="page-link" href="?page={{transactions.next_page_number}}" aria-label="Next">
-                      <span aria-hidden="true">&raquo;</span>
-                      <span class="sr-only">Next</span>
-                    </a>
-                  </li>
-                  {% else %}
-                  <li class="page-item">
-                    <a class="page-link" href="#" aria-label="Next">
-                      <span aria-hidden="true">&raquo;</span>
-                      <span class="sr-only">Next</span>
-                    </a>
-                  </li>
-                  {% endif %}
+                  <?php if ($context['transactions']['has_next']): ?>
+                    <li class="page-item">
+                      <a class="page-link" href="?page=<?=$context['transactions']['next_page']; ?>" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                        <span class="sr-only">Next</span>
+                      </a>
+                    </li>
+                    <?php else: ?>
+                    <li class="page-item">
+                      <a class="page-link" href="javascript:void(0)" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                        <span class="sr-only">Next</span>
+                      </a>
+                    </li>
+                  <?php endif ?>
                 </ul>
               </nav>
             </div>
           </div>
+        <?php else: ?>
+          <div class="my-3 mx-4 mb-5">
+            No Transfers Yet
+          </div>
+        <?php endif ?>
       </div>
-    </div>
+
   </div>
-{% endblock %}
+</div>

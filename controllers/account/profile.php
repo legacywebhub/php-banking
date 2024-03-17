@@ -41,7 +41,7 @@ if ($_SERVER["REQUEST_METHOD"]=="POST") {
     ];
 
     try { // Submitting data
-        // Making a query to kyc details into the database
+        // Making a query to update kyc details into the database
         $sql = "UPDATE kycs SET passport = :passport, id_type = :id_type, id_number = :id_number, id_upload = :id_upload, status = :status WHERE user_id = :user_id LIMIT 1";
         query_db($sql, $data);
         echo json_encode(['status'=>"success", 'message'=>"KYC application successful"]);

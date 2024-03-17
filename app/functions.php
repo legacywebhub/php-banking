@@ -193,6 +193,12 @@ function unset_message() {
 
 //////////////////////// REGULAR FUNCTIONS ///////////////////////////////
 
+// FUNCTION TO RETURN JSON RESPONSES
+function return_json($response) {
+    echo json_encode($response);
+    die();
+}
+
 // FUNCTION TO FORMAT DATE
 function format_date($date) {
     return date("d M, Y", strtotime($date));
@@ -218,9 +224,14 @@ function format_datetime_timezone($datetime, $timezone) {
 }
 
 // FUNCTION TO CONVERT DATE TO TIMESINCE FORMAT
-function format_datetime_timesince($datetime) {
+function format_datetime_timesince($datetime, $timezone = null) {
     // Create a DateTime object for the given datetime
     $datetime = new DateTime($datetime);
+
+    if (!is_null($timezone)) {
+        // Set the timezone to the user's timezone
+        $datetime->setTimezone(new DateTimeZone($timezone));
+    }
 
     // Get the current datetime
     $current_datetime = new DateTime();
@@ -411,7 +422,7 @@ function upload_document($file, string $folder) {
             // Setting file extension to lowercase
             $file_extension = strtolower($file_extension);
             // Allowable extensions
-            $accepted_extensions = array('zip', 'rar', 'pdf', 'doc', 'docs', 'docx', 'csv', 'xlsx', 'ppt', 'jpeg', 'jpg');
+            $accepted_extensions = array('jpeg', 'jpg', 'png', 'zip', 'rar', 'pdf', 'doc', 'docs', 'docx', 'csv', 'xlsx', 'ppt', 'jpeg', 'jpg');
 
             if (in_array($file_extension, $accepted_extensions)) {
                 // If file extension is among accepted extensions
@@ -469,7 +480,7 @@ function upload_multiple_documents($files, string $folder) {
             // Setting file extension to lowercase
             $file_extension = strtolower($file_extension);
             // Allowable extensions
-            $accepted_extensions = array('zip', 'rar', 'pdf', 'doc', 'docs', 'docx', 'csv', 'xlsx', 'ppt', 'jpeg', 'jpg');
+            $accepted_extensions = array('jpeg', 'jpg', 'png', 'zip', 'rar', 'pdf', 'doc', 'docs', 'docx', 'csv', 'xlsx', 'ppt', 'jpeg', 'jpg');
 
             if (in_array($file_extension, $accepted_extensions)) {
                 // If file extension is among accepted extensions
@@ -662,7 +673,7 @@ function fetch_user(int $id) {
 }
 
 // FUNCTION TO FETCH IMAGE
-function fetch_image($image, $folder) {
+function fetch_image($image, $folder = "") {
     // Setting image path
     $image_path = (is_null($folder)) ? $image : "$folder/$image";
 
@@ -705,8 +716,23 @@ function check_new(string $date) {
 // FUNCTION TO NOTIFY USERS
 function notify_user(int $user_id, String $message) {
     try {
-        $query = "INSERT INTO notifications (user_id, message) VALUES (:user_id, :message)";
-        query_db($query, ['user_id'=> $user_id, 'message'=> $message]);
+        $sql = "INSERT INTO notifications (user_id, message) VALUES (:user_id, :message)";
+        query_db($sql, ['user_id'=> $user_id, 'message'=> $message]);
+        return true;
+    } catch(Exception) {
+        return false;
+    }
+}
+
+// FUNCTION TO NOTIFY USERS PLUS AN EMAIL
+function notifyUser(int $user_id, String $message) {
+    try {
+        $user = query_fetch("SELECT * FROM users where id = $user_id LIMIT 1")[0];
+        $sql = "INSERT INTO notifications (user_id, message) VALUES (:user_id, :message)";
+        query_db($sql, ['user_id'=> $user_id, 'message'=> $message]);
+        // Forwarding message via mail
+        $email_values = ['name'=> $user['firstname']." ".$user['lastname'], 'message'=> $message];
+        sendMail($user['email'], "One Time Password", $email_values);
         return true;
     } catch(Exception) {
         return false;
@@ -754,6 +780,15 @@ function check_card_expiry($user_id) {
         }
     
     }
+}
+
+// FUNCTION TO FORMAT CARD VALIDITY FROM A DATE
+function extract_card_validity($date) {
+    // Create a DateTime object from the input date string
+    $dateObject = new DateTime($date);
+    
+    // Format the date and return it
+    return $dateObject->format('m/y');
 }
 
 // FUNCTION TO GENERATE NUMBER STRINGS
@@ -925,6 +960,20 @@ function convert_currency($from_currency, $to_currency, $amount) {
     }
 }
 
+// FUNCTION TO UPDATE USER BALANCE
+function update_user_balance($user_id, $new_balance) {
+    // Updating user details
+    $sql = "UPDATE users SET balance = :balance WHERE id = :id LIMIT 1";
+    query_db($sql, ['balance'=>$new_balance, 'id'=>$user_id]);
+}
+
+// FUNCTION TO UPDATE USER OVERDRAFT
+function update_user_overdraft($user_id, $new_overdraft) {
+    // Updating user details
+    $sql = "UPDATE users SET overdraft = :overdraft WHERE id = :id LIMIT 1";
+    query_db($sql, ['overdraft'=>$new_overdraft, 'id'=>$user_id]);
+}
+
 
 // FUNCTION TO UPDATE ACCOUNT AND CREATE NOTIFICATION
 function update_account(int $user_id, $account, $action, $amount) {
@@ -933,43 +982,28 @@ function update_account(int $user_id, $account, $action, $amount) {
     if (!empty($user)) {
         if ($account == "balance") {
             if ($action == "credit") {
-                $new_balance = $user['balance'] + $amount;
-                $alert_message = "Your account balance was credited ".$user['currency'].$amount;
-            } else if ($account == "debit" && $user['balance'] > $amount) {
-                $new_balance = $user['balance'] - $amount;
-                $alert_message = "Your account balance was debited of ".$user['currency'].$amount;
-            } else {
-                // Setting a default for error prevention
-                $new_balance = $user['balance'];
+                update_user_balance($user_id, $user['balance'] + $amount);
+                notify_user($user_id, "Your account balance was credited ".$user['currency'].$amount);
+            } else if ($action == "debit" && $user['balance'] >= $amount) {
+                update_user_balance($user_id, $user['balance'] - $amount);
+                notify_user($user_id, "Your account balance was debited of ".$user['currency'].$amount);
             }
-            // Updating user details
-            $sql = "UPDATE users SET balance = :balance WHERE id = :id LIMIT 1";
-            query_db($sql, ['balance'=>$new_balance, 'id'=>$user_id]);
-            notify_user($user_id, $alert_message);
-            return true;
         } else if ($account == "overdraft") {
             if ($action == "credit") {
-                $new_overdraft = $user['overdraft'] + $amount;
-                $alert_message = "Your overdraft balance was credited ".$user['currency'].$amount;
-            } else if ($account == "debit" && $user['overdraft'] > $amount) {
-                $new_overdraft = $user['overdraft'] - $amount;
-                $alert_message = "Your overdraft balance was debited of ".$user['currency'].$amount;
-            } else {
-                // Setting a default for error prevention
-                $new_overdraft = $user['overdraft'];
+                update_user_overdraft($user_id, $user['overdraft'] + $amount);
+                notify_user($user_id, "Your overdraft balance was credited ".$user['currency'].$amount);
+            } else if ($action == "debit" && $user['overdraft'] > $amount) {
+                update_user_overdraft($user_id, $user['overdraft'] - $amount);
+                notify_user($user_id, "Your overdraft balance was debited of ".$user['currency'].$amount);
             }
-            // Updating user details
-            $sql = "UPDATE users SET overdraft = :overdraft WHERE id = :id LIMIT 1";
-            query_db($sql, ['overdraft'=>$new_overdraft, 'id'=>$user_id]);
-            notify_user($user_id, $alert_message);
-            return true;
         }
     }
     return false;
 }
 
-// FUNCTION TO PERFORM INTERNAL TRANSFER
-function perform_internal_transfer(int $sender_user_id, String $account, String $receiver_account_number, int $amount, String $remark = "") {
+// FUNCTION TO PERFORM INTERNAL TRANSFERS
+function perform_internal_transfer(int $sender_user_id, String $account, String $receiver_account_number, float $amount, String $remark = null) {
+    // Fetching users
     $sender = query_fetch("SELECT * FROM users WHERE id = $sender_user_id LIMIT 1")[0];
     $receiver = query_fetch("SELECT * FROM users WHERE account_number = $receiver_account_number LIMIT 1")[0];
 
@@ -978,52 +1012,57 @@ function perform_internal_transfer(int $sender_user_id, String $account, String 
         return ['status'=>"failed", 'message'=>"Invalid account number"];
     } else {
         // Checking if sender has insufficient funds to carry out transaction
-        if ($sender['balance'] < $amount) {
+        if ($sender[$account] < $amount) {
             return ['status'=>"failed", 'message'=>"Insufficient funds"];
         } else {
             // Checking if sender and receiver currency are the same
-            if ($sender['currency'] == $receiver['currency'] && $sender['account'] > $amount) {
-                // Generating customers notifications
-                $currency = $receiver['currency'];
-                $sender_message = "Your account was debited of $currency$amount";
-                $receiver_message = "Your account was credited with $currency$amount from ".$sender['firstname']." ".$sender['lastname'];
-                // Debit sender if account balance is equal or more than amount
-                update_account($sender_user_id, $account, "debit", $amount, $sender_message);
-                // Credit receiver
-                update_account($receiver['id'], $account, "credit", $amount, $receiver_message);
+            if ($sender['currency'] == $receiver['currency'] && $sender[$account] >= $amount) {
+
+                $currency = $sender['currency'];
+                // Debit sender if account balance/overdraft is equal or more than amount
+                update_account($sender['id'], $account, "debit", $amount);
+                // Sending a notification to sender
+                notify_user($sender['id'], "Your transfer of $currency$amount to ".$receiver['firstname']." ".$receiver['lastname']." was successful");
+                // Credit receiver's balance
+                update_account($receiver['id'], "balance", "credit", $amount);
+                // Sending a notification to receiver
+                notify_user($receiver['id'], "Your account was credited with $currency$amount from ".$sender['firstname']." ".$sender['lastname']);
                 // Creating transaction record
                 $sql = "INSERT INTO transactions (from_user, to_user, currency, amount, description, remark, transaction_id, status) 
                 VALUES (:from_user, :to_user, :currency, :amount, :description, :remark, :transaction_id, :status)";
                 $data = [
-                    'from_user'=> $sender_user_id, 'to_user'=> $receiver['id'], 'currency'=> $currency,
-                    'amount'=> $amount,'description'=> "transfer", 'remark'=> $remark, 
-                    'transaction_id'=> generate_transaction_ID(), 'status'=> "successful"
+                    'from_user'=> $sender['id'], 'to_user'=> $receiver['id'], 'currency'=> $currency, 'amount'=> $amount,
+                    'description'=> "transfer", 'remark'=> $remark, 'transaction_id'=> generate_transaction_ID(), 'status'=> "successful"
                 ];
                 query_db($sql, $data);
+                // Returning status and message
                 return ['status'=>"success", 'message'=>"Transfer successful"];
-            } else if($sender['currency'] != $receiver['currency'] && $sender['account'] > $amount) {
-                // Generating customers notifications
+
+            } else if($sender['currency'] != $receiver['currency'] && $sender[$account] >= $amount) {
+
                 $sender_currency = $sender['currency'];
-                $receiver_currency = $receiver['currency'];
-                $sender_message = "Your account was debited of $sender_currency$amount";
-                $receiver_message = "Your account was credited with $receiver_currency$amount from ".$sender['firstname']." ".$sender['lastname'];
-                
                 // Converting amount to amount in receiver's currency
                 $converted_amount = convert_currency($sender['currency'], $receiver['currency'], $amount);
-                // Debit sender if account balance is equal or more than amount
-                update_account($sender_user_id, $account, "debit", $amount, $sender_message);
-                // Credit receiver
-                update_account($receiver['id'], $account, "credit", $converted_amount, $receiver_message);
+                // Debit sender if account balance/overdraft is equal or more than amount
+                update_account($sender['id'], $account, "debit", $amount);
+                // Sending a notification to sender
+                notify_user($sender['id'], "Your transfer of $sender_currency$amount to ".$receiver['firstname']." ".$receiver['lastname']." was successful");
+                // Credit receiver's balance
+                update_account($receiver['id'], "balance", "credit", $converted_amount);
+                // Sending a notification to receiver
+                notify_user($receiver['id'], "Your account was credited with $sender_currency$amount from ".$sender['firstname']." ".$sender['lastname']);
                 // Creating transaction record
                 $sql = "INSERT INTO transactions (from_user, to_user, currency, amount, description, remark, transaction_id, status) 
                 VALUES (:from_user, :to_user, :currency, :amount, :description, :remark, :transaction_id, :status)";
                 $data = [
-                    'from_user'=> $sender_user_id, 'to_user'=> $receiver['id'], 'currency'=> $sender_currency,
+                    'from_user'=> $sender['id'], 'to_user'=> $receiver['id'], 'currency'=> $sender_currency,
                     'amount'=> $amount,'description'=> "transfer", 'remark'=> $remark, 
                     'transaction_id'=> generate_transaction_ID(), 'status'=> "successful"
                 ];
                 query_db($sql, $data);
+                // Returning status and message
                 return ['status'=>"success", 'message'=>"Transfer successful"];
+
             }
         }
     }

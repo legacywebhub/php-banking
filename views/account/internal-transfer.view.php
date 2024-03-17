@@ -27,24 +27,24 @@
             </div>
             <div class="form-group">
               <label>Bank Name <span class="text-danger">*</span></label>
-              <input type="text" value="<?=ucwords($context['settings']['name']); ?>" name="bank-name" class="form-control" readonly disabled>
+              <input type="text" name="bank_name" class="form-control" value="<?=strtoupper($context['setting']['name']); ?>" disabled>
             </div>
             <div class="form-group">
-                <label>Account Number <span class="text-danger">*</span></label>
-                <input type="text" maxlength="10" placeholder="51***910" name="account-number" class="form-control">
-                <div id="validate-div">&nbsp;&nbsp;Validating..</div>
+              <label>Account Number <span class="text-danger">*</span></label>
+              <input type="text" name="account_number" class="form-control" minlength="10" maxlength="10" placeholder="51***910" onkeypress="return onlyNumberKey(event)" required>
+              <div id="validate-div">&nbsp;&nbsp;Validating..</div>
             </div>
             <div class="form-group">
-                <label>Amount (<?=$context['user']['currency']; ?>) <span class="text-danger">*</span></label>
-                <input type="number" maxlength="12" placeholder="$0.00" name="amount" class="form-control">
+              <label>Amount (<?=$context['user']['currency']; ?>) <span class="text-danger">*</span></label>
+              <input type="text" name="amount" class="form-control" maxlength="10" onkeypress="return onlyNumberKey(event)" required>
             </div>
             <div class="form-group">
-                <label>Remark</label>
-                <textarea class="form-control" maxlength="255" name="remark" placeholder="(Optional)"></textarea>
+              <label>Remark</label>
+              <textarea class="form-control" maxlength="255" name="remark" placeholder="(Optional)"></textarea>
             </div>
             <div class="form-group">
-                <label>Transaction Pin <span class="text-danger">*</span></label>
-                <input type="password" maxlength="4" placeholder="****" name="pin" class="form-control">
+              <label>Transaction Pin <span class="text-danger">*</span></label>
+              <input type="password" name="pin" class="form-control" maxlength="4" placeholder="****" required>
             </div>
             <div class="card-footer text-left">
               <button class="btn btn-primary mr-1" type="submit"><span class="btn-text">Send</span></button>
@@ -76,7 +76,7 @@
       .then((arg) => {
         if (arg) {
           // Loading animation
-          btnText.innerHTML = `Please wait...<img width='20' src="<?=STATIC_ROOT; ?>/dashboard/img/spinner-white.svg">`;
+          btnText.innerHTML = `Performing transfer...<img width='20' src="<?=STATIC_ROOT; ?>/dashboard/img/spinner-white.svg">`;
           transferBtn.disabled = true;
 
           fetch(window.location.href, {
@@ -85,9 +85,10 @@
               'Content-Type': 'application/json',
             },
             body: JSON.stringify({
+              "csrf_token": transferForm["csrf_token"].value,
               "account": transferForm["account"].value,
               "amount": parseInt(transferForm["amount"].value),
-              "account_number": transferForm["account-number"].value,
+              "account_number": transferForm["account_number"].value,
               "remark": transferForm["remark"].value,
               "pin": transferForm["pin"].value,
             })
@@ -101,8 +102,8 @@
               setTimeout(()=>{
                 btnText.innerHTML = `Success`;
                 transferBtn.disabled = true;
-                userBalance.innerText = data['account']['new_balance'];
-                userOverdraft.innerText = data['account']['new_overdraft'];
+                userBalance.innerText = data['new_balance'];
+                userOverdraft.innerText = data['new_overdraft'];
                 swal(data['message'], {icon:'success'});
               }, 3000)
             } else {
@@ -118,11 +119,11 @@
               console.log(err);
               btnText.innerHTML = `Send`;
               transferBtn.disabled = false;
-              swal('Could not perform transfer');
+              swal('Could not perform transfer', {icon: 'error'});
             }, 3000)
           })
         } else {
-          swal('Could not perform transfer');
+          swal('Could not perform transfer', {icon: 'error'});
         }
       });
     } else {
