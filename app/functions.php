@@ -81,6 +81,18 @@ function user_logged_in() {
     return fetch_user($user['id']);
 }
 
+// FUNCTION REDIRECT ADMIN TO LOGIN PAGE IF NOT AUTHENTICATED/AUTHORIZED
+function admin_logged_in() {
+    // This function depends on is_user_authenticated() function
+    $user = is_user_authenticated();
+    
+    if (empty($user) || $user['is_staff']==0) {
+        // Redirect if no user found or user is not staff
+        redirect(ROOT."/admin/login", "Please sign in", "danger");
+    }
+    // returning user connected to other required models
+    return fetch_user($user['id']);
+}
 
 // FUNCTION TO CHECK IF USER EXISTS AND PASSWORD MATCHES DURING LOGIN
 function authenticate_user($email, $password) {

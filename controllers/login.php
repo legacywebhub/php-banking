@@ -42,6 +42,4 @@ $context = [
 ];
 
 
-include(APP_PATH . "views/login.view.php");
-
-unset_message();
+landing_view('login', $context);

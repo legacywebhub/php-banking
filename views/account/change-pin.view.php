@@ -24,7 +24,7 @@
                 <input name="pin2" type="text" class="form-control" minlength="4" maxlength="4" placeholder="Re-type New Pin" onkeypress="return onlyNumberKey(event)" required>
               </div>
               <div class="card-footer">
-                <button class="btn btn-bg btn-primary pin-btn"><span class="pin-btn-text">Save</span></button>
+                <button class="btn btn-lg btn-primary pin-btn"><span class="pin-btn-text">Save</span></button>
               </div>
         </form>
     </div>

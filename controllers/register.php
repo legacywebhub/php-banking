@@ -117,6 +117,5 @@ $context = [
     'title'=> $title,
 ];
 
-include(APP_PATH . "views/register.view.php");
 
-unset_message();
+landing_view('register', $context);

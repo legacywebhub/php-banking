@@ -19,7 +19,7 @@
           </div>
           <p class="my-2 mx-2 message"></p>
           <div class="card-footer">
-            <button class="btn btn-primary btn-bg"><span class="btn-text">Save</span></button>
+            <button class="btn btn-primary btn-lg"><span class="btn-text">Save</span></button>
           </div>
         </form>
     </div>

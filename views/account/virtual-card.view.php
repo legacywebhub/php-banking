@@ -238,7 +238,7 @@
                       <label class="custom-file-label" for="customFile">Insert Proof</label>
                     </div>
                     <div class="text-center">
-                        <button class="btn btn-bg btn-primary"><span class="btn-text"><i data-feather="camera"></i> Upload</span></button>
+                        <button class="btn btn-lg btn-primary"><span class="btn-text"><i data-feather="camera"></i> Upload</span></button>
                     </div>
                 </form>
             </div>
