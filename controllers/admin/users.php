@@ -9,9 +9,9 @@ $title = ucfirst($setting['name'])." | Users";
 
 if (isset($_GET['search'])) {
     $search = sanitize_input($_GET['search']);
-    $users = paginate("SELECT * FROM users WHERE CONCAT(firstname, ' ', lastname) LIKE '%$search%' ORDER BY id DESC", 15);
+    $users = paginate("SELECT * FROM users WHERE CONCAT(firstname, ' ', lastname) LIKE '%$search%' ORDER BY id DESC", 20);
 } else {
-    $users = paginate("SELECT * FROM users ORDER BY id DESC", 15);
+    $users = paginate("SELECT * FROM users ORDER BY id DESC", 20);
 }
 
 $context = [

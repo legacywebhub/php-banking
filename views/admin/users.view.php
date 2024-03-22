@@ -17,17 +17,16 @@
             </div>
             <div class="card-body">
                 <?php if (isset($_SESSION['message'])): ?>
-                <div class="form-group">
                     <h6 class="col-12 text-<?=$_SESSION['message_tag']; ?>" style="display: flex; justify-content: center;">
                         <?=$_SESSION['message']; ?>
                     </h6>
-                </div>
                 <?php endif ?>
 
                 <div class="table-responsive">
                     <table class="table table-striped">
                     <tbody>
                     <tr>
+                        <th>User ID</th>
                         <th>Profile</th>
                         <th>Full Name</th>
                         <th>Email</th>
@@ -47,9 +46,10 @@
                         <?php foreach($context['users']['result'] as $user): ?>
                             <?php $user_kyc = query_fetch("SELECT * FROM kycs WHERE user_id = ".$user['id']." LIMIT 1")[0]; ?>
                             <tr class="mt-2" style="margin-top: 10px !important;">
+                                <td><?=$user['id']; ?></td>
                                 <td>
                                     <?php if ($user_kyc['status']=="approved"): ?>
-                                        <img  class="user-img-radious-style" width="50px" src="<?=MEDIA_ROOT; ?>/images/users/<?=$user_kyc['passport']; ?>">
+                                        <a href="<?=MEDIA_ROOT; ?>/images/users/<?=$user_kyc['passport']; ?>" target="_blank"><img  class="user-img-radious-style" width="50px" src="<?=MEDIA_ROOT; ?>/images/users/<?=$user_kyc['passport']; ?>"></a>
                                     <?php else: ?>
                                         <img class="user-img-radious-style" width="50px" src="<?=STATIC_ROOT; ?>/dashboard/img/default_user.png">
                                     <?php endif ?>

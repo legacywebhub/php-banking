@@ -81,7 +81,7 @@ if ($_SERVER["REQUEST_METHOD"]=="POST") {
         query_db($sql, ['user_id'=>$new_user_id]);
         return_json(['status'=>"success", 'message'=>"User successfully added"]);
     } catch(Exception $e) {
-        return_json(['status'=>"failed", 'message'=>"Registeration failed: $e"]);
+        return_json(['status'=>"failed", 'message'=>"An error occured while saving data"]);
     }
 
 }

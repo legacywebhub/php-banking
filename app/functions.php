@@ -673,7 +673,7 @@ function fetch_user(int $id) {
 
         // Appending extra user details
         $user += [
-            'fullname'=> $matched_users[0]['firstname']." ".$matched_users[0]['lastname'],
+            'fullname'=> $user['firstname']." ".$user['lastname'],
             'is_verified'=> ($user_kyc['status']=="approved") ? true : false,
             'has_active_card'=> ($user_virtual_card['status']=="active") ? true : false,
             'kyc'=> $user_kyc,
