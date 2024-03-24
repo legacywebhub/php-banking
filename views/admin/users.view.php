@@ -17,7 +17,7 @@
             </div>
             <div class="card-body">
                 <?php if (isset($_SESSION['message'])): ?>
-                    <h6 class="col-12 text-<?=$_SESSION['message_tag']; ?>" style="display: flex; justify-content: center;">
+                    <h6 class="col-12 my-3 text-<?=$_SESSION['message_tag']; ?>" style="display: flex; justify-content: center;">
                         <?=$_SESSION['message']; ?>
                     </h6>
                 <?php endif ?>
@@ -31,8 +31,11 @@
                         <th>Full Name</th>
                         <th>Email</th>
                         <th>Account Number</th>
+                        <th>Balance</th>
+                        <th>Overdraft</th>
                         <th>Staff</th>
                         <th>Superuser</th>
+                        <th>Blocked</th>
                         <th>Date Joined</th>
                         <th>Actions</th>
                     </tr>
@@ -57,6 +60,8 @@
                                 <td><?=$user['firstname']." ".$user['lastname']; ?></td>
                                 <td><?=$user['email']; ?></td>
                                 <td><?=$user['account_number']; ?></td>
+                                <td><?=$user['currency'].$user['balance']; ?></td>
+                                <td><?=$user['currency'].$user['overdraft']; ?></td>
                                 <td class="align-middle">
                                     <?php if($user['is_staff'] == 1): ?>
                                         <div class="badge badge-success">Yes</div>
@@ -65,11 +70,18 @@
                                     <?php endif ?>
                                 </td>
                                 <td class="align-middle">
-                                <?php if($user['is_superuser'] == 1): ?>
-                                <div class="badge badge-success">Yes</div>
-                                <?php else: ?>
-                                <div class="badge badge-danger">No</div>
-                                <?php endif ?>
+                                    <?php if($user['is_superuser'] == 1): ?>
+                                        <div class="badge badge-success">Yes</div>
+                                    <?php else: ?>
+                                        <div class="badge badge-danger">No</div>
+                                    <?php endif ?>
+                                </td>
+                                <td class="align-middle">
+                                    <?php if($user['is_blocked'] == 1): ?>
+                                        <div class="badge badge-danger">Yes</div>
+                                    <?php else: ?>
+                                        <div class="badge badge-success">No</div>
+                                    <?php endif ?>
                                 </td>
                                 <td><?=date("d-m-Y", strtotime($user['date_joined'])); ?></td>
                                 <td>

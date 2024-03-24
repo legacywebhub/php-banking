@@ -2,12 +2,12 @@
     <div class="col-lg-12 col-md-12 col-12 col-sm-12">
         <div class="card">
             <div class="card-header">
-                <h4>Loan List </h4>
+                <h4>Payment List  &nbsp;&nbsp;&nbsp;<a href="add-payment" class="btn btn-icon icon-left btn-primary"><i class="fas fa-plus"></i> Add payment</a></h4>
                 
                 <div class="card-header-form">
                     <form action="" method="get">
                       <div class="input-group">
-                        <input name="search" type="text" class="form-control" placeholder="Search loan id">
+                        <input name="search" type="text" class="form-control" placeholder="Search name">
                         <div class="input-group-btn">
                           <button class="btn btn-primary"><i class="fas fa-search"></i></button>
                         </div>
@@ -15,7 +15,6 @@
                     </form>
                 </div>
             </div>
-            
             <div class="card-body">
                 <?php if (isset($_SESSION['message'])): ?>
                     <h6 class="col-12 my-3 text-<?=$_SESSION['message_tag']; ?>" style="display: flex; justify-content: center;">
@@ -27,55 +26,52 @@
                     <table class="table table-striped">
                     <tbody>
                     <tr>
-                        <th>Application Date</th>
-                        <th>Loan ID</th>
+                        <th>Date</th>
+                        <th>payment ID</th>
                         <th>User</th>
                         <th>Amount</th>
-                        <th>Duration (in months)</th>
-                        <th>Calculated Interest</th>
-                        <th>Calculated Returns</th>
-                        <th>Paid</th>
-                        <th>Last Payment Date</th>
+                        <th>Purpose</th>
+                        <th>Method</th>
+                        <th>Proof</th>
                         <th>Status</th>
                         <th>Actions</th>
                     </tr>
-                    <?php if (empty($context['loans']['result'])): ?>
+                    <?php if (empty($context['payments']['result'])): ?>
                         <tr>
-                            <td>No loans Yet</td>
+                            <td>No payments Yet</td>
                         </tr>
                     <?php else: ?>
-                        <?php foreach($context['loans']['result'] as $loan): ?>
-                            <?php $user = fetch_user($loan['user_id']) ?? []; ?>
+                        <?php foreach($context['payments']['result'] as $payment): ?>
+                            <?php $user = fetch_user($payment['user_id']); ?>
                             <tr class="mt-2" style="margin-top: 10px !important;">
-                                <td><?=format_datetime_timezone($loan['date'], $context['admin']['timezone']); ?></td>
-                                <td><?=$loan['loan_id']; ?></td>
-                                <td><?=$user['fullname'] ?? "Invalid User"; ?></td>
-                                <td><?=$user['currency'].$loan['amount']; ?></td>
-                                <td><?=$loan['duration_in_months']." Months"; ?></td>
-                                <td><?=$user['currency'].$loan['interest']; ?></td>
-                                <td><?=$user['currency'].$loan['total_returns']; ?></td>
-                                <td><?=$user['currency'].$loan['paid']; ?></td>
+                                <td><?=format_datetime($payment['date']); ?></td>
+                                <td><?=$payment['payment_id']; ?></td>
+                                <td><?=$user['fullname']; ?></td>
+                                <td><?=$user['currency'].$payment['amount']; ?></td>
+                                <td><?=$payment['purpose']; ?></td>
+                                <td><?=$payment['method']; ?></td>
                                 <td>
-                                    <?php if($loan['last_payment_date']): ?>
-                                    <?=format_datetime_timezone($loan['last_payment_date'], $context['admin']['timezone']); ?>
-                                    <?php endif ?>    
+                                    <?php if ($payment['proof']): ?>
+                                        <a href="<?=MEDIA_ROOT; ?>/images/payments/<?=$payment['proof']; ?>" target="_blank"><img src="<?=MEDIA_ROOT; ?>/images/payments/<?=$payment['proof']; ?>"  width="50px"></a>
+                                    <?php else: ?>
+                                        <img src="<?=STATIC_ROOT; ?>/dashboard/img/image_placeholder.png" width="50px">
+                                    <?php endif ?>
                                 </td>
                                 <td class="align-middle">
-                                    <?php if($loan['status'] == "active"): ?>
-                                        <div class="badge badge-success">Active</div>
-                                    <?php elseif($loan['status'] == "pending"): ?>
+                                    <?php if($payment['status'] == "pending"): ?>
                                         <div class="badge badge-warning">Pending</div>
-                                    <?php elseif($loan['status'] == "declined"): ?>
+                                    <?php elseif($payment['status'] == "approved"): ?>
+                                        <div class="badge badge-success">Approved</div>
+                                    <?php else: ?>
                                         <div class="badge badge-danger">Declined</div>
-                                    <?php elseif($loan['status'] == "closed"): ?>
-                                        <div class="badge badge-secondary">Closed</div>
                                     <?php endif ?>
                                 </td>
                                 <td>
-                                    <a href="loan?loan_id=<?=$loan['loan_id']; ?>" class="btn btn-primary btn-action" title="View">View</a>
-                                    <?php if($loan['status'] == "pending"): ?>
-                                        <a href="approve-loan?loan_id=<?=$loan['loan_id']; ?>" class="btn btn-success btn-action" title="Approve">Approve</a>
-                                        <a href="decline-loan?loan_id=<?=$loan['loan_id']; ?>" class="btn btn-danger btn-action" title="Decline">Decline</a>
+                                    <?php if($payment['status'] == "pending"): ?>
+                                        <a href="approve-payment?payment_id=<?=$payment['payment_id']; ?>" class="btn btn-primary btn-action" title="Approve">Approve</a>
+                                        <a href="decline-payment?payment_id=<?=$payment['payment_id']; ?>" class="btn btn-danger btn-action" title="Decline">Decline</a>
+                                    <?php else: ?>
+                                        -
                                     <?php endif ?>
                                 </td>
                             </tr>
@@ -86,12 +82,12 @@
                 </div>
 
                 <div class="pagination-container my-3">
-                <span style="margin: 0px 10px;">Showing Page <b><?=$context['loans']['page'] ?></b> 0f <b><?=$context['loans']['num_of_pages'] ?></b></span>
+                <span style="margin: 0px 10px;">Showing Page <b><?=$context['payments']['page'] ?></b> 0f <b><?=$context['payments']['num_of_pages'] ?></b></span>
                     <nav aria-label="Page navigation example">
                     <ul class="pagination">
-                        <?php if ($context['loans']['has_previous']): ?>
+                        <?php if ($context['payments']['has_previous']): ?>
                         <li class="page-item">
-                            <a class="page-link" href="?page=<?=$context['loans']['previous_page'] ?>" aria-label="Previous">
+                            <a class="page-link" href="?page=<?=$context['payments']['previous_page'] ?>" aria-label="Previous">
                             <span aria-hidden="true">&laquo;</span>
                             <span class="sr-only">Previous</span>
                             </a>
@@ -105,11 +101,12 @@
                         </li>
                         <?php endif ?>
 
-                        <li class="page-item active"><a class="page-link" href="javascript:void(0)"><?=$context['loans']['page'] ?></a></li>
+                        <li class="page-item active"><a class="page-link" href="javascript:void(0)"><?=$context['payments']['page'] ?></a></li>
 
-                        <?php if ($context['loans']['has_next']): ?>
+
+                        <?php if ($context['payments']['has_next']): ?>
                         <li class="page-item">
-                            <a class="page-link" href="?page=<?=$context['loans']['next_page'] ?>" aria-label="Next">
+                            <a class="page-link" href="?page=<?=$context['payments']['next_page'] ?>" aria-label="Next">
                             <span aria-hidden="true">&raquo;</span>
                             <span class="sr-only">Next</span>
                             </a>
@@ -124,7 +121,7 @@
                         <?php endif ?>
                     </ul>
                     </nav>
-                    <span style="margin: 0px 10px;"><b>Total (<?=$context['loans']['total'] ?>)</b></span>
+                    <span style="margin: 0px 10px;"><b>Total (<?=$context['payments']['total'] ?>)</b></span>
                 </div>
             </div>
         </div>

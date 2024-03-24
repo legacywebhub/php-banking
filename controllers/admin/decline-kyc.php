@@ -10,7 +10,7 @@ if (!isset($_GET['id'])) {
     // Getting kyc id
     $kyc_id = intval(sanitize_input($_GET['id']));
     //  Checking for matching kycs
-    $matched_kycs = query_db("SELECT * FROM kycs WHERE id = $kyc_id LIMIT 1");
+    $matched_kycs = query_fetch("SELECT * FROM kycs WHERE id = $kyc_id LIMIT 1");
 
     if (!empty($matched_kycs)) {
         // Updating KYC record

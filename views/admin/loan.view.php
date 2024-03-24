@@ -88,7 +88,7 @@
                     <td class="text-center"><?=$context['loan']['duration_in_months']." Months"; ?></td>
                     <td class="text-right"><?=$context['user']['currency'].$context['loan']['interest']; ?></td>
                     <td class="text-right"><?=$context['user']['currency'].$context['loan']['total_returns']; ?></td>
-                    <td class="text-right"><?=$context['user']['currency'].$context['loan']['monthly_returns']; ?></td>
+                    <td class="text-right"><?=$context['user']['currency'].$context['loan']['monthly_payment']; ?></td>
                 </tr>
                 </table>
             </div>

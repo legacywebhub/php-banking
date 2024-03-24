@@ -18,7 +18,7 @@
             
             <div class="card-body">
                 <?php if (isset($_SESSION['message'])): ?>
-                    <h6 class="col-12 text-<?=$_SESSION['message_tag']; ?>" style="display: flex; justify-content: center;">
+                    <h6 class="col-12 my-3 text-<?=$_SESSION['message_tag']; ?>" style="display: flex; justify-content: center;">
                         <?=$_SESSION['message']; ?>
                     </h6>
                 <?php endif ?>
@@ -73,11 +73,10 @@
                                     <?php endif ?>
                                 </td>
                                 <td>
-                                    <?php if($virtual_card['status'] == "pending"): ?>
-                                        <a href="approve-virtual_card?id=<?=$virtual_card['id']; ?>" class="btn btn-secondary btn-action" title="Approve">Approve</a>
-                                        <a href="decline-virtual_card?id=<?=$virtual_card['id']; ?>" class="btn btn-secondary btn-action" title="Decline">Decline</a>
-                                    <?php else: ?>
-                                        -
+                                    <?php if($virtual_card['status'] == "active"): ?>
+                                        <a href="deactivate-card?id=<?=$virtual_card['id']; ?>" class="btn btn-danger btn-action" title="Deactivate">Deactivate</a>
+                                    <?php elseif($virtual_card['status'] == "inactive"): ?>
+                                        <a href="activate-card?id=<?=$virtual_card['id']; ?>" class="btn btn-primary btn-action" title="Activate">Activate</a>
                                     <?php endif ?>
                                 </td>
                             </tr>

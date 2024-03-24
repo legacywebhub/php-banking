@@ -214,6 +214,7 @@ function create_tables() {
 
     // Payments table
     // Purpose - funding, loan, card
+    // Method - balance, transfer, usdt
     // Status - pending, approved, declined
     $query = "create table if not exists payments(
 
@@ -277,11 +278,12 @@ function create_tables() {
         remark text(2050) null,
         interest decimal(12, 2) null default 0,
         total_returns decimal(12, 2) null default 0,
-        monthly_returns decimal(12, 2) null default 0,
+        monthly_payment decimal(12, 2) null default 0,
         user_monthly_income int null,
         date datetime default current_timestamp,
         approved_date datetime null,
         end_date datetime null,
+        paid decimal(12, 2) not null default 0,
         last_payment_date datetime null,
         status varchar(8) not null default 'pending',
 

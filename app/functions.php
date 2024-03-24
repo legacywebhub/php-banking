@@ -679,9 +679,18 @@ function fetch_user(int $id) {
             'kyc'=> $user_kyc,
             'virtual_card'=> $user_virtual_card
         ];
-        return $user;
+
+    } else {
+        // Creating dummy user in case user was deleted
+        $user = [
+            'firstname'=> "Invalid", 'lastname'=> "User",
+            'fullname'=> "Invalid user", 'email'=> "dummy@gmail.com",
+            'currency'=> '$', 'balance' => 0.00, 'overdraft'=> 0.00,
+            'account_type'=> "Savings", 'account_number'=> "0123456789",
+            'is_verified' => false, 'has_active_card'=> false,
+        ];
     }
-    return "Invalid user";
+    return $user;
 }
 
 // FUNCTION TO FETCH IMAGE
@@ -1000,6 +1009,7 @@ function update_account(int $user_id, $account, $action, $amount) {
                 update_user_balance($user_id, $user['balance'] - $amount);
                 notify_user($user_id, "Your account balance was debited of ".$user['currency'].$amount);
             }
+            return true;
         } else if ($account == "overdraft") {
             if ($action == "credit") {
                 update_user_overdraft($user_id, $user['overdraft'] + $amount);
@@ -1008,6 +1018,7 @@ function update_account(int $user_id, $account, $action, $amount) {
                 update_user_overdraft($user_id, $user['overdraft'] - $amount);
                 notify_user($user_id, "Your overdraft balance was debited of ".$user['currency'].$amount);
             }
+            return true;
         }
     }
     return false;
@@ -1078,4 +1089,10 @@ function perform_internal_transfer(int $sender_user_id, String $account, String 
             }
         }
     }
+}
+
+function update_payment_status(String $payment_id, String $status) {
+    // Updating payment record
+    $sql = "UPDATE payments SET status = :status WHERE payment_id = :payment_id LIMIT 1";
+    query_db($sql, ['payment_id'=> $payment_id, 'status'=> $status]);
 }

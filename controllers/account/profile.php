@@ -9,8 +9,8 @@ $setting = query_fetch("SELECT * FROM settings ORDER BY id DESC LIMIT 1")[0];
 $title = ucfirst($setting['name'])." | My Profile";
 $recent_notifications = query_fetch("SELECT * FROM notifications WHERE user_id = $user_id ORDER BY id DESC LIMIT 0,10");
 
-// Handling profile update request
-if ($_SERVER["REQUEST_METHOD"]=="POST") {
+// Handling profile update/kyc upload request
+if ($_SERVER["REQUEST_METHOD"] == "POST" && $_POST['csrf_token'] === $_SESSION['csrf_token']) {
     
     // Checking to see if user has a pending KYC application
     if ($user['kyc']['status']=='pending' || $user['kyc']['status']=='approved') {

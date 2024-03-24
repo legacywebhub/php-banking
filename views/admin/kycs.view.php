@@ -18,7 +18,7 @@
             
             <div class="card-body">
                 <?php if (isset($_SESSION['message'])): ?>
-                    <h6 class="col-12 text-<?=$_SESSION['message_tag']; ?>" style="display: flex; justify-content: center;">
+                    <h6 class="col-12 my-3 text-<?=$_SESSION['message_tag']; ?>" style="display: flex; justify-content: center;">
                         <?=$_SESSION['message']; ?>
                     </h6>
                 <?php endif ?>

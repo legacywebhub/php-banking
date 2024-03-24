@@ -147,10 +147,14 @@
               <a href="kycs" class="nav-link"><i data-feather="user-check"></i><span>KYC</span></a>
             </li>
             <li class="dropdown">
-              <a href="virtual-cards" class="nav-link"><i data-feather="credit-card"></i><span>Virtual Cards</span></a>
+              <a href="#" class="menu-toggle nav-link has-dropdown"><i data-feather="dollar-sign"></i><span>Monetary</span></a>
+              <ul class="dropdown-menu">
+                <li><a class="nav-link" href="loans">Loans</a></li>
+                <li><a class="nav-link" href="payments">Payments</a></li>
+              </ul>
             </li>
             <li class="dropdown">
-              <a href="loans" class="nav-link"><i data-feather="dollar-sign"></i><span>Loans</span></a>
+              <a href="virtual-cards" class="nav-link"><i data-feather="credit-card"></i><span>Virtual Cards</span></a>
             </li>
             <li class="menu-header">Utilities</li>
             <li class="dropdown">

@@ -49,7 +49,7 @@ if ($_SERVER["REQUEST_METHOD"]=="POST") {
     // Calculating loan parameters
     $interest = ($loan_interest_rate / 100) * $amount;
     $total_returns = $amount + $interest;
-    $monthly_returns = $total_returns / $duration_in_months;
+    $monthly_payment = $total_returns / $duration_in_months;
 
     // Declaring database variables for user as PHP array
     $data = [
@@ -58,14 +58,14 @@ if ($_SERVER["REQUEST_METHOD"]=="POST") {
         'duration_in_months' => $duration_in_months,
         'remark' => sanitize_input($data['remark']),
         'interest'=> $interest, 'total_returns'=> $total_returns,
-        'monthly_returns'=> $monthly_returns,
+        'monthly_payment'=> $monthly_payment,
         'user_monthly_income'=> sanitize_input($data['user_monthly_income'])
     ];
 
     try {
         // Making a query to insert loan details into the database
-        $sql = "INSERT INTO loans (user_id, loan_id, currency, amount, duration_in_months, remark, interest, total_returns, monthly_returns, user_monthly_income) 
-        VALUES (:user_id, :loan_id, :currency, :amount, :duration_in_months, :remark, :interest, :total_returns, :monthly_returns, :user_monthly_income)";
+        $sql = "INSERT INTO loans (user_id, loan_id, currency, amount, duration_in_months, remark, interest, total_returns, monthly_payment, user_monthly_income) 
+        VALUES (:user_id, :loan_id, :currency, :amount, :duration_in_months, :remark, :interest, :total_returns, :monthly_payment, :user_monthly_income)";
         $loanID = intval(query_return_id($sql, $data));
         // Refetching loan to pass to frontend
         $loan = query_fetch("SELECT * FROM loans WHERE id = $loanID LIMIT 1")[0];
