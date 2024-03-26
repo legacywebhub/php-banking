@@ -66,8 +66,6 @@
                                         -
                                     <?php elseif($virtual_card['status'] == "active"): ?>
                                         <div class="badge badge-success">Active</div>
-                                    <?php elseif($virtual_card['status'] == "pending"): ?>
-                                        <div class="badge badge-warning">Pending</div>
                                     <?php else: ?>
                                         <div class="badge badge-danger"><?=ucfirst($virtual_card['status']); ?></div>
                                     <?php endif ?>

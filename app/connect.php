@@ -182,7 +182,7 @@ function create_tables() {
     // Valid till - 01/10
     // Approved date is the date after admin approves after confirming user's card payment
     // Expiry date is calculated expiry date from approved date
-    // status - null, pending, declined, active, inactive, expired
+    // status - null, active, inactive, expired
     /*
         The idea is to check for card expiry date each time a user tries to use the card
         if (expired){delete the card} else {perform transaction};  

@@ -88,7 +88,9 @@
                                         <li>
                                             <div class="user-panel">
                                                 <span>
-                                                    <a href="#" class="login-btn">Login</a>or</span><a href="#" class="register-btn">Register</a>
+                                                    <a href="#" class="login-btn">Login</a>or
+                                                </span>
+                                                <a href="#" class="register-btn">Register</a>
                                             </div>
                                         </li>
                                     </ul>
@@ -112,7 +114,7 @@
                                     </div>
                                     <div class="col-xl-12 col-lg-12 col-8 d-xl-block d-lg-block d-flex align-items-center justify-content-end">
                                         <div class="logo">
-                                            <a href="index.html">
+                                            <a href="home">
                                                 <img src="<?=STATIC_ROOT; ?>/landing/img/logo.png" alt="">
                                             </a>
                                         </div>
@@ -148,7 +150,7 @@
                                                 </li>
 
                                                 <li class="nav-item">
-                                                    <a class="nav-link" href="faq">faq<span class="sr-only">(current)</span></a>
+                                                    <a class="nav-link" href="loans">Our Loans</a>
                                                 </li>
 
                                                 <li class="nav-item dropdown show">
@@ -157,14 +159,13 @@
                                                     </a>
                                                     <div class="dropdown-menu" aria-labelledby="pagesDropdown">
                                                         <a class="dropdown-item" href="faq">Faq</a>
-                                                        <a class="dropdown-item" href="privacy-policy">privacy & policy</a>
-                                                        <a class="dropdown-item" href="login">Login</a>
-                                                        <a class="dropdown-item" href="register">Register</a>
+                                                        <a class="dropdown-item" href="privacy-policy">Privacy Policy</a>
+                                                        <a class="dropdown-item" href="tac">Terms & Conditions</a>
                                                     </div>
                                                 </li>
 
                                                 <li class="nav-item">
-                                                    <a class="nav-link" href="contact">contact</a>
+                                                    <a class="nav-link" href="contact">Contact</a>
                                                 </li>
 
                                                 <li class="nav-item join-now-btn">

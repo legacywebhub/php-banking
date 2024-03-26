@@ -2129,7 +2129,11 @@
     .section-title {
         margin-bottom: 39px;
     }
-    .section-title h2 {
+    .section-title h2,
+    .section-title h3,
+    .section-title h4,
+    .section-title h5,
+    .section-title h6 {
         font-size: 28px;
         line-height: 38px;
         margin-bottom: 12px;

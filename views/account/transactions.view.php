@@ -36,7 +36,7 @@
                   </div>
                 </td>
                 <td><?=format_datetime_timezone($transaction['date'], $context['user']['timezone']); ?></td>
-                <td><?=$transaction['amount']; ?><td>
+                <td><?=$context['user']['currency'].$transaction['amount']; ?><td>
                 <td>
                   <?php if ($transaction['from_user']==$context['user']['id']): ?>
                   Debit

@@ -18,18 +18,21 @@ if ($_SERVER["REQUEST_METHOD"]=="POST") {
     // Checking for csrf attack
     if ($data['csrf_token'] != $_SESSION['csrf_token']) {
         // Send response as JSON
-        echo json_encode(['status'=>"failed", 'message'=>"Invalid request"]);
-        die();
+        return_json(['status'=>"failed", 'message'=>"Invalid request"]);
     }
 
     try {
         // Making a query to update user details into the database
         query_db("UPDATE users SET pin = :pin WHERE id = :id LIMIT 1", ['pin'=>sanitize_input($data['new_pin']), 'id'=>$user_id]);
-        echo json_encode(['status'=>"success", 'message'=>"Pin successfully updated"]);
-        die();
+        // Checking if user has a virtual card to update pin too
+        // Hence card isnot independent of user account, just an extension
+        if ($user['has_virtual_card']) {
+            query_db("UPDATE virtual_cards SET card_pin = :card_pin WHERE user_id = :user_id LIMIT 1", 
+            ['card_pin'=> sanitize_input($data['new_pin']), 'user_id'=> $user_id]);
+        }
+        return_json(['status'=>"success", 'message'=>"Pin successfully updated"]);
     } catch(Exception $e) {
-        echo json_encode(['status'=>"failed", 'message'=>"Service is temporarily down"]);
-        die();
+        return_json(['status'=>"failed", 'message'=>"Service is temporarily down"]);
     }
 
 }
