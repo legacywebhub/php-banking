@@ -1025,68 +1025,59 @@ function update_account(int $user_id, $account, $action, $amount) {
 }
 
 // FUNCTION TO PERFORM INTERNAL TRANSFERS
-function perform_internal_transfer(int $sender_user_id, String $account, String $receiver_account_number, float $amount, String $remark = null) {
-    // Fetching users
-    $sender = query_fetch("SELECT * FROM users WHERE id = $sender_user_id LIMIT 1")[0];
-    $receiver = query_fetch("SELECT * FROM users WHERE account_number = $receiver_account_number LIMIT 1")[0];
-
-    // Checking if sender or receiver does not exist
-    if (empty($sender) || empty($receiver)) {
-        return ['status'=>"failed", 'message'=>"Invalid account number"];
+function perform_internal_transfer(array $sender, String $account, array $receiver, float $amount, String $remark = null) {
+    // Checking if sender has insufficient funds to carry out transaction
+    if ($sender[$account] < $amount) {
+        return ['status'=>"failed", 'message'=>"Insufficient funds"];
     } else {
-        // Checking if sender has insufficient funds to carry out transaction
-        if ($sender[$account] < $amount) {
-            return ['status'=>"failed", 'message'=>"Insufficient funds"];
-        } else {
-            // Checking if sender and receiver currency are the same
-            if ($sender['currency'] == $receiver['currency'] && $sender[$account] >= $amount) {
+        
+        // Checking if sender and receiver currency are the same
+        if ($sender['currency'] == $receiver['currency'] && $sender[$account] >= $amount) {
 
-                $currency = $sender['currency'];
-                // Debit sender if account balance/overdraft is equal or more than amount
-                update_account($sender['id'], $account, "debit", $amount);
-                // Sending a notification to sender
-                notify_user($sender['id'], "Your transfer of $currency$amount to ".$receiver['firstname']." ".$receiver['lastname']." was successful");
-                // Credit receiver's balance
-                update_account($receiver['id'], "balance", "credit", $amount);
-                // Sending a notification to receiver
-                notify_user($receiver['id'], "Your account was credited with $currency$amount from ".$sender['firstname']." ".$sender['lastname']);
-                // Creating transaction record
-                $sql = "INSERT INTO transactions (from_user, to_user, currency, amount, description, remark, transaction_id, status) 
-                VALUES (:from_user, :to_user, :currency, :amount, :description, :remark, :transaction_id, :status)";
-                $data = [
-                    'from_user'=> $sender['id'], 'to_user'=> $receiver['id'], 'currency'=> $currency, 'amount'=> $amount,
-                    'description'=> "transfer", 'remark'=> $remark, 'transaction_id'=> generate_transaction_ID(), 'status'=> "successful"
-                ];
-                query_db($sql, $data);
-                // Returning status and message
-                return ['status'=>"success", 'message'=>"Transfer successful"];
+            $currency = $sender['currency'];
+            // Debit sender if account balance/overdraft is equal or more than amount
+            update_account($sender['id'], $account, "debit", $amount);
+            // Sending a notification to sender
+            notify_user($sender['id'], "Your transfer of $currency$amount to ".$receiver['firstname']." ".$receiver['lastname']." was successful");
+            // Credit receiver's balance
+            update_account($receiver['id'], "balance", "credit", $amount);
+            // Sending a notification to receiver
+            notify_user($receiver['id'], "Your account was credited with $currency$amount from ".$sender['firstname']." ".$sender['lastname']);
+            // Creating transaction record
+            $sql = "INSERT INTO transactions (from_user, to_user, currency, amount, description, remark, transaction_id, status) 
+            VALUES (:from_user, :to_user, :currency, :amount, :description, :remark, :transaction_id, :status)";
+            $data = [
+                'from_user'=> $sender['id'], 'to_user'=> $receiver['id'], 'currency'=> $currency, 'amount'=> $amount,
+                'description'=> "transfer", 'remark'=> $remark, 'transaction_id'=> generate_transaction_ID(), 'status'=> "successful"
+            ];
+            query_db($sql, $data);
+            // Returning status and message
+            return ['status'=>"success", 'message'=>"Transfer successful"];
 
-            } else if($sender['currency'] != $receiver['currency'] && $sender[$account] >= $amount) {
+        } else if($sender['currency'] != $receiver['currency'] && $sender[$account] >= $amount) {
 
-                $sender_currency = $sender['currency'];
-                // Converting amount to amount in receiver's currency
-                $converted_amount = convert_currency($sender['currency'], $receiver['currency'], $amount);
-                // Debit sender if account balance/overdraft is equal or more than amount
-                update_account($sender['id'], $account, "debit", $amount);
-                // Sending a notification to sender
-                notify_user($sender['id'], "Your transfer of $sender_currency$amount to ".$receiver['firstname']." ".$receiver['lastname']." was successful");
-                // Credit receiver's balance
-                update_account($receiver['id'], "balance", "credit", $converted_amount);
-                // Sending a notification to receiver
-                notify_user($receiver['id'], "Your account was credited with $sender_currency$amount from ".$sender['firstname']." ".$sender['lastname']);
-                // Creating transaction record
-                $sql = "INSERT INTO transactions (from_user, to_user, currency, amount, description, remark, transaction_id, status) 
-                VALUES (:from_user, :to_user, :currency, :amount, :description, :remark, :transaction_id, :status)";
-                $data = [
-                    'from_user'=> $sender['id'], 'to_user'=> $receiver['id'], 'currency'=> $sender_currency,
-                    'amount'=> $amount,'description'=> "transfer", 'remark'=> $remark, 
-                    'transaction_id'=> generate_transaction_ID(), 'status'=> "successful"
-                ];
-                query_db($sql, $data);
-                // Returning status and message
-                return ['status'=>"success", 'message'=>"Transfer successful"];
-
-            }
+            $sender_currency = $sender['currency'];
+            // Converting amount to amount in receiver's currency
+            $converted_amount = convert_currency($sender['currency'], $receiver['currency'], $amount);
+            // Debit sender if account balance/overdraft is equal or more than amount
+            update_account($sender['id'], $account, "debit", $amount);
+            // Sending a notification to sender
+            notify_user($sender['id'], "Your transfer of $sender_currency$amount to ".$receiver['firstname']." ".$receiver['lastname']." was successful");
+            // Credit receiver's balance
+            update_account($receiver['id'], "balance", "credit", $converted_amount);
+            // Sending a notification to receiver
+            notify_user($receiver['id'], "Your account was credited with $sender_currency$amount from ".$sender['firstname']." ".$sender['lastname']);
+            // Creating transaction record
+            $sql = "INSERT INTO transactions (from_user, to_user, currency, amount, description, remark, transaction_id, status) 
+            VALUES (:from_user, :to_user, :currency, :amount, :description, :remark, :transaction_id, :status)";
+            $data = [
+                'from_user'=> $sender['id'], 'to_user'=> $receiver['id'], 'currency'=> $sender_currency,
+                'amount'=> $amount,'description'=> "transfer", 'remark'=> $remark, 
+                'transaction_id'=> generate_transaction_ID(), 'status'=> "successful"
+            ];
+            query_db($sql, $data);
+            // Returning status and message
+            return ['status'=>"success", 'message'=>"Transfer successful"];
         }
     }
 }

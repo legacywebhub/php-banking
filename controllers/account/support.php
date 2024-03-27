@@ -5,7 +5,7 @@ $user = user_logged_in();
 $user_id = $user['id'];
 
 // Deleting old notifications
-delete_old_notifications($user_id);
+//delete_old_notifications($user_id);
 
 // Variables
 $setting = query_fetch("SELECT * FROM settings ORDER BY id DESC LIMIT 1")[0];
@@ -21,22 +21,24 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Checking for csrf attack
     if ($data['csrf_token'] != $_SESSION['csrf_token']) {
         // Send response as JSON
-        echo json_encode(['status'=>"failed", 'message'=>"Invalid request"]);
-        die();
+        return_json(['status'=>"failed", 'message'=>"Invalid request"]);
     }
     // Process data here
-    $support_data = [
+    $data = [
         'name' => $user['fullname'], 'email' => $user['email'],
         'subject' => "Support", 'message' => sanitize_input($data['message'])
     ];
 
     try {
         $sql = "INSERT INTO messages (name, email, subject, message) VALUES (:name, :email, :subject, :message)";
-        $query = query_db($sql, $support_data);
-        sendMail($support_data['email'], $setting['email'], "Support", $support_data['message']);
-        return_json(['status'=>"success"]);
+        $query = query_db($sql, $data);
+        // Trying to send mail
+        sendMail($setting['email'], "Support", ['name'=>$user['fullname'], 'message'=>$data['message']]);
+        // Return success response
+        return_json(['status'=>"success", 'message'=>"Message successfully received"]);
     } catch(Exception $e) {
-        return_json(['status'=>"failed"]);
+        // Return failure response
+        return_json(['status'=>"failed", 'message'=>"Service unavailable at the moment"]);
     }
 }
 

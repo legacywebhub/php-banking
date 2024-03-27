@@ -16,7 +16,7 @@
   <link rel="stylesheet" href="<?=STATIC_ROOT; ?>/dashboard/css/components.css">
   <!-- Custom style CSS -->
   <link rel="stylesheet" href="<?=STATIC_ROOT; ?>/dashboard/css/custom.css">
-  <link rel='shortcut icon' type='image/x-icon' href="<?=STATIC_ROOT; ?>/dashboard/img/favicon.ico" />
+  <link rel='shortcut icon' type='image/x-icon' href="<?=STATIC_ROOT; ?>/landing/img/favicon.png" />
   <!-- InPage style CSS -->
   <style>
     .text-capitalize {
@@ -127,8 +127,9 @@
       <div class="main-sidebar sidebar-style-2">
         <aside id="sidebar-wrapper">
           <div class="sidebar-brand">
-            <a href="dashboard"> <img alt="image" src="<?=STATIC_ROOT; ?>/dashboard/img/logo2.png" class="header-logo" /> 
-              <span class="logo-name">Bank</span>
+            <a href="dashboard"> 
+              <!-- <img alt="image" src="<?=STATIC_ROOT; ?>/landing/img/logo.png" class="header-logo" />  -->
+              <span class="logo-name"><?=strtoupper($context['setting']['name']); ?></span>
             </a>
           </div>
           <ul class="sidebar-menu">

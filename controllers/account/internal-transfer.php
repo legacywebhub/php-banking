@@ -28,10 +28,12 @@ if ($_SERVER["REQUEST_METHOD"]=="POST") {
     $pin = sanitize_input($data['pin']);
 
     if ($pin == $user['pin']) {
+        // Fetching receiver
+        $receiver = query_fetch("SELECT * FROM users WHERE account_number = $receiver_account_number LIMIT 1")[0];
 
         // Cheking if account number is valid or tied to a user
-        if (!empty(query_fetch("SELECT * FROM users WHERE account_number = $receiver_account_number LIMIT 1"))) {
-            $transfer_details = perform_internal_transfer($user_id, $account, $receiver_account_number, $amount, $remark);
+        if (!empty($receiver)) {
+            $transfer_details = perform_internal_transfer($user, $account, $receiver, $amount, $remark);
         
             if ($transfer_details['status']=="success") {
                 // Refetching user to get updated account details

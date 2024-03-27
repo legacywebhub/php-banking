@@ -6,14 +6,14 @@
             </div>
 
             <div class="card-body p-0">
-                <form method="post" class="composeForm support-form">
-                    <input type="hidden" name="csrf_token" value="<?=$_SESSION['csrf_token']; ?>">
+                <form method="post" class="composeForm support-form" autocomplete="off">
                     <h4>Support</h4>
                     <P class="my-3">For inquiries, suggestions or complaints, mail us at</P>
                     <h5 class="mb-3"><?=$context['setting']['email']; ?></h5>
 
                     <div class="form-group">
                         <label>Message <span class="text-danger">*</span></label>
+                        <input type="hidden" name="csrf_token" value="<?=$_SESSION['csrf_token']; ?>">
                         <textarea name="message" maxlength="2999" class="form-control" required></textarea>
                     </div>
 

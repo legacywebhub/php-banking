@@ -14,8 +14,7 @@ if ($_SERVER["REQUEST_METHOD"]=="POST") {
     // Checking for csrf attack
     if ($data['csrf_token'] != $_SESSION['csrf_token']) {
         // Send response as JSON
-        echo json_encode(['status'=>"failed", 'message'=>"Invalid request"]);
-        die();
+        return_json(['status'=>"failed", 'message'=>"Invalid request"]);
     }
 
     try {
@@ -25,11 +24,9 @@ if ($_SERVER["REQUEST_METHOD"]=="POST") {
             'message'=> "Your OTP is: ".sanitize_input($data['otp'])
         ];
         sendMail($user['email'], "One Time Password", $email_values);
-        echo json_encode(['status'=>"success", 'message'=>"OTP forwarded successfully"]);
-        die();
+        return_json(['status'=>"success", 'message'=>"OTP forwarded successfully"]);
     } catch(Exception $e) {
-        echo json_encode(['status'=>"failed", 'message'=>"An error occured"]);
-        die();
+        return_json(['status'=>"failed", 'message'=>"An error occured"]);
     }
 
 }

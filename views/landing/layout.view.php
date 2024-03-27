@@ -9,7 +9,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?=$context['title']; ?></title>
     <!-- favicon -->
-    <link rel='shortcut icon' type='image/x-icon' href='<?=STATIC_ROOT; ?>/dashboard/img/favicon.ico' />
+    <link rel='shortcut icon' type='image/x-icon' href='<?=STATIC_ROOT; ?>/landing/img/favicon.png' />
     <!-- bootstrap -->
     <link rel="stylesheet" href="<?=STATIC_ROOT; ?>/landing/css/bootstrap.min.css">
     <!-- fontawesome icon  -->
@@ -122,7 +122,7 @@
                                     <div class="col-xl-12 col-lg-12 col-8 d-xl-block d-lg-block d-flex align-items-center justify-content-end">
                                         <div class="logo">
                                             <a href="home">
-                                                <img src="<?=STATIC_ROOT; ?>/landing/img/logo.png" alt="">
+                                                <img src="<?=STATIC_ROOT; ?>/landing/img/logo.png" width="150px" alt="">
                                             </a>
                                         </div>
                                     </div>
@@ -200,7 +200,7 @@
                                     <a href="home" class="logo">
                                         <img src="<?=STATIC_ROOT; ?>/landing/img/logo.png" alt="">
                                     </a>
-                                    <p>Banking evolved. For life in hyperspeed</p>
+                                    <p>Where business meets family</p>
                                     <div class="social-links">
                                         <ul>
                                             <li>

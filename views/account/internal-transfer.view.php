@@ -1,3 +1,9 @@
+<style>
+  .validate-account div {
+    cursor: pointer;
+  }
+</style>
+
 <div class="section-body">
   <div class="row">
     <div class="col-12 col-md-12 col-lg-12">
@@ -32,7 +38,7 @@
             <div class="form-group">
               <label>Account Number <span class="text-danger">*</span></label>
               <input type="text" name="account_number" class="form-control" minlength="10" maxlength="10" placeholder="51***910" onkeypress="return onlyNumberKey(event)" required>
-              <div id="validate-div">&nbsp;&nbsp;Validating..</div>
+              <div class="validate-account ml-1 mt-2"></div>
             </div>
             <div class="form-group">
               <label>Amount (<?=$context['user']['currency']; ?>) <span class="text-danger">*</span></label>
@@ -54,6 +60,7 @@
   </div>
 </div>
 
+<!-- Perform transfer script -->
 <script>
   let userBalance = document.querySelector('#balance'),
   userOverdraft = document.querySelector('#overdraft'),
@@ -130,4 +137,64 @@
       swal('Incorrect Pin', { icon: 'error',});
     }
   })
+</script>
+
+<!-- Perform account number validation -->
+<script>
+  // Get the input element & validation div
+  let accountInput = transferForm['account_number'],
+  validateBox = document.querySelector('.validate-account');
+
+  // Add an input event listener
+  accountInput.addEventListener('input', function() {
+      // Check if the length of the input value is >= 5
+      if (this.value.length >= 4) {
+        // Loading animation
+        validateBox.innerHTML = `Validating...<img width='20' src="<?=STATIC_ROOT; ?>/dashboard/img/spinner-white.svg">`;
+        
+        // Sending ajax request
+        fetch("<?=ROOT; ?>/account/validate-account", {
+          method: "POST",
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            'csrf_token': transferForm['csrf_token'].value, 
+            'account_number': this.value
+          })
+        })
+        .then((response)=>{
+          return response.json()
+        })
+        .then((data)=>{
+          if (data['status'] == "success" && data['matched_accounts'].length > 0) {
+            // Resetting color setting
+            validateBox.style.color = '#28a745';
+            // Clear the previous results
+            validateBox.innerHTML = ''
+            for(let i = 0; i < data['matched_accounts'].length; i++) {
+              // This account
+              account = data['matched_accounts'][i];
+              // Create a new div for each account
+              const accountDiv = document.createElement('div');
+              // Set the account name as the text content of the div
+              accountDiv.innerHTML = `${account['firstname']} ${account['lastname']}`;
+              // Add a click event listener to auto-complete the account number
+              accountDiv.addEventListener('click', function() {
+                accountInput.value = account['account_number'];
+              })
+              // Append the div to the validateBox
+              validateBox.appendChild(accountDiv);
+            }
+          } else {
+            validateBox.style.color = '#dc3545';
+            validateBox.innerHTML = `No matching accounts`;
+          }
+        })
+        .catch((err)=>{
+          validateBox.style.color = '#dc3545';
+          validateBox.innerHTML = `No matching accounts`;
+        })
+      }
+  });
 </script>
