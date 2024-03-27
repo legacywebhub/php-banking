@@ -35,7 +35,7 @@
                     <?=$_SESSION['message']; ?>
                   </h6>
                 <?php endif ?>
-                <form method="POST" class="needs-validation" novalidate="">
+                <form method="POST" class="needs-validation" novalidate="" autocomplete="off">
                   <input type="hidden" name="csrf_token" value="<?=$_SESSION['csrf_token']; ?>">
                   <div class="form-group">
                     <label for="email">Email</label>

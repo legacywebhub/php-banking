@@ -40,13 +40,13 @@
             <div class="row justify-content-around">
                 <div class="col-xl-6 col-lg-6 col-sm-10 col-md-6">
                     <div class="part-form">
-                        <form name="contact-form" method="post">
+                        <form name="contact-form" method="post" autocomplete="off">
                             <input type="hidden" name="csrf_token" value="<?=$_SESSION['csrf_token']; ?>">
-                            <input type="text" name="name" placeholder="Name">
-                            <input type="text" name="email" placeholder="Email">
-                            <input type="text" name="subject" placeholder="Subject">
-                            <textarea name="message" placeholder="Write to Us..."></textarea>
-                            <p class="my-2 message text-light"></p>
+                            <input type="text" name="name" placeholder="Name" required>
+                            <input type="text" name="email" placeholder="Email" required>
+                            <input type="text" name="subject" placeholder="Subject" required>
+                            <textarea name="message" placeholder="Write to Us..." required></textarea>
+                            <p class="mb-2 text-center text-light message"></p>
                             <button class="submit-btn def-btn"><span class="btn-text">Submit</span></button>
                         </form>
                     </div>
@@ -88,16 +88,6 @@
     contactForm.addEventListener('submit', (e)=> {
         e.preventDefault()
 
-        let data = {
-            'name': contactForm['name'].value,
-            'email': contactForm['email'].value,
-            'subject': contactForm['subject'].value,
-            'message': contactForm['message'].value,
-            'csrf_token': contactForm['csrf_token'].value,
-        };
-
-        console.log(data);
-
         // Loading animation
         let btnText = contactBtn.querySelector('.btn-text');
         btnText.innerHTML = `Sending...<img width='30px' src="<?=STATIC_ROOT; ?>/dashboard/img/spinner-white.svg">`;
@@ -110,7 +100,13 @@
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(data)
+                body: JSON.stringify({
+                    'name': contactForm['name'].value,
+                    'email': contactForm['email'].value,
+                    'subject': contactForm['subject'].value,
+                    'message': contactForm['message'].value,
+                    'csrf_token': contactForm['csrf_token'].value,
+                })
             })
             .then((response)=>{
                 return response.json()
@@ -120,6 +116,7 @@
                 if (data['status'] == 'success') {
                     contactForm.reset();
                     contactBtn.disabled = false;
+                    btnText.innerHTML = `Submit`;
                     msgBox.innerText = data['message'];
                     setTimeout(()=>{
                         msgBox.innerText = "";
@@ -137,10 +134,7 @@
                 contactBtn.disabled = false;
                 alert("Service not available at the moment");
             })
-        }, 3000);
-
-
+        }, 2000);
 
     });
-
 </script>

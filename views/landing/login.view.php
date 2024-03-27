@@ -30,14 +30,20 @@
                     <div class="row no-gutters">
                         <div class="col-xl-6 col-lg-6">
                             <div class="login-form">
-                                <form>
+                                <form name="login-form" method="post" autocomplete="off">
+                                    <?php if (isset($_SESSION['message'])): ?>
+                                        <h6 class="col-12 my-2 text-<?=$_SESSION['message_tag']; ?>" style="display: flex; justify-content: center;">
+                                            <?=$_SESSION['message']; ?>
+                                        </h6>
+                                    <?php endif ?>
+                                    <input type="hidden" name="csrf_token" value="<?=$_SESSION['csrf_token']; ?>">
                                     <div class="form-group">
-                                        <label for="exampleInputEmail1">Email address</label>
-                                        <input type="email" class="form-control" id="exampleInputEmail1">
+                                        <label for="email">Email address</label>
+                                        <input type="email" name="email" class="form-control" id="email" maxlength="60" required>
                                     </div>
                                     <div class="form-group">
-                                        <label for="exampleInputPassword1">Password</label>
-                                        <input type="password" class="form-control" id="exampleInputPassword1">
+                                        <label for="password">Password</label>
+                                        <input type="password" name="password" class="form-control" id="password" maxlength="100" required>
                                     </div>
                                     <div class="form-group form-check">
                                         <input type="checkbox" class="form-check-input" id="exampleCheck1">
@@ -46,12 +52,8 @@
                                     </div>
                                 </form>
                                 <div class="other-option">
-                                    <a href="#">register now</a>
-                                    <a href="#">forgot password?</a>
-                                </div>
-                                <div class="login-by-social">
-                                    <a href="#" class="login-fb"><i class="fab fa-facebook-f"></i>Login with facefook</a>
-                                    <a href="#" class="login-gl"><i class="fab fa-google"></i>Login with google</a>
+                                    <a href="register">register now</a>
+                                    <a href="forgot-password">forgot password?</a>
                                 </div>
                             </div>
                         </div>

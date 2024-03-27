@@ -76,12 +76,14 @@ if ($_SERVER["REQUEST_METHOD"]=="POST") {
         // Making an inactive/domant virtual card for user 
         $sql = "INSERT INTO virtual_cards (user_id) VALUES (:user_id)";
         $query = query_db($sql, ['user_id'=>$new_user_id]);
-        // Sending registeration success email
-        $email_values = [
-            'name'=> $data['firstname']." ".$data['lastname'], 
-            'message'=> "Welcome ".$data['firstname'].", your account was successfully created and you are now eligible to explore our ecosystem. Kindly login to get started!"
-        ];
-        sendMail($data['email'], "Registeration successful", $email_values);
+        try {
+            // Sending registeration success email
+            $email_values = [
+                'name'=> $data['firstname']." ".$data['lastname'], 
+                'message'=> "Welcome ".$data['firstname'].", your account was successfully created and you are now eligible to explore our ecosystem. Kindly login to get started!"
+            ];
+            sendMail($data['email'], "Registeration successful", $email_values);
+        } catch(Exception) {/*Pass*/}
         // Referral system
         if (!is_null($referrer_id)) {
             // Checking and retreiving user whose ref_id matches referrer_id

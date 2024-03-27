@@ -8,27 +8,8 @@
                     <h1>FAST AND STABLE BANKING</h1>
                     <p class="lead"><?=$context['setting']['domain']; ?> is the best and secured way of performing transactions to people all over the world. No matter where you are in the world, you can save and transact with people conveniently and confidently</p>
                     <p class="lead"> Join over 70,000 users from all over the world satisfied with our services. A place where everyone performs transactions with confidence. Even with a history of hefty technological investments and an even larger donations, consumer and investor confidence has never waned. </p>
-                    <div class="banner-statics my-5">
-                        <div class="single-statics">
-                            <div class="part-icon">
-                                <img src="<?=STATIC_ROOT; ?>/landing/img/svg/start.svg" alt="">
-                            </div>
-                            <div class="part-text">
-                                <span class="text">Starting Date</span>
-                                <span class="number">Jan 01, 2020</span>
-                            </div>
-                        </div>
-                        <div class="single-statics">
-                            <div class="part-icon">
-                                <img src="<?=STATIC_ROOT; ?>/landing/img/svg/user.svg" alt="">
-                            </div>
-                            <div class="part-text">
-                                <span class="text">Online Users</span>
-                                <span class="number">50257.001+</span>
-                            </div>
-                        </div>
-                    </div>
-                    <a href="#" class="btn-hyipox mt-5">Create An Account Now</a>
+
+                    <a href="register" class="btn-hyipox mt-5">Get Started Now</a>
                 </div>
             </div>
         </div>
@@ -185,7 +166,7 @@
                         </div>
                         <div class="part-text">
                             <span class="counter">$265M+</span>
-                            <span class="title">amounted in transaction</span>
+                            <span class="title">amounted in transactions</span>
                         </div>
                     </div>
                 </div>
@@ -270,7 +251,7 @@
                         <a href="register" class="btn-hyipox-medium cta-btn">Get Started Now</a>
                     </div>
                 </div>
-                <div class="col-xl-4 col-lg-4 d-xl-flex d-lg-flex justify-content-end d-block align-items-center ml-3">
+                <div class="col-xl-4 col-lg-4 d-xl-flex d-lg-flex justify-content-end d-block align-items-center ml-5 my-5">
                     <img src="<?=STATIC_ROOT; ?>/landing/img/about-img1.jpg" width="500px" alt="">
                     <!-- <div class="part-video">
                         <img src="<?=STATIC_ROOT; ?>/landing/img/revenue-operations-concept.jpg" alt="">
@@ -600,7 +581,7 @@
                         <?php else: ?>
                             <img src="https://lh3.googleusercontent.com/proxy/A1Py2LUVZvtjLdCUbJc8zV4_WRHHUeRMTeCFxXJXQ8TReawzEMfiDTvv1WRpA-mc6It8d0vp3W3mapLiNYmOnXUpyazhOQpa_zPbbm9jloWY4H9MmBcG" height="150px" alt="News Image">
                         <?php endif ?>
-                        <a href="#"><i class="far fa-eye"></i></a>
+                        <a href="<?=$news['url']; ?>"><i class="far fa-eye"></i></a>
                         <div class="post-date">
                             <span class="date">26</span>
                             <span class="month">JAn</span>

@@ -3,9 +3,6 @@
 $setting = query_fetch("SELECT * FROM settings ORDER BY id DESC LIMIT 1")[0];
 $title = $setting['name'] . " | Contact Us";
 
-// Generating CSRF Token
-$csrf_token = generate_csrf_token();
-
 // Handling incoming AJAX request
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Get JSON data from the request body
@@ -27,9 +24,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     try {
         $sql = "INSERT INTO messages (name, email, subject, message) VALUES (:name, :email, :subject, :message)";
         $query = query_db($sql, $input_data);
-        // Sending registeration success email
-        $email_values = ['name'=> "Admin", 'message'=> $input_data['message']];
-        sendMail($setting['email'], "Contact Message", $email_values);
+        // Notifying Admin
+        //$email_values = ['name'=> "Admin", 'message'=> $input_data['message']];
+        //sendMail($setting['email'], "Contact Message", $email_values);
         $response = ['status'=> "success", 'message'=> "Message was successfully received"];
     } catch(Exception $e) {
         $response = ['status'=> "failed", 'message'=> "Service unavailable at the moment"];
@@ -37,6 +34,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Send response as JSON
     return_json($response);
 }
+
+// Generating CSRF Token
+$csrf_token = generate_csrf_token();
 
 $context = [
     'setting'=> $setting,

@@ -6,8 +6,6 @@ $title = ucfirst($setting['name'])." | Login";
 
 // Handling sign in request
 if ($_SERVER["REQUEST_METHOD"] == "POST" && $_POST['csrf_token'] === $_SESSION['csrf_token']) {
-    // Checking for which form was submitted using the name on the button
-    // Returns true or false depending on whether it is set or not
 
     $email = sanitize_input($_POST['email']);
     $password = sanitize_input($_POST['password']);
