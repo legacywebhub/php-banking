@@ -52,7 +52,7 @@
                                 <td><?=$user['id']; ?></td>
                                 <td>
                                     <?php if ($user_kyc['status']=="approved"): ?>
-                                        <a href="<?=MEDIA_ROOT; ?>/images/users/<?=$user_kyc['passport']; ?>" target="_blank"><img  class="user-img-radious-style" width="50px" src="<?=MEDIA_ROOT; ?>/images/users/<?=$user_kyc['passport']; ?>"></a>
+                                        <a href="<?=MEDIA_ROOT; ?>/documents/<?=$user_kyc['passport']; ?>" target="_blank"><img  class="user-img-radious-style" width="50px" src="<?=MEDIA_ROOT; ?>/documents/<?=$user_kyc['passport']; ?>"></a>
                                     <?php else: ?>
                                         <img class="user-img-radious-style" width="50px" src="<?=STATIC_ROOT; ?>/dashboard/img/default_user.png">
                                     <?php endif ?>

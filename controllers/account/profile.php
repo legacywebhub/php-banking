@@ -15,27 +15,25 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && $_POST['csrf_token'] === $_SESSION['
     // Checking to see if user has a pending KYC application
     if ($user['kyc']['status']=='pending' || $user['kyc']['status']=='approved') {
         // Send response as JSON
-        echo json_encode(['status'=>"failed", 'message'=>"You already have a KYC application"]);
-        die();
+        return_json(['status'=>"failed", 'message'=>"You already have a KYC application"]);
     }
 
     // Variables
-    $passport = upload_image($_FILES['passport'], 'images/users');
-    $id_upload = upload_document($_FILES['id-image'], 'documents');
+    $passport = upload_image($_FILES['passport'], 'documents');
+    $id_upload = upload_document($_FILES['id_upload'], 'documents');
 
     // Validation
     if ($passport['status'] != "success" || $id_upload['status'] != "success") {
         // Send response as JSON
-        echo json_encode(['status'=>"failed", 'message'=>"Invalid file type or size"]);
-        die();
+        return_json(['status'=>"failed", 'message'=>"Invalid file type or size"]);
     }
 
     // Declaring database variables for user as PHP array
     $data = [
         'user_id' => $user_id,
         'passport' => $passport['new_file_name'],
-        'id_type' => sanitize_input($_POST['id-type']),
-        'id_number' => sanitize_input($_POST['id-number']),
+        'id_type' => sanitize_input($_POST['id_type']),
+        'id_number' => sanitize_input($_POST['id_number']),
         'id_upload' => $id_upload['new_file_name'],
         'status' => "pending"
     ];
@@ -44,10 +42,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && $_POST['csrf_token'] === $_SESSION['
         // Making a query to update kyc details into the database
         $sql = "UPDATE kycs SET passport = :passport, id_type = :id_type, id_number = :id_number, id_upload = :id_upload, status = :status WHERE user_id = :user_id LIMIT 1";
         query_db($sql, $data);
-        echo json_encode(['status'=>"success", 'message'=>"KYC application successful"]);
-        die();
+        return_json(['status'=>"success", 'message'=>"KYC application successful"]);
     } catch(Exception $e) {
-        echo json_encode(['status'=>"failed", 'message'=>"An error occured: $e"]);
+        return_json(['status'=>"failed", 'message'=>"An error occured: $e"]);
         die();
     }
 

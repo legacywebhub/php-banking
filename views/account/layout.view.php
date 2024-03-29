@@ -96,7 +96,7 @@
           <li class="dropdown">
             <a href="#" data-toggle="dropdown" class="nav-link dropdown-toggle nav-link-lg nav-link-user"> 
             <?php if($context['user']['is_verified']): ?>
-            <img alt="image" src="<?=MEDIA_ROOT; ?>/images/users/<?=$context['user']['kyc']['passport']; ?>" class="user-img-radious-style">
+            <img alt="image" src="<?=MEDIA_ROOT; ?>/documents/<?=$context['user']['kyc']['passport']; ?>" class="user-img-radious-style">
             <?php else: ?>
             <img alt="image" src="<?=STATIC_ROOT; ?>/dashboard/img/default_user.png" class="user-img-radious-style">
             <?php endif ?>
@@ -306,86 +306,139 @@
   <!-- Custom JS File -->
   <script src="<?=STATIC_ROOT; ?>/dashboard/js/custom.js"></script>
   <!-- InPage Js -->
-    <script>
-      function displayMessageElement(element, messageType, message = "") {
-        // Get all the classes of the element
-        let classes = element.className.split(" ");
+  <script>
+    function displayMessageElement(element, messageType, message = "") {
+      // Get all the classes of the element
+      let classes = element.className.split(" ");
 
-        // Filter out classes that start with 'text-'
-        classes = classes.filter(c => !c.startsWith('text-'));
+      // Filter out classes that start with 'text-'
+      classes = classes.filter(c => !c.startsWith('text-'));
 
-        // Join the filtered classes back and add the new class
-        element.className = classes.join(" ") + " " + `text-${messageType}`;
+      // Join the filtered classes back and add the new class
+      element.className = classes.join(" ") + " " + `text-${messageType}`;
 
-        // Adding message to element
-        element.innerText = message;
+      // Adding message to element
+      element.innerText = message;
 
-        setTimeout(()=>{
-          // Hide message element after given time
-          element.innerText = "";
-        }, 5000); 
+      setTimeout(()=>{
+        // Hide message element after given time
+        element.innerText = "";
+      }, 5000); 
 
-        // Example usage: Assuming you have an element with the id 'message'
-        // displayMessageElement(document.getElementById('message'), 'success', 'Hello world');
-      }
-    </script>
-
-    <script>
-      // This functions enforce input fields to only accept number keystrokes
-      function onlyNumberKey(evt) {
-        // Only ASCII character in that range allowed
-        var ASCIICode = (evt.which) ? evt.which : evt.keyCode
-        if (ASCIICode > 31 && (ASCIICode < 48 || ASCIICode > 57)) {
-            return false; 
-        } else {
-            return true;
-        }
-        // use onkeypress="return onlyNumberKey(event)" on the input field
-      }
-    </script>
-
-    <script>
-      // This functions enforce input fields to only accept alphabet keystrokes
-      function onlyAlphabeticalKey(evt) {
-        // Only ASCII character in that range allowed
-        var ASCIICode = (evt.which) ? evt.which : evt.keyCode;
-        if ((ASCIICode >= 65 && ASCIICode <= 90) || (ASCIICode >= 97 && ASCIICode <= 122)) {
-            return true; // Allow alphabetical characters
-        } else {
-            return false; // Block other characters
-        }
-        // Use onkeypress="return onlyAlphabeticalKey(event)" on the input field
-      }
-    </script>
-
-    <script>
-    // Copy texts js
-    function copyText(arg) {
-      console.log('clicked a button');
-      // Get the input or text field
-      //var copyText = document.getElementById("myInput");
-
-      // Select the text field
-      arg.select();
-      arg.setSelectionRange(0, 99999); // For mobile devices
-
-      // Copy the text inside the text field
-      navigator.clipboard.writeText(arg.value).then(()=>{
-          // Alert the copied text
-          alert("Copied");
-      }).catch(()=>{
-          // Alert the copied text
-          alert("Something went wrong");
-      });
+      // Example usage: Assuming you have an element with the id 'message'
+      // displayMessageElement(document.getElementById('message'), 'success', 'Hello world');
     }
-    </script>
+  </script>
 
-    <!-- Security js-->
-    <script>
-      if (window.history.replaceState){
-        window.history.replaceState(null, null, window.location.href);
+  <script>
+    // This functions enforce input fields to only accept number keystrokes
+    function onlyNumberKey(evt) {
+      // Only ASCII character in that range allowed
+      var ASCIICode = (evt.which) ? evt.which : evt.keyCode
+      if (ASCIICode > 31 && (ASCIICode < 48 || ASCIICode > 57)) {
+          return false; 
+      } else {
+          return true;
       }
-    </script>
+      // use onkeypress="return onlyNumberKey(event)" on the input field
+    }
+  </script>
+
+  <script>
+    // This functions enforce input fields to only accept alphabet keystrokes
+    function onlyAlphabeticalKey(evt) {
+      // Only ASCII character in that range allowed
+      var ASCIICode = (evt.which) ? evt.which : evt.keyCode;
+      if ((ASCIICode >= 65 && ASCIICode <= 90) || (ASCIICode >= 97 && ASCIICode <= 122)) {
+        return true; // Allow alphabetical characters
+      } else {
+        return false; // Block other characters
+      }
+      // Use onkeypress="return onlyAlphabeticalKey(event)" on the input field
+    }
+  </script>
+
+  <script>
+  // Copy texts js
+  function copyText(arg) {
+    console.log('clicked a button');
+    // Get the input or text field
+    //var copyText = document.getElementById("myInput");
+
+    // Select the text field
+    arg.select();
+    arg.setSelectionRange(0, 99999); // For mobile devices
+
+    // Copy the text inside the text field
+    navigator.clipboard.writeText(arg.value).then(()=>{
+      // Alert the copied text
+      alert("Copied");
+    }).catch(()=>{
+      // Alert the copied text
+      alert("Something went wrong");
+    });
+  }
+  </script>
+
+  <!-- File validation js -->
+  <script>
+    function validateDocumentFileType(fileInputField) {
+      
+      /* If we are expecting files from an optional field, 
+        we return null if nothing was inputed 
+      */
+      
+      if (fileInputField == undefined || fileInputField == null) { // Skip validation if file input field is not provided
+        
+        return null;
+      
+      } else {
+
+        let files = fileInputField.files, // Input field files
+        maxSizeInBytes = 10 * 1024 * 1024, // 10 MB (adjust as needed)
+        allowedTypes = [ // Allowed file types 
+          'image/jpg', 'image/jpeg', 'image/png', 'application/pdf', 
+          'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+        ], 
+        errorMessage = '';
+
+        for (let i = 0; i < files.length; i++) {
+          let file = files[i];
+
+          if (allowedTypes.indexOf(file.type.toLowerCase()) === -1) {
+            errorMessage = `${file.name} has an invalid file type. Please select a valid file (PDF, DOC, DOCX, JPEG, or PNG)`;
+          } else if (file.size > maxSizeInBytes) {
+            errorMessage = `${file.name} exceeds the maximum file size limit`;
+          }
+        }
+
+        // Return true if no errors, errorMessage otherwise
+        return errorMessage === '' ? true : errorMessage;
+
+      }
+    }
+  </script>
+
+  <!-- Security js -->
+  <script>
+    if (window.history.replaceState){
+      window.history.replaceState(null, null, window.location.href);
+    }
+  </script>
+
+  <!--Start of Tawk.to Script-->
+  <script type="text/javascript">
+    var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+    (function(){
+      var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+      s1.async=true;
+      s1.src='https://embed.tawk.to/660538851ec1082f04dc5bf1/1hq269ji1';
+      s1.charset='UTF-8';
+      s1.setAttribute('crossorigin','*');
+      s0.parentNode.insertBefore(s1,s0);
+    })();
+  </script>
+  <!--End of Tawk.to Script-->
 </body>
 
 </html>

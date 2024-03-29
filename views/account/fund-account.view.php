@@ -56,50 +56,50 @@
   fundForm.addEventListener('submit', (e)=>{
     e.preventDefault();
 
-    // Loading animation
-    btnText.innerHTML = `Please wait...<img width='20' src="<?=STATIC_ROOT; ?>/dashboard/img/spinner-white.svg">`;
-    fundBtn.disabled = true;
+    if (fundForm['method'].value != "usdt") {
+      swal("Channel is temporarily unavailablle at the moment", {icon: 'error'});
+    } else {
+      // Loading animation
+      btnText.innerHTML = `Please wait...<img width='20' src="<?=STATIC_ROOT; ?>/dashboard/img/spinner-white.svg">`;
+      fundBtn.disabled = true;
 
-    fetch(window.location.href, {
-        method: "POST",
-        headers: {
+      setTimeout(()=>{
+        fetch(window.location.href, {
+          method: "POST",
+          headers: {
             'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          'csrf_token': fundForm['csrf_token'].value,
-          'amount': fundForm['amount'].value,
-          'purpose': fundForm['purpose'].value,
-          'method': fundForm['method'].value,
+          },
+          body: JSON.stringify({
+            'csrf_token': fundForm['csrf_token'].value,
+            'amount': fundForm['amount'].value,
+            'purpose': fundForm['purpose'].value,
+            'method': fundForm['method'].value,
+          })
         })
-    })
-    .then((response)=>{
-        return response.json()
-    })
-    .then((data)=>{
-        console.log(data);
-        if (data['status'] == "success") {
+        .then((response)=>{
+          return response.json()
+        })
+        .then((data)=>{
+          console.log(data);
+          if (data['status'] == "success") {
+            btnText.innerHTML = `Success`;
+            fundBtn.disabled = true;
             setTimeout(()=>{
-              btnText.innerHTML = `Success`;
-              fundBtn.disabled = true;
-              setTimeout(()=>{
-                window.location.href = data['payment_url'];
-              }, 2000);
-            }, 3000);
-        } else {
-          setTimeout(()=>{
+              window.location.href = data['payment_url'];
+            }, 1000);
+          } else {
             btnText.innerHTML = `Proceed`;
             fundBtn.disabled = false;
             swal(data['message'], {icon: 'error'});
-          }, 3000);
-        }
-    })
-    .catch((err)=>{
-        console.log(err);
-        btnText.innerHTML = `Proceed`;
-        fundBtn.disabled = false;
-        swal('Service is temporarily down');
-    })
-
-
+          }
+        })
+        .catch((err)=>{
+          console.log(err);
+          btnText.innerHTML = `Proceed`;
+          fundBtn.disabled = false;
+          swal('Service is temporarily down');
+        })
+      }, 2000);
+    }
   })
 </script>

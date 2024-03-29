@@ -20,6 +20,7 @@
                     <th>Loan ID</th>
                     <th>Amount</th>
                     <th>Duration</th>
+                    <th>Paid</th>
                     <th>Status</th>
                     <th>Action</th>
                   </tr>
@@ -39,6 +40,7 @@
                           <td><?=$loan['loan_id']; ?></td>
                           <td><?=$loan['currency'].$loan['amount']; ?></td>
                           <td><?=$loan['duration_in_months']; ?> Months</td>
+                          <td><?=$loan['currency'].$loan['paid']; ?></td>
                           <td class="status">
                               <?php if($loan['status']=='active'): ?>
                               <div class="badge badge-success">Active</div>
@@ -50,7 +52,13 @@
                               <div class="badge badge-danger">Declined</div>
                               <?php endif ?>
                           </td>
-                          <td><a href="loan?loan_id=<?=$loan['loan_id']; ?>" class="btn btn-outline-primary">View</a></td>
+                          <td>
+                            <?php if($loan['status']=='pending'): ?>
+                              <a href="process-loan?loan_id=<?=$loan['loan_id']; ?>" class="btn btn-outline-warning">Process</a>
+                            <?php else: ?>
+                              <a href="loan?loan_id=<?=$loan['loan_id']; ?>" class="btn btn-outline-primary">View</a>
+                            <?php endif ?>
+                          </td>
                       </tr>
                       <?php endforeach ?>
                   <?php else: ?>

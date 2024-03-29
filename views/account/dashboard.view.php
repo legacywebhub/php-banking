@@ -247,7 +247,7 @@
                   <td><?=$context['user']['currency'].$payment['amount']; ?></td>
                   <td><?=ucwords($payment['method']); ?></td>
                   <td><?=ucwords($payment['status']); ?></td>
-                  <td><a href="payment?payment_id=<?=$payment['id']; ?>" class="btn btn-outline-primary">View</a></td>
+                  <td><a href="payment?payment_id=<?=$payment['payment_id']; ?>" class="btn btn-outline-primary">View</a></td>
                 </tr>
                 <?php endforeach ?>
               </tbody>

@@ -4,8 +4,6 @@
 $user = user_logged_in();
 $user_id = $user['id'];
 
-// Deleting old notifications
-//delete_old_notifications($user_id);
 
 // Variables
 $setting = query_fetch("SELECT * FROM settings ORDER BY id DESC LIMIT 1")[0];
@@ -42,6 +40,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 }
 
+// Deleting old notifications
+delete_old_notifications($user_id);
 // Generating CSRF Token
 $csrf_token = generate_csrf_token();
 

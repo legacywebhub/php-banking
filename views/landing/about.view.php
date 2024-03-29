@@ -81,7 +81,7 @@
         </div>
     </div>
     <div class="container my-3 text-center">
-        <img src="<?=STATIC_ROOT; ?>/landing/img/banner-bg.jpg" width="100%">
+        <img src="<?=STATIC_ROOT; ?>/landing/img/business-people.jpg" width="100%">
     </div>
 </div>
 <!-- about end -->

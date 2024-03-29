@@ -1,127 +1,87 @@
-<section class="section">
-    <div class="section-body">
-      <div class="invoice">
-        <div class="invoice-print">
-          <div class="row">
-            <div class="col-12 col-md-9 col-lg-9">
-              <div class="invoice-title">
-                <h2>Invoice</h2>
-                <div class="invoice-number">Order #12345</div>
-              </div>
-              <hr>
-              <div class="row">
-                <div class="col-md-6">
-                  <address>
-                    <strong>Billed To:</strong><br>
-                    Sarah Smith<br>
-                    6404 Cut Glass Ct,<br>
-                    Wendell,<br>
-                    NC, 27591, USA
-                  </address>
-                </div>
-                <div class="col-md-6 text-md-right">
-                  <address>
-                    <strong>Shipped To:</strong><br>
-                    Keith Johnson<br>
-                    197 N 2000th E<br>
-                    Rexburg, ID,<br>
-                    Springfield Center, USA
-                  </address>
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-md-6">
-                  <address>
-                    <strong>Payment Method:</strong><br>
-                    Visa ending **** 5687<br>
-                    test@example.com
-                  </address>
-                </div>
-                <div class="col-md-6 text-md-right">
-                  <address>
-                    <strong>Order Date:</strong><br>
-                    June 26, 2018<br><br>
-                  </address>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="row mt-4">
-            <div class="col-md-12">
-              <div class="section-title">Order Summary</div>
-              <p class="section-lead">All items here cannot be deleted.</p>
-              <div class="table-responsive">
-                <table class="table table-striped table-hover table-md">
-                  <tbody><tr>
-                    <th data-width="40" style="width: 40px;">#</th>
-                    <th>Item</th>
-                    <th class="text-center">Price</th>
-                    <th class="text-center">Quantity</th>
-                    <th class="text-right">Totals</th>
-                  </tr>
-                  <tr>
-                    <td>1</td>
-                    <td>Mouse Wireless</td>
-                    <td class="text-center">$10.99</td>
-                    <td class="text-center">1</td>
-                    <td class="text-right">$10.99</td>
-                  </tr>
-                  <tr>
-                    <td>2</td>
-                    <td>Keyboard Wireless</td>
-                    <td class="text-center">$20.00</td>
-                    <td class="text-center">3</td>
-                    <td class="text-right">$60.00</td>
-                  </tr>
-                  <tr>
-                    <td>3</td>
-                    <td>Headphone Blitz TDR-3000</td>
-                    <td class="text-center">$600.00</td>
-                    <td class="text-center">1</td>
-                    <td class="text-right">$600.00</td>
-                  </tr>
-                </tbody></table>
-              </div>
-              <div class="row mt-4">
-                <div class="col-lg-8">
-                  <div class="section-title">Payment Method</div>
-                  <p class="section-lead">The payment method that we provide is to make it easier for you to pay
-                    invoices.</p>
-                  <div class="images">
-                    <img src="assets/img/cards/visa.png" alt="visa">
-                    <img src="assets/img/cards/jcb.png" alt="jcb">
-                    <img src="assets/img/cards/mastercard.png" alt="mastercard">
-                    <img src="assets/img/cards/paypal.png" alt="paypal">
-                  </div>
-                </div>
-                <div class="col-lg-4 text-right">
-                  <div class="invoice-detail-item">
-                    <div class="invoice-detail-name">Subtotal</div>
-                    <div class="invoice-detail-value">$670.99</div>
-                  </div>
-                  <div class="invoice-detail-item">
-                    <div class="invoice-detail-name">Shipping</div>
-                    <div class="invoice-detail-value">$15</div>
-                  </div>
-                  <hr class="mt-2 mb-2">
-                  <div class="invoice-detail-item">
-                    <div class="invoice-detail-name">Total</div>
-                    <div class="invoice-detail-value invoice-detail-value-lg">$685.99</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+<style>
+.card-body {
+    width: 100%;
+    padding: 40px 20px !important;
+    font-size: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+.card-body P {
+    font-size: 16px;
+    white-space: pre-wrap;
+}
+input[type="file"] {
+    padding: 5px 10px;
+    border: 1px solid rgba(0, 0, 255, 0.6);
+}
+@media screen and (max-width: 500px) {
+    .card-body p, .input-group input[type='file'] {
+        font-size: 14px;
+        width: 100%;
+    }
+    .input-group {
+        width: 90%;
+    }
+    .input-group input {
+        width: 50%;
+    }
+    input[type="file"], input[type="text"]  {
+        font-size: 14px;
+    }
+}
+</style>
+
+<div class="row">
+  <div class="col-lg-12 grid-margin stretch-card">
+    <div class="card card-primary">
+      <div class="card-body">
+       <div>
+        <p><b>You are about to make funding of <?=$context['user']['currency'].$context['payment']['amount']; ?> using your selected payment method</b></p>
+        <P>For quicker approval, screenshot and upload the proof of payment</P>
+        <p>Copy the <b class="text-lowercase"><?=$context['payment']['method']; ?></b> address below and proceed to make payment</p>
+        <div class="input-group">
+            <input type="text" id="wallet-address" readonly class="form-control file-upload-info bg-primary text-light" value="<?=$context['payment']['payment_address']; ?>">
+            <span class="input-group-append">
+                <button class="file-upload-browse btn btn-secondary copy-button" type="button"><i class="fas fa-copy"></i></button>
+            </span>
         </div>
-        <hr>
-        <div class="text-md-right">
-          <div class="float-lg-left mb-lg-0 mb-3">
-            <button class="btn btn-primary btn-icon icon-left"><i class="fas fa-credit-card"></i> Process
-              Payment</button>
-            <button class="btn btn-danger btn-icon icon-left"><i class="fas fa-times"></i> Cancel</button>
-          </div>
-          <button class="btn btn-warning btn-icon icon-left"><i class="fas fa-print"></i> Print</button>
-        </div>
+        <p><small>Network type: <?=$context['payment']['payment_network']; ?></small></p>
+        <p>Or scan the QR code below</p>
+        <div id="qrcode"></div><br>
+        <p>Upload payment proof after payment</p>
+        <form class="forms-sample" enctype="multipart/form-data" method="post" autocomplete="off">
+        <div class="input-group">
+            <input type="hidden" name="csrf_token" value="<?=$_SESSION['csrf_token']; ?>">
+            <input type="hidden" name="payment_id" value="<?=$context['payment']['payment_id']; ?>">
+            <input type="file" name="payment_proof" accept=".jpeg, .jpg, .png" required>
+        </div><small class="text-danger">Accepted file types are jpeg, jpg and png only</small><br><br>
+        <?php if (isset($_SESSION['message'])): ?>
+        <h5 class="text-<?=$_SESSION['message_tag']; ?>"><?=$_SESSION['message']; ?></h5><br>
+        <?php endif ?>
+        <button name="complete-payment" class="btn btn-primary btn-lg">Submit</button>
+        </form>
+       </div>
       </div>
     </div>
-  </section>
+  </div>
+</div>
+
+<!-- QRCode js Library -->
+<script src="<?=STATIC_ROOT; ?>/dashboard/js/qrcode.min.js"></script>
+
+<script>
+let walletAddress = document.querySelector('#wallet-address'),
+  copyBtn = document.querySelector('.copy-button');
+
+copyBtn.addEventListener('click', ()=>{copyText(walletAddress)});
+</script>
+
+<script>
+// Create a QR code instance with the text
+const qrCode = new QRCode(document.getElementById("qrcode"), {
+  text: "<?=$context['payment']['payment_address']; ?>",
+  width: 200,
+  height: 200,
+});
+</script>

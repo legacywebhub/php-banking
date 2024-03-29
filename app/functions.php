@@ -259,7 +259,7 @@ function format_datetime_timesince($datetime, $timezone = null) {
 
 // FUNCTION TO GENERATE UNIQUE ID
 function generate_unique_id($length = 10) {
-    $characters = '0123456789abcdefghijklmnopqrstuvwxyz'; // Characters to choose from
+    $characters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'; // Characters to choose from
     $id = '';
 
     for ($i = 0; $i < $length; $i++) {
@@ -421,20 +421,19 @@ function upload_document($file, string $folder) {
 
     if ($file_error === 0) {
         // If no errors
-        if ($file_size > 5242880) {
+        if ($file_size > 10*1024*1024) { // 10MB
             $response = [
                 'status'=>"failed",
-                'message'=> "File size is too large. Maximum allowable file size is 5mb"
+                'message'=> "File size is too large. Maximum allowable file size is 10mb"
             ];
-        } else {
-            // If file size is below size limit
+        } else { // If file size is below size limit
 
             // Extracting file extension from file name
             $file_extension = pathinfo($file_name, PATHINFO_EXTENSION);
             // Setting file extension to lowercase
             $file_extension = strtolower($file_extension);
             // Allowable extensions
-            $accepted_extensions = array('jpeg', 'jpg', 'png', 'zip', 'rar', 'pdf', 'doc', 'docs', 'docx', 'csv', 'xlsx', 'ppt', 'jpeg', 'jpg');
+            $accepted_extensions = array('jpeg', 'jpg', 'png', 'pdf', 'doc', 'docs', 'docx');
 
             if (in_array($file_extension, $accepted_extensions)) {
                 // If file extension is among accepted extensions
@@ -484,15 +483,13 @@ function upload_multiple_documents($files, string $folder) {
         $file_error = $file['error'];
         
 
-        if ($file_error === 0 && $file_size < 5242880) {
-            // If no errors and file size is below size limit (5MB)
-    
+        if ($file_error === 0 && $file_size < 10*1024*1024) { // If no errors and file size is below size limit (10MB)
             // Extracting file extension from file name
             $file_extension = pathinfo($file_name, PATHINFO_EXTENSION);
             // Setting file extension to lowercase
             $file_extension = strtolower($file_extension);
             // Allowable extensions
-            $accepted_extensions = array('jpeg', 'jpg', 'png', 'zip', 'rar', 'pdf', 'doc', 'docs', 'docx', 'csv', 'xlsx', 'ppt', 'jpeg', 'jpg');
+            $accepted_extensions = array('jpeg', 'jpg', 'png', 'pdf', 'doc', 'docs', 'docx');
 
             if (in_array($file_extension, $accepted_extensions)) {
                 // If file extension is among accepted extensions

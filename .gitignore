@@ -8,7 +8,7 @@ env.bak/
 venv.bak/
 
 # Others
-media/images/users
+media/images/payments/
 media/documents/
 todo.txt
 test.php

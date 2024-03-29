@@ -43,7 +43,7 @@
               <div class="tab-pane fade show active" id="about" role="tabpanel" aria-labelledby="home-tab2">
                 <div class="user-profile text-center">
                     <?php if ($context['user']['is_verified']): ?>
-                        <img alt="user" src="<?=MEDIA_ROOT; ?>/images/users/<?=$context['user']['kyc']['passport']; ?>" class="rounded-circle user-image">
+                        <img alt="user" src="<?=MEDIA_ROOT; ?>/documents/<?=$context['user']['kyc']['passport']; ?>" class="rounded-circle user-image">
                     <?php else: ?>
                         <img alt="user" src="<?=STATIC_ROOT; ?>/dashboard/img/default_user.png" class="rounded-circle user-image">
                     <?php endif ?>
@@ -187,14 +187,14 @@
                         <div class="form-group mb-4">
                             <div class="col-sm-12 col-md-7">
                               <div id="image-preview" class="image-preview">
-                                <label for="image-upload" id="image-label">Choose Image</label>
-                                <input type="file" name="passport" id="image-upload" required>
+                                <label for="passport" id="image-label">Choose Image</label>
+                                <input type="file" name="passport" accept=".jpg, .jpeg, .png" id="passport" required>
                               </div>
                             </div>
                           </div>     
                         <div class="form-group">
                             <div class="section-title">ID Type <span class="text-danger">*</span></div>
-                            <select class="form-control selectric" name="id-type" required>
+                            <select class="form-control selectric" name="id_type" required>
                                 <option value="">Select</option>
                                 <option value="national id">National ID</option>
                                 <option value="drivers license">Drivers License</option>
@@ -203,14 +203,14 @@
                         </div>
                         <div class="form-group">
                             <div class="section-title">ID Number <span class="text-danger">*</span></div>
-                            <input type="number" maxlength="25" name="id-number" class="form-control" required>
+                            <input type="number" maxlength="25" name="id_number" class="form-control" required>
                         </div>
                         <div class="section-title">Upload ID <span class="text-danger">*</span></div>
                         <div class="form-group mb-4">
                             <div class="col-sm-12 col-md-7">
                                 <div id="image-preview2" class="image-preview">
-                                <label for="image-upload2" id="image-label2">Choose Image</label>
-                                <input type="file" name="id-image" id="image-upload2" required>
+                                <label for="id_upload" id="image-label2">Choose Image</label>
+                                <input type="file" name="id_upload" accept=".jpg, .jpeg, .png" id="id_upload" required>
                                 </div>
                             </div>
                         </div>

@@ -24,10 +24,12 @@
                 <div class="col-md-6 text-md-right">
                 <address>
                     <strong>Loan info:</strong><br><br>
+                    Type: <b><?=$context['loan']['loan_type']; ?></b><br>
                     Amount: <b><?=$context['user']['currency'].$context['loan']['amount']; ?></b><br>
                     Loan Duration: <?=$context['loan']['duration_in_months']." Months"; ?><br>
                     Calculated Interest: <b><?=$context['user']['currency'].$context['loan']['interest']; ?></b><br>
                     Total Returns: <b><?=$context['user']['currency'].$context['loan']['total_returns']; ?></b><br>
+                    Status:
                     <?php if ($context['loan']['status']=='pending'): ?>
                         <div class="badge badge-warning"><?=ucfirst($context['loan']['status']); ?></div>
                     <?php elseif($context['loan']['status']=='active'): ?>

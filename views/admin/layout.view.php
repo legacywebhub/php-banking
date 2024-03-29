@@ -96,7 +96,7 @@
           <li class="dropdown">
             <a href="#" data-toggle="dropdown" class="nav-link dropdown-toggle nav-link-lg nav-link-user"> 
             <?php if($context['admin']['is_verified']): ?>
-            <img alt="image" src="<?=MEDIA_ROOT; ?>/images/users/<?=$context['admin']['kyc']['passport']; ?>" class="user-img-radious-style">
+            <img alt="image" src="<?=MEDIA_ROOT; ?>/documents/<?=$context['admin']['kyc']['passport']; ?>" class="user-img-radious-style">
             <?php else: ?>
             <img alt="image" src="<?=STATIC_ROOT; ?>/dashboard/img/default_user.png" class="user-img-radious-style">
             <?php endif ?>

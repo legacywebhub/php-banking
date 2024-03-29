@@ -4,18 +4,20 @@
     </div>
     <div class="card-body">
       <form class="loan-form" method="post">
+          <h5 class="my-3">Personal Information</h5>
+          
           <input type="hidden" name="csrf_token" value="<?=$_SESSION['csrf_token']; ?>">
           <div class="form-group">
-            <label for="name">Name</label>
+            <label for="name">Name <span class="text-danger">*</span></label>
             <input type="text" class="form-control" id="name" name="name" placeholder="<?=$context['user']['fullname']; ?>" disabled>
           </div>
           <div class="form-row">
             <div class="form-group col-md-6">
-              <label for="amount">Amount (<?=$context['user']['currency']; ?>)</label>
+              <label for="amount">Amount (<?=$context['user']['currency']; ?>)<span class="text-danger">*</span></label>
               <input type="number" class="form-control" name="amount" maxlength="12" onkeypress="return onlyNumberKey(event)" required>
             </div>
             <div class="form-group col-md-6">
-              <label for="duration">Duration In Months</label>
+              <label for="duration">Duration In Months<span class="text-danger">*</span></label>
               <select class="form-control" name="duration_in_months" required>
               <option value="">Select Duration</option>
                 <option value=1>1 Month</option>
@@ -32,11 +34,11 @@
             </div>
           </div>
           <div class="form-group">
-            <label>Remark</label>
+            <label>Remark <span class="text-danger">*</span></label>
             <textarea class="form-control" maxlength="755" name="remark" placeholder="Purpose of loan" required></textarea>
           </div>
           <div class="form-group">
-            <label for="name">Approximated Monthly Income (<?=$context['user']['currency']; ?>)</label>
+            <label for="name">Approximated Monthly Income (<?=$context['user']['currency']; ?>)<span class="text-danger">*</span></label>
             <select class="form-control" name="user_monthly_income" required>
               <option value=2500>Less than 5000</option>
               <option value=5000>5000-10000</option>
@@ -48,6 +50,44 @@
               <option value=100000>100000-1000000</option>
               <option value=1000000>Greater than 1000000</option>
             </select>
+          </div>
+
+          <h5 class="my-5">Loan Information & Documents</h5>
+          
+          <div class="form-group">
+              <label>Loan Type<span class="text-danger">*</span></label>
+              <select class="form-control" name="loan_type" required>
+              <option value="">Select</option>
+                <option value="Unsecured Personal Loans">Unsecured Personal Loans</option>
+                <option value="Secured Personal Loans">Secured Personal Loans</option>
+                <option value="Debt Consolidation Loans">Debt Consolidation Loans</option>
+                <option value="Term Loans">Term Loans</option>
+                <option value="SBA Loans">SBA Loans</option>
+                <option value="Business Lines of Credit">Business Lines of Credit</option>
+              </select>
+          </div>
+          <div class="form-row">
+            <div class="form-group col-md-6">
+              <label>Personal identification<span class="text-danger">*</span></label>
+              <input type="file" class="form-control" name="personal_identification" required>
+              <small class="text-danger ml-2">e.g., driver's license, passport</small>
+            </div>
+            <div class="form-group col-md-6">
+              <label>Business documentation (Compulsory for business loans)</label>
+              <input type="file" class="form-control" name="business_documentation">
+              <small class="text-danger ml-2">e.g., business registration, financial statements, tax returns</small>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group col-md-6">
+              <label>Proof of income<span class="text-danger">*</span></label>
+              <input type="file" class="form-control" name="proof_of_income" required>
+              <small class="text-danger ml-2">e.g., pay stubs, bank statements</small>
+            </div>
+            <div class="form-group col-md-6">
+              <label>Collateral documentation (if applicable)</label>
+              <input type="file" class="form-control" name="collateral_documentation">
+            </div>
           </div>
           <div class="form-group mb-0">
             <div class="form-check">
@@ -78,6 +118,7 @@
               <thead>
                 <tr>
                   <th>Loan ID</th>
+                  <th>Loan Type</th>
                   <th>Amount</th>
                   <th>Duration (in months)</th>
                   <th>Status</th>
@@ -123,46 +164,49 @@
   // Variables
   let loanForm = document.querySelector('.loan-form'),
   loanBtn = document.querySelector('.btn'),
+  btnText = loanBtn.querySelector('.btn-text'),
   loanTable = document.querySelector('tbody'),
   noLoanRow = document.querySelector('.no-loan-row'); // Row that displays when no loan
-  console.log(noLoanRow);
 
   // Event Listeners
   loanForm.addEventListener('submit', (e)=>{
-    e.preventDefault()
+    e.preventDefault(); 
 
+    // Variables
     let terms = loanForm["terms"].value,
-    btnText = loanBtn.querySelector('.btn-text');
+    personalIDField = validateDocumentFileType(loanForm["personal_identification"]),
+    businessDocField = validateDocumentFileType(loanForm["business_documentation"]),
+    poiField = validateDocumentFileType(loanForm["proof_of_income"]),
+    collateralField = validateDocumentFileType(loanForm["collateral_documentation"]);
 
     if (!terms) {
       swal('Please accept loan terms and condition', {icon: 'warning'});
+    } else if(personalIDField !== true) {
+      swal(personalIDField, {icon: 'error'});
+    }  else if(poiField !== true) {
+      swal(poiField, {icon: 'error'});
     } else {
+      // Creating a form object from our form
+      // containing our form data and images
+      let formData = new FormData(loanForm);
       // Loading animation
       btnText.innerHTML = `Submitting request...<img width='20' src="<?=STATIC_ROOT; ?>/dashboard/img/spinner-white.svg">`;
       loanBtn.disabled = true;
 
-      fetch(window.location.href, {
-        method: "POST",
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          'csrf_token': loanForm['csrf_token'].value,
-          'user_monthly_income': loanForm['user_monthly_income'].value,
-          'amount': parseInt(loanForm['amount'].value),
-          'duration_in_months': parseInt(loanForm['duration_in_months'].value),
-          'remark': loanForm['remark'].value
+      setTimeout(()=>{
+        fetch(window.location.href, {
+          method: "POST",
+          headers: {},
+          body: formData
         })
-      })
-      .then((response)=>{
-        return response.json()
-      })
-      .then((data)=>{
-        console.log(data);
-        if (data['status'] == "success") {
-          setTimeout(()=>{
+        .then((response)=>{
+          return response.json()
+        })
+        .then((data)=>{
+          console.log(data);
+          if (data['status'] == "success") {
+            loanForm.reset();
             btnText.innerHTML = "Success";
-            loanBtn.disabled = true;
             // Checking and deleting no loan row
             if (noLoanRow != null) {
               noLoanRow.innerHTML = "";
@@ -170,35 +214,34 @@
             // Appending new loan request to loan table
             let loanRow = document.createElement('tr'); // 
             loanRow.innerHTML = `
-                <td>${data['loan']['loan_id']}</td>
-                <td>${data['loan']['currency']}${data['loan']['amount']}</td>
-                <td>${data['loan']['duration_in_months']}</td>
-                <td>
-                  <div class="badge badge-warning text-capitalize">${data['loan']['status']}</div>
-                </td>
-                <td><a href="loan?loan_id=${data['loan']['id']}" class="btn btn-outline-primary">View</a></td>
-              `;
+              <td>${data['loan']['loan_id']}</td>
+              <td>${data['loan']['loan_type']}</td>
+              <td>${data['loan']['currency']}${data['loan']['amount']}</td>
+              <td>${data['loan']['duration_in_months']}</td>
+              <td>
+                <div class="badge badge-warning text-capitalize">${data['loan']['status']}</div>
+              </td>
+              <td><a href="process-loan?loan_id=${data['loan']['loan_id']}" class="btn btn-outline-warning">Proceed</a></td>
+            `;
             loanTable.appendChild(loanRow);
+            // Show success message
+            swal("Loan request was successfully placed and waiting approval", {icon:'success'});
             setTimeout(()=>{
-              swal("Loan request was successfully placed and waiting approval", {icon:'success'});
-            }, 2000)
-          }, 5000)
-        } else {
-          setTimeout(()=>{
+              window.location.href = `process-loan?loan_id=${$data['loan_id']}`;
+            }, 3000);
+          } else {
             btnText.innerHTML = 'Submit';
             loanBtn.disabled = false;
-            swal('Sorry.. Could not place loan request', {icon: 'danger'});
-          }, 3000)
-        }
-      })
-      .catch((err)=>{
-        setTimeout(()=>{
+            swal(data['message'], {icon: 'error'});
+          }
+        })
+        .catch((err)=>{
           console.log(err);
           btnText.innerHTML = 'Submit';
           loanBtn.disabled = false;
-          swal('Service temporarily unavailable at the moment');
-        }, 3000)
-      })
+          swal('Service temporarily unavailable at the moment', {icon: 'error'});
+        })
+      }, 3000)
     }
   })
 </script>

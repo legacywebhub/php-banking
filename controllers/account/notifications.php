@@ -25,6 +25,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 }
 
+// Deleting old notifications
+delete_old_notifications($user_id);
+
 $context = [
     'setting'=> $setting, 
     'title'=> $title,

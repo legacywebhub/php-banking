@@ -59,7 +59,7 @@
                                 <td><?=fetch_user($kyc['user_id'])['fullname'] ?? "Invalid User"; ?></td>
                                 <td>
                                     <?php if (!is_null($kyc['passport'])): ?>
-                                        <a href="<?=MEDIA_ROOT; ?>/images/users/<?=$kyc['passport']; ?>" target="_blank"><img width="50px" src="<?=MEDIA_ROOT; ?>/images/users/<?=$kyc['passport']; ?>"></a>
+                                        <a href="<?=MEDIA_ROOT; ?>/documents/<?=$kyc['passport']; ?>" target="_blank"><img width="50px" src="<?=MEDIA_ROOT; ?>/documents/<?=$kyc['passport']; ?>"></a>
                                     <?php else: ?>
                                         <img width="50px" src="<?=STATIC_ROOT; ?>/dashboard/img/image_placeholder.png">
                                     <?php endif ?>

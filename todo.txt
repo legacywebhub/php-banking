@@ -1,1 +1,10 @@
 # Account - payment view, transaction view
+# update email template color
+# update loan pattern 
+# update facebook link in privacy policy / tac page
+# update landing page icon links
+# update testimonial section
+# update the news section
+# test my redzone functionality
+# testrun admin
+# add loan documents to loan page for admin

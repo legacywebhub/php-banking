@@ -236,7 +236,7 @@
                             </div>
 
                             <div class="single-faq">
-                                <h4>Business Lines of Credit:</h4>
+                                <h4>Business Lines of Credit</h4>
                                 
                                 <p><strong>Features:</strong></p>
                                 <p>

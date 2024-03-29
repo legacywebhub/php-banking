@@ -98,7 +98,6 @@
                   </li>
                   <?php endif ?>
 
-
                   <li class="page-item active"><a class="page-link" href="javascript:void(0)"><?=$context['transactions']['page'] ?></a></li>
 
                   <?php if ($context['transactions']['has_next']): ?>
