@@ -5,7 +5,11 @@
             <h4>Messages</h4>
         </div>
         <div class="card-body">
-            
+            <?php if (isset($_SESSION['message'])): ?>
+                <h6 class="col-12 my-3 text-<?=$_SESSION['message_tag']; ?>" style="display: flex; justify-content: center;">
+                    <?=$_SESSION['message']; ?>
+                </h6>
+            <?php endif ?>
             <?php if (empty($context['messages']['result'])): ?>
                 <ul class="list-unstyled list-unstyled-border list-unstyled-noborder">
                     <li class="media" style="font-size: 16px;">No Messages</li>
@@ -23,7 +27,7 @@
                             <span class="bullet"></span>
                             <span><?=$message['email']; ?></span>
                             <span class="bullet"></span>
-                            <a href="deletemessage?id=<?=$message['id']; ?>" class="text-danger" title="delete"><i class="fas fa-trash"></i></a>
+                            <a href="delete-message?id=<?=$message['id']; ?>" class="text-danger" title="delete"><i class="fas fa-trash"></i></a>
                             </p>
                             <div class="text-info"><?=date("D, d M Y", strtotime($message['date'])); ?></div>
                         </div>

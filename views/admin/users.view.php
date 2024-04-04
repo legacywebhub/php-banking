@@ -85,23 +85,25 @@
                                 </td>
                                 <td><?=date("d-m-Y", strtotime($user['date_joined'])); ?></td>
                                 <td>
-                                <?php if($context['admin']['is_superuser'] == 1): ?>
-                                    <a href="edit-user?id=<?=$user['id']; ?>" class="btn btn-primary btn-action" title="Edit">Edit</a>
-                                    <?php if($user['is_blocked']==0): ?>
-                                        <a href="block-user?id=<?=$user['id']; ?>" class="btn btn-secondary btn-action" title="Block">Block</a>
+                                <span class="action-btns">
+                                    <?php if($context['admin']['is_superuser'] == 1): ?>
+                                        <a href="edit-user?id=<?=$user['id']; ?>" class="btn btn-primary btn-action" title="Edit">Edit</a>
+                                        <?php if($user['is_blocked']==0): ?>
+                                            <a href="block-user?id=<?=$user['id']; ?>" class="btn btn-secondary btn-action" title="Block">Block</a>
+                                        <?php else: ?>
+                                            <a href="unblock-user?id=<?=$user['id']; ?>" class="btn btn-secondary btn-action" title="Unblock">Unblock</a>
+                                        <?php endif ?>
+                                        <a href="delete-user?id=<?=$user['id']; ?>" class="btn btn-danger btn-action" title="Delete">Delete</a>
                                     <?php else: ?>
-                                        <a href="unblock-user?id=<?=$user['id']; ?>" class="btn btn-secondary btn-action" title="Unblock">Unblock</a>
+                                        <a href="javascript:void(0);" class="btn btn-primary btn-action" title="Edit">Edit</a>
+                                        <?php if($user['is_blocked']==0): ?>
+                                            <a href="javascript:void(0);" class="btn btn-secondary btn-action" title="Block">Block</a>
+                                        <?php else: ?>
+                                            <a href="javascript:void(0);" class="btn btn-secondary btn-action" title="Unblock">Unblock</a>
+                                        <?php endif ?>
+                                        <a href="javascript:void(0);" class="btn btn-danger btn-action " title="Delete">Delete</a>
                                     <?php endif ?>
-                                    <a href="delete-user?id=<?=$user['id']; ?>" class="btn btn-danger btn-action" title="Delete">Delete</a>
-                                <?php else: ?>
-                                    <a href="javascript:void(0);" class="btn btn-primary btn-action" title="Edit">Edit</a>
-                                    <?php if($user['is_blocked']==0): ?>
-                                        <a href="javascript:void(0);" class="btn btn-secondary btn-action" title="Block">Block</a>
-                                    <?php else: ?>
-                                        <a href="javascript:void(0);" class="btn btn-secondary btn-action" title="Unblock">Unblock</a>
-                                    <?php endif ?>
-                                    <a href="javascript:void(0);" class="btn btn-danger btn-action " title="Delete">Delete</a>
-                                <?php endif ?>
+                                </span>
                                 </td>
                             </tr>
                         <?php endforeach ?>

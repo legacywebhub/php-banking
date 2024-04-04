@@ -130,6 +130,7 @@
                   <?php foreach($context['recent_loans'] as $loan): ?>
                   <tr>
                     <td><?=$loan['loan_id']; ?></td>
+                    <td><?=$loan['loan_type']; ?></td>
                     <td><?=$loan['currency'].$loan['amount']; ?></td>
                     <td><?=$loan['duration_in_months']; ?></td>
                     <td>

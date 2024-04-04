@@ -40,7 +40,7 @@
         <p>Content and Communications You are solely responsible for any content you upload, post, transmit, or make available through the Platform. We have the right, but not the obligation, to review, monitor, or remove any content at our discretion.</p>
         <p>Disclaimers and Limitations of Liability The Platform is provided on an "as is" and "as available" basis without warranties of any kind. We disclaim all express and implied warranties. We are not liable for any direct, indirect, incidental, consequential, or punitive damages related to your use of the Platform.</p>
         <p>Indemnification You agree to indemnify and hold us harmless from any claims, losses, liabilities, damages, costs, and expenses arising from your use of the Platform or violation of these terms.</p>
-        <p>Governing Law and Dispute Resolution These terms are governed by the laws of [Jurisdiction]. Any disputes shall be resolved through binding arbitration in accordance with the rules of [Arbitration Provider</p>
+        <p>Governing Law and Dispute Resolution These terms are governed by the laws of the United States. Any disputes shall be resolved through binding arbitration in accordance with the rules of the Law</p>
         <p>Amendments We reserve the right to modify these terms at any time. Your continued use of the Platform after the effective date of revised terms constitutes acceptance.</p>
     </div>
 </div>

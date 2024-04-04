@@ -71,11 +71,13 @@
                                     <?php endif ?>
                                 </td>
                                 <td>
+                                <span class="action-btns">
                                     <?php if($virtual_card['status'] == "active"): ?>
                                         <a href="deactivate-card?id=<?=$virtual_card['id']; ?>" class="btn btn-danger btn-action" title="Deactivate">Deactivate</a>
                                     <?php elseif($virtual_card['status'] == "inactive"): ?>
                                         <a href="activate-card?id=<?=$virtual_card['id']; ?>" class="btn btn-primary btn-action" title="Activate">Activate</a>
                                     <?php endif ?>
+                                </span>
                                 </td>
                             </tr>
                         <?php endforeach ?>

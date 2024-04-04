@@ -39,6 +39,9 @@
       justify-content:center;
       align-items: center;
     }
+    .action-btns {
+      display: flex;
+    }
   </style>
 </head>
 

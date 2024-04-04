@@ -680,8 +680,8 @@ function fetch_user(int $id) {
     } else {
         // Creating dummy user in case user was deleted
         $user = [
-            'firstname'=> "Invalid", 'lastname'=> "User",
-            'fullname'=> "Invalid user", 'email'=> "dummy@gmail.com",
+            'firstname'=> "-", 'lastname'=> "-",
+            'fullname'=> "-", 'email'=> "-",
             'currency'=> '$', 'balance' => 0.00, 'overdraft'=> 0.00,
             'account_type'=> "Savings", 'account_number'=> "0123456789",
             'is_verified' => false, 'has_active_card'=> false,
@@ -743,14 +743,14 @@ function notify_user(int $user_id, String $message) {
 }
 
 // FUNCTION TO NOTIFY USERS PLUS AN EMAIL
-function notifyUser(int $user_id, String $message) {
+function notifyUser(int $user_id, String $subject = "", String $message) {
     try {
         $user = query_fetch("SELECT * FROM users where id = $user_id LIMIT 1")[0];
         $sql = "INSERT INTO notifications (user_id, message) VALUES (:user_id, :message)";
         query_db($sql, ['user_id'=> $user_id, 'message'=> $message]);
         // Forwarding message via mail
-        $email_values = ['name'=> $user['firstname']." ".$user['lastname'], 'message'=> $message];
-        sendMail($user['email'], "One Time Password", $email_values);
+        $email_values = ['name'=> $user['username'], 'message'=> $message];
+        sendMail($user['email'], $subject, $email_values);
         return true;
     } catch(Exception) {
         return false;

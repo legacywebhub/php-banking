@@ -85,12 +85,14 @@
                                     <?php endif ?>
                                 </td>
                                 <td>
+                                <span class="action-btns">
                                     <?php if($kyc['status'] == "pending"): ?>
                                         <a href="approve-kyc?id=<?=$kyc['id']; ?>" class="btn btn-success btn-action" title="Approve">Approve</a>
                                         <a href="decline-kyc?id=<?=$kyc['id']; ?>" class="btn btn-danger btn-action" title="Decline">Decline</a>
                                     <?php else: ?>
                                         -
                                     <?php endif ?>
+                                </span>
                                 </td>
                             </tr>
                         <?php endforeach ?>

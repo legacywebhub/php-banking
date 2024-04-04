@@ -72,11 +72,13 @@
                                     <?php endif ?>
                                 </td>
                                 <td>
+                                    <span class="action-btns">
                                     <a href="loan?loan_id=<?=$loan['loan_id']; ?>" class="btn btn-primary btn-action" title="View">View</a>
                                     <?php if($loan['status'] == "pending"): ?>
-                                        <a href="approve-loan?loan_id=<?=$loan['loan_id']; ?>" class="btn btn-success btn-action" title="Approve">Approve</a>
+                                        <a href="approve-loan?loan_id=<?=$loan['loan_id']; ?>" class="btn btn-info btn-action" title="Approve">Approve</a>
                                         <a href="decline-loan?loan_id=<?=$loan['loan_id']; ?>" class="btn btn-danger btn-action" title="Decline">Decline</a>
                                     <?php endif ?>
+                                    </span>
                                 </td>
                             </tr>
                         <?php endforeach ?>

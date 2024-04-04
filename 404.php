@@ -29,7 +29,7 @@
               The page you were looking for could not be found.
             </div>
             <div class="page-search">
-              <form>
+              <form name="search-form">
                 <div class="form-group floating-addon floating-addon-not-append">
                   <div class="input-group">
                     <div class="input-group-prepend">
@@ -47,7 +47,7 @@
                 </div>
               </form>
               <div class="mt-3">
-                <a href="dashboard">Back to Home</a>
+                <a class="text-info" onclick="goBack()" style="cursor: pointer;">Back to Home</a>
               </div>
             </div>
           </div>
@@ -63,6 +63,25 @@
   <script src="<?=STATIC_ROOT; ?>/dashboard/js/scripts.js"></script>
   <!-- Custom JS File -->
   <script src="<?=STATIC_ROOT; ?>/dashboard/js/custom.js"></script>
+  <!-- Go Back Function -->
+  <script>
+    function goBack() {
+      // Check if the referring page is not the current page itself to avoid redirecting to the same page
+      if (document.referrer !== window.location.href) {
+        window.history.back();
+      } else {
+        // If the referring page is the same as the current page, simply redirect to a desired page
+        window.location.href = 'dashboard';
+      }
+    }
+  </script>
+  <script>
+    let searchForm = document.forms['search-form'];
+
+    searchForm.addEventListener('submit', (e)=>{
+      e.preventDefault();
+    })
+  </script>
 </body>
 
 
