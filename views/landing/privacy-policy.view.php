@@ -28,9 +28,9 @@
         <p class="date">Last Revised: December 16, 2023</p>
         <p>Welcome to <?=ucwords($context['setting']['name']); ?>. This site is provided as a service to our visitors and may be used for informational purposes only. Because the Terms and Conditions contain legal obligations, please read them carefully.</p>
         <h2>1. Information Collection and Use</h2>
-        <p>At TrustFlick, we take your privacy seriously. This Privacy Policy outlines how we collect, use, and safeguard your personal information when you use our services. By using TrustFlick, you consent to the collection and use of your information as described in this policy.</p>
+        <p>At <?=ucwords($context['setting']['name']); ?>, we take your privacy seriously. This Privacy Policy outlines how we collect, use, and safeguard your personal information when you use our services. By using <?=ucwords($context['setting']['name']); ?>, you consent to the collection and use of your information as described in this policy.</p>
         <h2>2. Information We Collect</h2>
-        <p>- Personal Information: When you apply for a loan or create an account with TrustFlick, we may collect personal information such as your name, address, contact information, social security number, and financial details</p>
+        <p>- Personal Information: When you apply for a loan or create an account with <?=ucwords($context['setting']['name']); ?>, we may collect personal information such as your name, address, contact information, social security number, and financial details</p>
         <p>- Usage Information: We may collect information about your interactions with our website, including pages visited, links clicked, and other actions taken.</p>
         <h2>3. How We Use Your Information</h2>
         <p>- To process loan applications and provide our services to you.</p>

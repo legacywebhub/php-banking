@@ -15,7 +15,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         return_json(['status'=> "failed", 'message'=> "Invalid request"]);
     }
     // Process data here
-    $input_data = [
+    $data = [
         'name'=> sanitize_input($data['name']),
         'email'=> sanitize_input($data['email']),
         'subject'=> sanitize_input($data['subject']),
@@ -23,10 +23,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     ];
     try {
         $sql = "INSERT INTO messages (name, email, subject, message) VALUES (:name, :email, :subject, :message)";
-        $query = query_db($sql, $input_data);
+        query_db($sql, $data);
         // Notifying Admin
-        //$email_values = ['name'=> "Admin", 'message'=> $input_data['message']];
-        //sendMail($setting['email'], "Contact Message", $email_values);
+        $email_values = ['name'=> "Admin", 'message'=> $data['message']];
+        sendMail($setting['email'], "Contact Message", $email_values);
         $response = ['status'=> "success", 'message'=> "Message was successfully received"];
     } catch(Exception $e) {
         $response = ['status'=> "failed", 'message'=> "Service unavailable at the moment"];

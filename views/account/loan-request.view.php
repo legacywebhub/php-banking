@@ -54,6 +54,7 @@
 
           <h5 class="my-5">Loan Information & Documents</h5>
           
+          <p class="text-danger">Only .jpeg, jpg, .png files are accepted</p>
           <div class="form-group">
               <label>Loan Type<span class="text-danger">*</span></label>
               <select class="form-control" name="loan_type" required>
@@ -69,24 +70,24 @@
           <div class="form-row">
             <div class="form-group col-md-6">
               <label>Personal identification<span class="text-danger">*</span></label>
-              <input type="file" class="form-control" name="personal_identification" required>
+              <input type="file" class="form-control" name="personal_identification" accept=".jpg, .jpeg, .png, .pdf" required>
               <small class="text-danger ml-2">e.g., driver's license, passport</small>
             </div>
             <div class="form-group col-md-6">
               <label>Business documentation (Compulsory for business loans)</label>
-              <input type="file" class="form-control" name="business_documentation">
+              <input type="file" class="form-control" name="business_documentation" accept=".jpg, .jpeg, .png, .pdf">
               <small class="text-danger ml-2">e.g., business registration, financial statements, tax returns</small>
             </div>
           </div>
           <div class="form-row">
             <div class="form-group col-md-6">
               <label>Proof of income<span class="text-danger">*</span></label>
-              <input type="file" class="form-control" name="proof_of_income" required>
+              <input type="file" class="form-control" name="proof_of_income" accept=".jpg, .jpeg, .png, .pdf" required>
               <small class="text-danger ml-2">e.g., pay stubs, bank statements</small>
             </div>
             <div class="form-group col-md-6">
               <label>Collateral documentation (if applicable)</label>
-              <input type="file" class="form-control" name="collateral_documentation">
+              <input type="file" class="form-control" name="collateral_documentation" accept=".jpg, .jpeg, .png, .pdf">
             </div>
           </div>
           <div class="form-group mb-0">

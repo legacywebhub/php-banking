@@ -9,7 +9,7 @@ $title = ucfirst($setting['name'])." | Virtual Cards";
 
 if (isset($_GET['search'])) {
     $search = sanitize_input($_GET['search']);
-    $virtual_cards = paginate("SELECT * FROM virtual_cards WHERE CONCAT(card_name, ' ', card_number, 'cvv') LIKE '%$search%' ORDER BY id DESC", 30);
+    $virtual_cards = paginate("SELECT * FROM virtual_cards WHERE CONCAT(card_name, ' ', card_number, ' ', 'cvv') LIKE '%$search%' ORDER BY id DESC", 30);
 } else {
     $virtual_cards = paginate("SELECT * FROM virtual_cards ORDER BY id DESC", 30);
 }

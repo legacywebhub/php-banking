@@ -408,7 +408,7 @@
                             </span>
                             <p><?=ucwords($context['setting']['name']); ?> is one of the best micro-finance banks with budgeting tools, fee-free abroad spending, and a nice virtual card option, though loan services could be better.</p>
                             <div class="part-user">
-                                <span class="user-name">Sadwel Eunton</span>
+                                <span class="user-name">Roger Adam</span>
                                 <span class="user-location">London, UK</span>
                             </div>
                         </div>
@@ -419,8 +419,8 @@
                             </span>
                             <p>I think this platform uses AI to evaluate borrowers beyond just credit scores, allowing fair access to loans for those with non-traditional credit histories.</p>
                             <div class="part-user">
-                                <span class="user-name">Sadwel Eunton</span>
-                                <span class="user-location">London, UK</span>
+                                <span class="user-name">Amber W. Guzman</span>
+                                <span class="user-location">Wales, UK</span>
                             </div>
                         </div>
                         
@@ -430,8 +430,8 @@
                             </span>
                             <p>This is just awesome! One of the best service I had. You can trust them and deposit your funds. Their loans are really helpful and convenient too</p>
                             <div class="part-user">
-                                <span class="user-name">Sadwel Eunton</span>
-                                <span class="user-location">London, UK</span>
+                                <span class="user-name">Gary Williams</span>
+                                <span class="user-location">Nottingham, USA</span>
                             </div>
                         </div>
                         <div class="single-testimonial">
@@ -440,8 +440,8 @@
                             </span>
                             <p>I've tried this platform and it excels at letting you easily spend and transfer money internationally with rock-bottom fees, but its savings options are relatively limited.</p>
                             <div class="part-user">
-                                <span class="user-name">Sadwel Eunton</span>
-                                <span class="user-location">London, UK</span>
+                                <span class="user-name">Jacqueline Talon</span>
+                                <span class="user-location">Del Lago AV, Italy</span>
                             </div>
                         </div>
 
@@ -451,8 +451,8 @@
                             </span>
                             <p>Great company With great vision. Their customer service is quite impressive. Their transaction fees is incredibly low which is also amazing.</p>
                             <div class="part-user">
-                                <span class="user-name">Sadwel Eunton</span>
-                                <span class="user-location">London, UK</span>
+                                <span class="user-name">Lindsay N. Cesar</span>
+                                <span class="user-location">Toronto, Canada</span>
                             </div>
                         </div>
                         
@@ -462,15 +462,15 @@
                             </span>
                             <p>This is one of the best performing microfinance company I have ever experienced. Their transaction process are incredibly seamless!</p>
                             <div class="part-user">
-                                <span class="user-name">Sadwel Eunton</span>
-                                <span class="user-location">London, UK</span>
+                                <span class="user-name">Anna Munter</span>
+                                <span class="user-location">Sittard, Netherland</span>
                             </div>
                         </div>
 
                     </div>
                     <div class="testi-user-slider">
                         <div class="single-user">
-                            <img src="<?=STATIC_ROOT; ?>/landing/img/testimonial.png" alt="">
+                            <img src="<?=STATIC_ROOT; ?>/landing/img/testimonia-1.png" alt="">
                         </div>
                         <div class="single-user">
                             <img src="<?=STATIC_ROOT; ?>/landing/img/testimonia-2.png" alt="">
@@ -479,13 +479,13 @@
                             <img src="<?=STATIC_ROOT; ?>/landing/img/testimonia-3.png" alt="">
                         </div>
                         <div class="single-user">
-                            <img src="<?=STATIC_ROOT; ?>/landing/img/testimonial.png" alt="">
+                            <img src="<?=STATIC_ROOT; ?>/landing/img/testimonia-4.png" alt="">
                         </div>
                         <div class="single-user">
-                            <img src="<?=STATIC_ROOT; ?>/landing/img/testimonia-2.png" alt="">
+                            <img src="<?=STATIC_ROOT; ?>/landing/img/testimonia-5.png" alt="">
                         </div>
                         <div class="single-user">
-                            <img src="<?=STATIC_ROOT; ?>/landing/img/testimonia-3.png" alt="">
+                            <img src="<?=STATIC_ROOT; ?>/landing/img/testimonia-6.png" alt="">
                         </div>
                     </div>
                 </div>

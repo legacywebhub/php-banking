@@ -47,7 +47,7 @@
                 </div>
               </form>
               <div class="mt-3">
-                <a class="text-info" onclick="goBack()" style="cursor: pointer;">Back to Home</a>
+                <a class="text-info" onclick="goBack()" style="cursor: pointer;">Go Back</a>
               </div>
             </div>
           </div>

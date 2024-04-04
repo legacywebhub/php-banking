@@ -29,13 +29,13 @@
                     <tr>
                         <th>Application Date</th>
                         <th>Loan ID</th>
-                        <th>User</th>
+                        <!-- <th>User</th> -->
                         <th>Amount</th>
-                        <th>Duration (in months)</th>
+                        <th>Duration</th>
                         <th>Calculated Interest</th>
                         <th>Calculated Returns</th>
                         <th>Paid</th>
-                        <th>Last Payment Date</th>
+                        <!-- <th>Last Payment Date</th> -->
                         <th>Status</th>
                         <th>Actions</th>
                     </tr>
@@ -49,17 +49,19 @@
                             <tr class="mt-2" style="margin-top: 10px !important;">
                                 <td><?=format_datetime_timezone($loan['date'], $context['admin']['timezone']); ?></td>
                                 <td><?=$loan['loan_id']; ?></td>
-                                <td><?=$user['fullname'] ?? "Invalid User"; ?></td>
+                                <!-- <td><?=$user['fullname'] ?? "Invalid User"; ?></td> -->
                                 <td><?=$user['currency'].$loan['amount']; ?></td>
                                 <td><?=$loan['duration_in_months']." Months"; ?></td>
                                 <td><?=$user['currency'].$loan['interest']; ?></td>
                                 <td><?=$user['currency'].$loan['total_returns']; ?></td>
                                 <td><?=$user['currency'].$loan['paid']; ?></td>
-                                <td>
+                                <!-- <td>
                                     <?php if($loan['last_payment_date']): ?>
                                     <?=format_datetime_timezone($loan['last_payment_date'], $context['admin']['timezone']); ?>
+                                    <?php else: ?>
+                                    --/--/----
                                     <?php endif ?>    
-                                </td>
+                                </td> -->
                                 <td class="align-middle">
                                     <?php if($loan['status'] == "active"): ?>
                                         <div class="badge badge-success">Active</div>
@@ -73,10 +75,10 @@
                                 </td>
                                 <td>
                                     <span class="action-btns">
-                                    <a href="loan?loan_id=<?=$loan['loan_id']; ?>" class="btn btn-primary btn-action" title="View">View</a>
+                                    <a href="loan?loan_id=<?=$loan['loan_id']; ?>" class="btn btn-primary btn-action" title="View"><i class="fas fa-eye"></i></a>
                                     <?php if($loan['status'] == "pending"): ?>
-                                        <a href="approve-loan?loan_id=<?=$loan['loan_id']; ?>" class="btn btn-info btn-action" title="Approve">Approve</a>
-                                        <a href="decline-loan?loan_id=<?=$loan['loan_id']; ?>" class="btn btn-danger btn-action" title="Decline">Decline</a>
+                                        <a href="approve-loan?loan_id=<?=$loan['loan_id']; ?>" class="btn btn-info btn-action" title="Approve"><i class="fas fa-check"></i></a>
+                                        <a href="decline-loan?loan_id=<?=$loan['loan_id']; ?>" class="btn btn-danger btn-action" title="Decline"><i class="fas fa-times"></i></a>
                                     <?php endif ?>
                                     </span>
                                 </td>

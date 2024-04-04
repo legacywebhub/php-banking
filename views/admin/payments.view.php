@@ -2,12 +2,12 @@
     <div class="col-lg-12 col-md-12 col-12 col-sm-12">
         <div class="card">
             <div class="card-header">
-                <h4>Payment List  &nbsp;&nbsp;&nbsp;<a href="add-payment" class="btn btn-icon icon-left btn-primary"><i class="fas fa-plus"></i> Add payment</a></h4>
+                <h4>Payment List </h4>
                 
                 <div class="card-header-form">
                     <form action="" method="get">
                       <div class="input-group">
-                        <input name="search" type="text" class="form-control" placeholder="Search name">
+                        <input name="search" type="text" class="form-control" maxlength="24" placeholder="Search payment id" required>
                         <div class="input-group-btn">
                           <button class="btn btn-primary"><i class="fas fa-search"></i></button>
                         </div>

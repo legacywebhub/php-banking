@@ -433,7 +433,7 @@ function upload_document($file, string $folder) {
             // Setting file extension to lowercase
             $file_extension = strtolower($file_extension);
             // Allowable extensions
-            $accepted_extensions = array('jpeg', 'jpg', 'png', 'pdf', 'doc', 'docs', 'docx');
+            $accepted_extensions = array('jpeg', 'jpg', 'png', 'pdf');
 
             if (in_array($file_extension, $accepted_extensions)) {
                 // If file extension is among accepted extensions
@@ -489,7 +489,7 @@ function upload_multiple_documents($files, string $folder) {
             // Setting file extension to lowercase
             $file_extension = strtolower($file_extension);
             // Allowable extensions
-            $accepted_extensions = array('jpeg', 'jpg', 'png', 'pdf', 'doc', 'docs', 'docx');
+            $accepted_extensions = array('jpeg', 'jpg', 'png', 'pdf');
 
             if (in_array($file_extension, $accepted_extensions)) {
                 // If file extension is among accepted extensions

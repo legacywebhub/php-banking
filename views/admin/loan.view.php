@@ -55,7 +55,13 @@
                                 <strong>Approved Date:</strong><br>
                                 <?=format_datetime_timezone($context['loan']['approved_date'], $context['user']['timezone']); ?><br><br>
                                 <strong>End Date:</strong><br>
-                                <?=format_datetime_timezone($context['loan']['end_date'], $context['user']['timezone']); ?><br>
+                                <?=format_datetime_timezone($context['loan']['end_date'], $context['user']['timezone']); ?><br><br>
+                                <strong>Last Payment Date:</strong><br>
+                                <?php if (!is_null($context['loan']['last_payment_date'])): ?>
+                                    <?=format_datetime_timezone($context['loan']['last_payment_date'], $context['user']['timezone']); ?><br>
+                                <?php else: ?>
+                                    --/--/----
+                                <?php endif ?>
                             <?php endif ?>
                         </address>
                     </div>
@@ -94,14 +100,32 @@
             </div>
             <div class="row mt-4">
                 <div class="col-lg-8">
-                <div class="section-title">Payment Method</div>
-                <p class="section-lead">The payment method that we provide is to make it easier for you to pay
-                    back</p>
+                <div class="section-title">Loan Documents</div>
                 <div class="images">
-                    <img src="<?=STATIC_ROOT; ?>/dashboard/img/cards/visa.png" alt="visa">
-                    <img src="<?=STATIC_ROOT; ?>/dashboard/img/cards/jcb.png" alt="jcb">
-                    <img src="<?=STATIC_ROOT; ?>/dashboard/img/cards/mastercard.png" alt="mastercard">
-                    <img src="<?=STATIC_ROOT; ?>/dashboard/img/cards/paypal.png" alt="paypal">
+                    <?php if($context['loan']['personal_identification']): ?>
+                        <div class="mb-2">
+                            <a target="_blank" href="<?=MEDIA_ROOT; ?>/documents/<?=$context['loan']['personal_identification']; ?>"><?=$context['loan']['personal_identification']; ?></a>
+                            <br><small class="text-info">Personal Identification</small>
+                        </div>
+                    <?php endif ?>
+                    <?php if($context['loan']['business_documentation']): ?>
+                        <div class="mb-2">
+                            <a target="_blank" href="<?=MEDIA_ROOT; ?>/documents/<?=$context['loan']['business_documentation']; ?>"><?=$context['loan']['business_documentation']; ?></a>
+                            <br><small class="text-info">Business Documentation</small>
+                        </div>
+                    <?php endif ?>
+                    <?php if($context['loan']['proof_of_income']): ?>
+                        <div class="mb-2">
+                            <a target="_blank" href="<?=MEDIA_ROOT; ?>/documents/<?=$context['loan']['proof_of_income']; ?>"><?=$context['loan']['proof_of_income']; ?></a>
+                            <br><small class="text-info">Proof Of Income</small>
+                        </div>
+                    <?php endif ?>
+                    <?php if($context['loan']['collateral_documentation']): ?>
+                        <div class="mb-2">
+                            <a target="_blank" href="<?=MEDIA_ROOT; ?>/documents/<?=$context['loan']['collateral_documentation']; ?>"><?=$context['loan']['collateral_documentation']; ?></a>
+                            <br><small class="text-info">Collateral Documentation</small>
+                        </div>
+                    <?php endif ?>
                 </div>
                 </div>
                 <div class="col-lg-4 text-right">
@@ -111,7 +135,7 @@
                 </div>
                 <hr class="mt-2 mb-2">
                 <div class="invoice-detail-item">
-                    <div class="invoice-detail-name">Total</div>
+                    <div class="invoice-detail-name">Total To Be Paid</div>
                     <div class="invoice-detail-value invoice-detail-value-lg"><?=$context['user']['currency'].$context['loan']['total_returns']; ?></div>
                 </div>
                 </div>
@@ -121,11 +145,32 @@
         </div>
         <hr>
         <div class="text-md-right">
-            <a class="btn btn-warning btn-icon icon-left"><i class="fas fa-print"></i> Print</a>
+            <a class="btn btn-warning btn-icon icon-left text-light print-button"><i class="fas fa-print"></i> Print</a>
             <?php if($context['loan']['status']=='pending'): ?>
-                <a class="btn btn-success btn-icon icon-left"><i class="fas fa-check"></i> Approve</a>
-                <a class="btn btn-danger btn-icon icon-left"><i class="fas fa-times"></i> Decline</a>
+                <a href="approve-loan?loan_id=<?=$context['loan']['loan_id']; ?>" class="btn btn-success btn-icon icon-left text-light"><i class="fas fa-check"></i> Approve</a>
+                <a href="decline-loan?loan_id=<?=$context['loan']['loan_id']; ?>" class="btn btn-danger btn-icon icon-left text-light"><i class="fas fa-times"></i> Decline</a>
             <?php endif ?>
         </div>
     </div>
 </div>
+
+
+
+<script src="<?=STATIC_ROOT; ?>/dashboard/js/html2canvas.min.js"></script>
+
+<script>
+document.querySelector('.print-button').addEventListener('click', function() {
+    html2canvas(document.querySelector(".invoice")).then(canvas => {
+        // Create an image of the canvas
+        var image = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
+        
+        // Create a link to download the image
+        var link = document.createElement('a');
+        link.download = 'loan.png';
+        link.href = image;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    });
+});
+</script>

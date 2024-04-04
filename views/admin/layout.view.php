@@ -23,16 +23,16 @@
       text-transform: capitalize;
     }
     .balance-container {
-        margin: 40px 0px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
+      margin: 40px 0px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
     .balance-box {
-        margin: 0px 50px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
+      margin: 0px 50px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
     .pagination-container {
       display: flex;
@@ -107,17 +107,17 @@
             </a>
             <div class="dropdown-menu dropdown-menu-right pullDown">
               <div class="dropdown-title"><?=$context['admin']['fullname']; ?></div>
-              <a href="profile" class="dropdown-item has-icon"> <i class="far fa-user"></i> 
-                Profile
-              </a>
-              <a href="virtual-card" class="dropdown-item has-icon"> <i class="fas fa-credit-card"></i>
-                My Card
+              <a href="loans" class="dropdown-item has-icon"> <i class="fas fa-hand-holding-usd"></i>
+                Loans
               </a> 
-              <a href="change-pin" class="dropdown-item has-icon"> <i class="fas fa-cog"></i>
-                Settings
+              <a href="payments" class="dropdown-item has-icon"> <i class="fas fa-dollar-sign"></i> 
+                Payments
               </a>
-              <a href="support" class="dropdown-item has-icon"> <i class="fas fa-comments"></i>
-                Support
+              <a href="settings" class="dropdown-item has-icon"> <i class="fas fa-cog"></i>
+                Bank Settings
+              </a>
+              <a href="messages" class="dropdown-item has-icon"> <i class="fas fa-envelope"></i>
+                Messages
               </a>
               <div class="dropdown-divider"></div>
               <a href="logout" class="dropdown-item has-icon text-danger"> <i class="fas fa-sign-out-alt"></i>
@@ -155,6 +155,7 @@
               <ul class="dropdown-menu">
                 <li><a class="nav-link" href="loans">Loans</a></li>
                 <li><a class="nav-link" href="payments">Payments</a></li>
+                <li><a class="nav-link" href="transactions">Transactions</a></li>
               </ul>
             </li>
             <li class="dropdown">

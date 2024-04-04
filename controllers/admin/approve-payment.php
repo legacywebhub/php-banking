@@ -27,8 +27,8 @@ if (!isset($_GET['payment_id'])) {
                 update_account($user_id, 'balance', 'credit', $payment['amount']);
                 // Updating payment status
                 update_payment_status($payment['payment_id'], "approved");
-                // Notifying user of successful funding
-                notify_user($user_id, "Congrats.. Your account was successfully funded");
+                // Notifying user of funding
+                notify_user($user_id, "Your account was funded with ".$payment['amount']);
             
             } else if ($payment['purpose'] == 'loan') {
 
@@ -98,7 +98,7 @@ if (!isset($_GET['payment_id'])) {
                         // Updating payment status
                         update_payment_status($payment['payment_id'], "approved");
                         // Notifying user of card approval
-                        notify_user($user_id, "Hurray! Your card payment was acknowleged successfully and your virtual card now active");
+                        notify_user($user_id, "Your card payment was acknowleged successfully and your virtual card now active");
                         // Notifying user of card pin
                         notify_user($user_id, "Dear user, do take note that your virtual card pin is always defaulted to your account pin");
                     } catch(Exception) {

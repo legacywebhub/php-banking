@@ -5,20 +5,20 @@ $admin = admin_logged_in();
 
 // Variables
 $setting = query_fetch("SELECT * FROM settings ORDER BY id DESC LIMIT 1")[0];
-$title = ucfirst($setting['name'])." | Payments";
+$title = ucfirst($setting['name'])." | Transactions";
 
 if (isset($_GET['search'])) {
     $search = sanitize_input($_GET['search']);
-    $payments = paginate("SELECT * FROM payments WHERE payment_id = '$search' ORDER BY id DESC", 30);
+    $transactions = paginate("SELECT * FROM transactions WHERE transaction_id = '$search' ORDER BY id DESC", 30);
 } else {
-    $payments = paginate("SELECT * FROM payments ORDER BY id DESC", 30);
+    $transactions = paginate("SELECT * FROM transactions ORDER BY id DESC", 30);
 }
 
 $context = [
     'setting'=> $setting,
     'title'=> $title,
     'admin'=> $admin,
-    'payments'=> $payments
+    'transactions'=> $transactions
 ];
 
-admin_view('payments', $context);
+admin_view('transactions', $context);

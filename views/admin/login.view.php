@@ -18,7 +18,7 @@
   <link rel='shortcut icon' type='image/x-icon' href='<?=STATIC_ROOT; ?>/dashboard/img/favicon.ico' />
 </head>
 
-<body>
+<body onunload="">
   <div class="loader"></div>
   <div id="app">
     <section class="section">
@@ -35,7 +35,7 @@
                     <?=$_SESSION['message']; ?>
                   </h6>
                 <?php endif ?>
-                <form method="POST" class="needs-validation" novalidate="" autocomplete="off">
+                <form method="POST" class="needs-validation" novalidate="" autocomplete="on">
                   <input type="hidden" name="csrf_token" value="<?=$_SESSION['csrf_token']; ?>">
                   <div class="form-group">
                     <label for="email">Email</label>
@@ -70,25 +70,10 @@
                     </button>
                   </div>
                 </form>
-                <div class="text-center mt-4 mb-3">
-                  <div class="text-job text-muted">Login With Social</div>
-                </div>
-                <div class="row sm-gutters">
-                  <div class="col-6">
-                    <a class="btn btn-block btn-social btn-facebook">
-                      <span class="fab fa-facebook"></span> Facebook
-                    </a>
-                  </div>
-                  <div class="col-6">
-                    <a class="btn btn-block btn-social btn-twitter">
-                      <span class="fab fa-twitter"></span> Twitter
-                    </a>
-                  </div>
-                </div>
               </div>
             </div>
             <div class="mt-5 text-muted text-center">
-              Don't have an account? <a href="register">Create One</a>
+              Login in as user <a href="<?=ROOT; ?>/login">here</a>
             </div>
           </div>
         </div>
@@ -103,6 +88,12 @@
   <script src="<?=STATIC_ROOT; ?>/dashboard/js/scripts.js"></script>
   <!-- Custom JS File -->
   <script src="<?=STATIC_ROOT; ?>/dashboard/js/custom.js"></script>
+  <!-- Security js -->
+  <script>
+    if (window.history.replaceState){
+      window.history.replaceState(null, null, window.location.href);
+    }
+  </script>
 </body>
 
 

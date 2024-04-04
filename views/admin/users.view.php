@@ -26,17 +26,17 @@
                     <table class="table table-striped">
                     <tbody>
                     <tr>
-                        <th>User ID</th>
+                        <th>ID</th>
                         <th>Profile</th>
-                        <th>Full Name</th>
+                        <th>Fullname</th>
                         <th>Email</th>
-                        <th>Account Number</th>
+                        <th>Acc. Number</th>
                         <th>Balance</th>
                         <th>Overdraft</th>
                         <th>Staff</th>
                         <th>Superuser</th>
                         <th>Blocked</th>
-                        <th>Date Joined</th>
+                        <th>Joined</th>
                         <th>Actions</th>
                     </tr>
                     <?php if (empty($context['users']['result'])): ?>
