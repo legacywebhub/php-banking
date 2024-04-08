@@ -17,17 +17,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && $_POST['csrf_token'] === $_SESSION['
     } else {
         $user = authenticate_user($email, $password);
 
-        if (!$user || $user['is_staff'] == 0){
-            redirect('login', "Invalid credentials", 'danger');
-        } else {
-            // Unset any previous session
-            if (isset($_SESSION['user'])) {
-                unset($_SESSION['user']);
+        if ($user){
+            if ($user['is_staff'] == 0) {
+                redirect('login', "Unauthorized access", 'danger');
+            } else {
+                // Unset any previous session
+                if (isset($_SESSION['user'])) {
+                    unset($_SESSION['user']);
+                }
+                // Set user session id
+                $_SESSION['user'] = $user;
+                redirect('dashboard');
             }
-            // Set new user session id
-            $_SESSION['user'] = $user;
-            // Redirect user
-            redirect("dashboard");
+        } else {
+            redirect('login', "Invalid credentials", 'danger');
         }
     }
         

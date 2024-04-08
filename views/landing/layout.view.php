@@ -36,6 +36,15 @@
             color: #ffffff;
         }
     </style>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-SVYGJ6TSZX"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'G-SVYGJ6TSZX');
+    </script>
 </head>
 
     <body class="homepage-3" onunload=''>
@@ -204,22 +213,22 @@
                                     <div class="social-links">
                                         <ul>
                                             <li>
-                                                <a href="#0" class="single-link">
+                                                <a href="<?=$context['setting']['facebook_link']; ?>" class="single-link">
                                                     <i class="fab fa-facebook-f"></i>
                                                 </a>
                                             </li>
                                             <li>
-                                                <a href="#0" class="single-link">
+                                                <a href="javascript:void(0);" class="single-link">
                                                     <i class="fab fa-twitter"></i>
                                                 </a>
                                             </li>
                                             <li>
-                                                <a href="#0" class="single-link">
+                                                <a href="javascript:void(0);" class="single-link">
                                                     <i class="fab fa-instagram"></i>
                                                 </a>
                                             </li>
                                             <li>
-                                                <a href="#0" class="single-link">
+                                                <a href="javascript:void(0);" class="single-link">
                                                     <i class="fab fa-pinterest-p"></i>
                                                 </a>
                                             </li>

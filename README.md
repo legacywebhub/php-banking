@@ -52,6 +52,7 @@ This is a pseudo banking platform built with Javascript, AJAX and PHP that offer
 ![HOME3](assets/screenshots/home3.png)<hr/>
 ![USER-DASHBOARD](assets/screenshots/dashboard.png)<hr/>
 ![VIRTUAL-CARD](assets/screenshots/virtual-card.png)<hr/>
-![LOAN](assets/screenshots/virtual-card.png)<hr/>
+![LOAN](assets/screenshots/loan-application.png)<hr/>
+![LOAN](assets/screenshots/loan.png)<hr/>
 ![PROFILE](assets/screenshots/profile.png)<hr/>
 ![TRANSACTIONS](assets/screenshots/transactions.png)

@@ -113,7 +113,6 @@ function authenticate_user($email, $password) {
     return false;
 }
 
-
 // FUNCTION CHECKS IF THE GIVEN EMAIL OF A USER EXISTS IN THE DATABASE
 function email_exists($email) {
     try {

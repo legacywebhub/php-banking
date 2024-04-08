@@ -13,9 +13,11 @@ if (!isset($_GET['id'])) {
     $matched_kycs = query_fetch("SELECT * FROM kycs WHERE id = $kyc_id LIMIT 1");
 
     if (!empty($matched_kycs)) {
+        $now = new DateTime('now', new DateTimeZone('UTC'));
+        $approved_date = $now->format('Y-m-d H:i:s');
         // Updating KYC record
         $sql = "UPDATE kycs SET status = :status, approved_date = :approved_date WHERE id = :id LIMIT 1";
-        query_db($sql, ['status'=> "approved", 'approved_date'=> new DateTime('now', new DateTimeZone('UTC')), 'id'=> $kyc_id]);
+        query_db($sql, ['status'=> "approved", 'approved_date'=> $approved_date, 'id'=> $kyc_id]);
         // Notifying user of KYC approval
         notify_user($matched_kycs[0]['user_id'], "Congrats.. Your KYC application was successfully approved");
         // Redirecting..

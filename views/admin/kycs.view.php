@@ -86,11 +86,10 @@
                                 </td>
                                 <td>
                                 <span class="action-btns">
+                                    <a href="kyc?id=<?=$kyc['id']; ?>" class="btn btn-primary btn-action" title="View"><i class="fas fa-eye"></i></a>
                                     <?php if($kyc['status'] == "pending"): ?>
-                                        <a href="approve-kyc?id=<?=$kyc['id']; ?>" class="btn btn-success btn-action" title="Approve">Approve</a>
-                                        <a href="decline-kyc?id=<?=$kyc['id']; ?>" class="btn btn-danger btn-action" title="Decline">Decline</a>
-                                    <?php else: ?>
-                                        -
+                                        <a href="approve-kyc?id=<?=$kyc['id']; ?>" class="btn btn-info btn-action" title="Approve"><i class="fas fa-check"></i></a>
+                                        <a href="decline-kyc?id=<?=$kyc['id']; ?>" class="btn btn-danger btn-action" title="Decline"><i class="fas fa-times"></i></a>
                                     <?php endif ?>
                                 </span>
                                 </td>

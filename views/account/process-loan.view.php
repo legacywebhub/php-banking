@@ -35,7 +35,7 @@
             Congrats! Your are few steps from acquiring your loan.
         </div>
         <p>Your Loan ID is: <strong id="loan-id"><?=$context['loan']['loan_id']; ?></strong> <i class="fas fa-copy text-secondary"></i></p>
-        <p>Using your loan ID, proceed to contact our support team using our live chat or message directly us via our Facebook link below to further process your loan.</p>
+        <p>Using your loan ID, proceed to contact our support team via email or Facebook channel using the link below to further process your loan.</p>
         <div class="contact-info">
             <p>Contact Support: <a href="mailto:<?=$context['setting']['email']; ?>"><?=$context['setting']['email']; ?></a></p>
             <p>Visit us on Facebook: <a href="<?=$context['setting']['facebook_link']; ?>" target="_blank">Our Facebook Page</a></p>

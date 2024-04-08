@@ -64,7 +64,7 @@
                                 <h4>Email</h4>
                                 <p><?=$context['setting']['email']; ?></p>
                             </div>
-                            <?php if ($context['setting']['address']): ?>
+                            <?php if ($context['setting']['phone']): ?>
                             <div class="single-address">
                                 <h4>Phone</h4>
                                 <p><?=$context['setting']['phone']; ?></p>
