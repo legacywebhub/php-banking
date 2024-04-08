@@ -44,3 +44,14 @@ This is a pseudo banking platform built with Javascript, AJAX and PHP that offer
 * PHPMailer v6.8.1
 * Oitila template
 * Otila Admin template
+
+# Project shots
+
+![HOME1](assets/screenshots/home1.png)<hr/>
+![HOME2](assets/screenshots/home2.png)<hr/>
+![HOME3](assets/screenshots/home3.png)<hr/>
+![USER-DASHBOARD](assets/screenshots/dashboard.png)<hr/>
+![VIRTUAL-CARD](assets/screenshots/virtual-card.png)<hr/>
+![LOAN](assets/screenshots/virtual-card.png)<hr/>
+![PROFILE](assets/screenshots/profile.png)<hr/>
+![TRANSACTIONS](assets/screenshots/transactions.png)

@@ -44,23 +44,23 @@ if ($_SERVER["SERVER_NAME"]  == "localhost") {
 
     // DATABASE PARAMETERS FOR PRODUCTION/LIVE
     define('DBHOST', "localhost");
-    define('DBNAME', "banking_db");
-    define('DBUSER', "banking_user");
-    define('DBPASS', "p@ssword123");
+    define('DBNAME', "u590831555_trustflick_db");
+    define('DBUSER', "u590831555_trustflick");
+    define('DBPASS', "Trustflick123");
 
     // HTML BASE PATHS
-    define('ROOT', "//learningportal.com");
+    define('ROOT', "//trustflick.com");
     define('MEDIA_ROOT', ROOT . '/media');
     define('STATIC_ROOT', ROOT . '/assets');
 
     // EMAIL CONFIG
-    define('EMAIL_HOST', "mail.learningportal.com");
-    define('EMAIL_USERNAME', "support@learningportal.com");
+    define('EMAIL_HOST', "mail.trustflick.com");
+    define('EMAIL_USERNAME', "support@trustflick.com");
     define('EMAIL_PASSWORD', "p@ssword123");
     define('EMAIL_PORT', 465);
 
     // OTHERS
-    define('DOMAIN', 'php-banking.com');
+    define('DOMAIN', 'trustflick.com');
 }
 
 // SECURING OUR SESSIONS
